@@ -47,12 +47,6 @@ meltwater_data_free <- meltwater_top_free$ps_obj %>%
   psmelt() %>%  
   arrange(Transect_Number)           # Melt to long format
 
-myColors <- c(brewer.pal(9, "Paired"), "#A43D27", "#497687", "#5E4987", "darkblue", "lightblue2", "darkgoldenrod", "dodgerblue", "seagreen")
-meltwater_data_free$Order <- as.factor(meltwater_data_free$Order)
-meltwater_data_part$Order <- as.factor(meltwater_data_part$Order) # HAVE TO RUN data_part
-names(myColors) <- levels(c(meltwater_data_free$Order, meltwater_data_part$Order))
-custom_colors <- scale_colour_manual(name = "Order", values = myColors)
-
 #fix out of order transect numbers, do it manually.
 # works
 meltwater_data_free <- meltwater_data_free %>% 
@@ -64,6 +58,32 @@ meltwater_plot_labels <- c("56b", "68", "146")
 meltwater_plot_breaks <- unique(sample_data(meltwater_data_free)$Transect_Number)
 meltwater_sec_labels <- seq(0 , 42, by=10)
 meltwater_sec_breaks <- seq(0 , 42, by=10)
+
+### data culling particle-associated
+meltwater_data_part <- meltwater_ps_part %>% subset_samples(Transect_Name == "transect2") %>%
+  tax_glom(taxrank = "Order") %>% # agglomerate at genus level
+  transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
+
+meltwater_top_part <- top_taxa(meltwater_data_part, 
+                               n_taxa = 16,
+                               include_na_taxa = T)
+
+meltwater_data_part <- meltwater_top_part$ps_obj %>%
+  psmelt() %>%  
+  filter(., Station != "STN22") %>%# Filter out low abundance taxa
+  arrange(Transect_Number)     
+
+
+meltwater_data_part <- meltwater_data_part %>% 
+  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "1", 0.00000000)) %>%
+  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "2", 16.33216538)) %>%
+  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "3", 40.58487518))
+
+myColors <- c(brewer.pal(9, "Paired"), "#A43D27", "#497687", "#5E4987", "darkblue", "lightblue2", "darkgoldenrod", "dodgerblue", "seagreen")
+meltwater_data_free$Order <- as.factor(meltwater_data_free$Order)
+meltwater_data_part$Order <- as.factor(meltwater_data_part$Order) # HAVE TO RUN data_part
+names(myColors) <- levels(c(meltwater_data_free$Order, meltwater_data_part$Order))
+custom_colors <- scale_colour_manual(name = "Order", values = myColors)
 
 # Plot 
 meltwater_barplot_free <- ggplot(meltwater_data_free, aes(x = Transect_Number, y = Abundance, fill = Order)) +
@@ -98,32 +118,12 @@ ggsave("graphics/meltwater_order_rel_abundance_free.pdf", width = 6.5, height = 
 #      PARTICLE      # 
 ######################
 
-meltwater_data_part <- meltwater_ps_part %>% subset_samples(Transect_Name == "transect2") %>%
-  tax_glom(taxrank = "Order") %>% # agglomerate at genus level
-  transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
-
-meltwater_top_part <- top_taxa(meltwater_data_part, 
-                               n_taxa = 16,
-                               include_na_taxa = T)
-
-meltwater_data_part <- meltwater_top_part$ps_obj %>%
-  psmelt() %>%  
-  filter(., Station != "STN22") %>%# Filter out low abundance taxa
-  arrange(Transect_Number)     
-
-
-meltwater_data_part <- meltwater_data_part %>% 
-  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "1", 0.00000000)) %>%
-  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "2", 16.33216538)) %>%
-  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "3", 40.58487518))
-
-
 # Plot 
 meltwater_barplot_part <- ggplot(meltwater_data_part, aes(x = Transect_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() + ggtitle("\n Particle-associated (>2 µm)") +
-  # geom_col(position = "dodge") + # changes to multiple bars
+  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() + ggtitle("\n part-living (<0.2 µm)") +
+  #geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_manual(values = myColors) + # set manual colors
+  scale_fill_manual(values = myColors, drop = FALSE) +
   scale_x_continuous(
     name = "Distance (km)",
     breaks = meltwater_sec_breaks,
@@ -142,7 +142,7 @@ meltwater_barplot_part <- ggplot(meltwater_data_part, aes(x = Transect_Number, y
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5)) +
   theme(panel.spacing.y = unit(1, "lines")) +
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
-  ylab("")
+  ylab("Relative Abundance")
 ggsave("graphics/meltwater_order_rel_abundance_part.pdf", width = 6.5, height = 4, dpi = 150)
 
 

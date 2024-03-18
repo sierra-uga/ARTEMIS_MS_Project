@@ -9,6 +9,7 @@ library("fantaxtic")
 library("ggpubr")
 library(tidyverse)
 library(RColorBrewer)
+library()
 
 
 ##################
@@ -51,13 +52,6 @@ waterfall_data_free <- waterfall_top_free$ps_obj %>%
   psmelt() %>%  
   arrange(Transect_Number)           # Melt to long format
 
-myColors <- c(brewer.pal(9, "Paired"), "#A43D27", "#497687", "#5E4987", "darkblue", "lightblue2", "darkgoldenrod", "dodgerblue", "seagreen")
-waterfall_data_free$Order <- as.factor(waterfall_data_free$Order)
-waterfall_data_part$Order <- as.factor(waterfall_data_part$Order)
-names(myColors) <- levels(c(waterfall_data_free$Order, waterfall_data_part$Order))
-custom_colors <- scale_colour_manual(name = "Order", values = myColors)
-# Melt to long format
-
 #fix out of order transect numbers, do it manually.
 # works
 waterfall_data_free <- waterfall_data_free %>% 
@@ -67,10 +61,38 @@ waterfall_data_free <- waterfall_data_free %>%
   mutate(Transect_Number = replace(Transect_Number, Transect_Number == "4", 298.40045)) %>%
   mutate(Transect_Number = replace(Transect_Number, Transect_Number == "5", 343.60091))
 
+# particle-associated
+waterfall_data_part <- waterfall_ps_part %>% subset_samples(Transect_Name == "transect1") %>%
+  tax_glom(taxrank = "Order") %>% # agglomerate at genus level
+  transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
+
+waterfall_top_part <- top_taxa(waterfall_data_part, 
+                               n_taxa = 16,
+                               include_na_taxa = T)
+
+waterfall_data_part <- waterfall_top_part$ps_obj %>%
+  psmelt() %>%  
+  arrange(Transect_Number)     
+
+waterfall_data_part <- waterfall_data_part %>% 
+  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "1", 0.0000)) %>%
+  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "2", 62.80497)) %>%
+  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "3", 221.81425)) %>%
+  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "4", 298.40045)) %>%
+  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "5", 343.60091))
+
+
 waterfall_plot_labels <- c("STN198","STN002", "STN004", "STN012", "STN014")
 waterfall_plot_breaks <- unique(sample_data(waterfall_data_free)$Transect_Number)
 waterfall_sec_labels <- seq(0 , 350.60, by=50)
 waterfall_sec_breaks <- seq(0 , 350.60, by=50)
+
+myColors <- c(brewer.pal(9, "Paired"), "#A43D27", "#497687", "#5E4987", "darkblue", "lightblue2", "darkgoldenrod", "dodgerblue", "seagreen")
+waterfall_data_free$Order <- as.factor(waterfall_data_free$Order)
+waterfall_data_part$Order <- as.factor(waterfall_data_part$Order)
+names(myColors) <- levels(c(waterfall_data_free$Order, waterfall_data_part$Order))
+custom_colors <- scale_colour_manual(name = "Order", values = myColors)
+# Melt to long format
 
 # Plot 
 waterfall_barplot_free <- ggplot(waterfall_data_free, aes(x = Transect_Number, y = Abundance, fill = Order)) +
@@ -104,25 +126,6 @@ ggsave("graphics/waterfall_order_rel_abundance_free.pdf", width = 6.5, height = 
 ######################
 #      PARTICLE      # 
 ######################
-
-waterfall_data_part <- waterfall_ps_part %>% subset_samples(Transect_Name == "transect1") %>%
-  tax_glom(taxrank = "Order") %>% # agglomerate at genus level
-  transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
-
-waterfall_top_part <- top_taxa(waterfall_data_part, 
-                               n_taxa = 16,
-                               include_na_taxa = T)
-
-waterfall_data_part <- waterfall_top_part$ps_obj %>%
-  psmelt() %>%  
-  arrange(Transect_Number)     
-
-waterfall_data_part <- waterfall_data_part %>% 
-  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "1", 0.0000)) %>%
-  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "2", 62.80497)) %>%
-  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "3", 221.81425)) %>%
-  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "4", 298.40045)) %>%
-  mutate(Transect_Number = replace(Transect_Number, Transect_Number == "5", 343.60091))
 
 # Plot 
 waterfall_barplot_part <- ggplot(waterfall_data_part, aes(x = Transect_Number, y = Abundance, fill = Order)) +
