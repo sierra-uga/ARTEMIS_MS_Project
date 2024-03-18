@@ -1,0 +1,168 @@
+# load in libraries
+library("dplyr")
+library("tidyr")
+library("phyloseq")
+
+# read in metadata
+org_metadata <- read.delim("artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names="Sample.illumina") 
+
+## data culling 
+org_metadata <- filter(org_metadata, Sample.Control == "True.Sample") # use tidyr to select "real samples" (non-blanks)
+# metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
+metadata <- org_metadata[ -c( 1, 26:29)] # remove filter-related stuff
+metadata <- metadata[-(which(metadata$Station %in% c("STN198", "STN056b"))),] 
+metadata <- metadata[ -c( 1, 2:18)] # remove barcode seq/uneeded stuff
+metadata <- select(metadata, 1:16, 22, 18) # select numeric + siderophore column + watertype
+
+#metadata[is.na(metadata)] <- 0 # replace NAs with 0's for PCA
+list_true <- replace_na(metadata$True_Flow, "Other") #replace NA with "Other" for coloring
+metadata$True_Flow <- list_true # changing actual column in dataframe
+
+metadata <- metadata %>% mutate_at(1:17, as.numeric) # convert character columns (except sampleID) to numeric for analysis 
+
+# remove unneeded columns (Oxygen, FIECO, Par, Siderophore)
+metadata <- select(metadata,-c(Oxygen, FlECO.AFL, CTD_Depth, Siderophore, Par, Chl_a))
+metadata <- metadata %>% rename(c(Nitrate = Lab_NO3, 
+                                  Nitrite = Lab_NO2, 
+                                  Ammonium = Lab_NH4, 
+                                  #Chlorophyll = Chl_a, 
+                                  Oxygen = Sb_Oxygen,
+                                  Phosphate = Lab_PO4))
+# remove NA for iron analysis
+metadata <- na.omit(metadata)
+
+## PCA analysis from stratigrafia.org
+# Run the PCA
+# set vectors for inflow
+Inflow <- metadata$True_Flow == "Inflow"
+Outflow <- metadata$True_Flow == "Outflow"
+Other <- metadata$True_Flow == "Other"
+
+# set vectors
+CDW <- metadata$watertype == "CDW"
+WW_CDW <- metadata$watertype == "WW-CDW"
+WW <- metadata$watertype == "WW"
+AASW_WW <- metadata$watertype == "AASW-WW"
+AASW <- metadata$watertype == "AASW"
+Other <- metadata$watertype == "Other"
+
+metadata <- select(metadata, 1:11) # select only numerical columns
+
+# create vectors from orginial metadata file for watertype
+metadataPca <- prcomp(metadata, scale.=TRUE)
+
+# plot sample scores
+dev.new(height=7, width=7)
+biplot(metadataPca, cex=0.7)
+
+sd <- metadataPca$sdev
+loadings <- metadataPca$rotation
+rownames(loadings) <- colnames(metadata)
+scores <- metadataPca$x
+
+# use scree plot to reduce dimensionality
+var <- sd^2
+varPercent <- var/sum(var) * 100
+barplot(varPercent, xlab="PC", ylab="Percent Variance", names.arg=1:length(varPercent), las=1, ylim=c(0, max(varPercent)), col="gray")
+abline(h=1/ncol(metadata)*100, col="red")
+
+# determine % variance explained
+varPercent[1:4]
+sum(varPercent[1:4])
+
+# table for the loadings
+loadings
+sqrt(1/ncol(metadata))
+
+scaling <- 4.5
+textNudge <- 1.2
+
+# fix plot
+pdf(file = "graphics/all_watermass_IRON_PCA.pdf", width = 6, height = 7) 
+plot(scores[, 1], scores[, 2], xlab="PC 1", ylab="PC 2", type="n", asp=1, las=1)
+points(scores[CDW, 1], scores[CDW, 2], pch=16, cex=0.7, col="red2")
+points(scores[WW_CDW, 1], scores[WW_CDW, 2], pch=16, cex=0.7, col="blueviolet")
+points(scores[WW, 1], scores[WW, 2], pch=16, cex=0.7, col="dodgerblue")
+points(scores[AASW_WW, 1], scores[AASW_WW, 2], pch=16, cex=0.7, col="aquamarine3")
+points(scores[AASW, 1], scores[AASW, 2], pch=16, cex=0.7, col="darkgreen")
+points(scores[Other, 1], scores[Other, 2], pch=16, cex=0.7, col="gray")
+arrows(0, 0, loadings[, 1]* scaling, loadings[, 2]* scaling, length=0.1, angle=20, col="red4")
+text(loadings[, 1]*scaling*textNudge, loadings[, 2]*scaling*textNudge, rownames(loadings), col="red4", cex=0.7)
+# add names 
+text(4, 3, "CDW", col="red2")
+text(3.4, -2, "WW-CDW", col="blueviolet")
+text(-2, 3, "WW", col="dodgerblue")
+text(-3, -2, "AASW-WW", col="aquamarine3")
+text(-5, 3, "AASW", col="darkgreen")
+dev.off()
+
+### Same thing but for > 100m
+# select only below 100m
+org_metadata_filter <- filter(metadata, Depth > 100)
+org_metadata_100 <- filter(org_metadata, Depth > 100)
+## remove Par/Chl_a (b/c they are all 0)
+org_metadata_filter <- select(org_metadata_filter,-Chlorophyll)
+
+metadataPca2 <- prcomp(org_metadata_filter, scale.=TRUE)
+
+sd2 <- metadataPca2$sdev
+loadings2 <- metadataPca2$rotation
+rownames(loadings) <- colnames(org_metadata_filter)
+scores2 <- metadataPca2$x
+
+# create vectors from orginial metadata file for watertype
+CDW2 <- org_metadata_100$watertype == "CDW"
+WW2 <- org_metadata_100$watertype == "WW"
+AASW2 <- org_metadata_100$watertype == "AASW"
+Other2 <- org_metadata_100$watertype == "Other"
+
+# fix plot
+pdf(file = "graphics/iron_PCA.pdf", width = 6, height = 7) 
+plot(scores2[, 1], scores2[, 2], xlab="PC 1", ylab="PC 2", type="n", asp=1, las=1)
+points(scores2[CDW2, 1], scores2[CDW2, 2], pch=16, cex=0.7, col="red2")
+points(scores2[WW2, 1], scores2[WW2, 2], pch=16, cex=0.7, col="dodgerblue")
+points(scores2[AASW2, 1], scores2[AASW2, 2], pch=16, cex=0.7, col="seagreen")
+points(scores2[Other2, 1], scores2[Other2, 2], pch=16, cex=0.7, col="gray")
+arrows(0, 0, loadings2[, 1]* scaling, loadings2[, 2]* scaling, length=0.1, angle=20, col="red4")
+text(loadings2[, 1]*scaling*textNudge, loadings2[, 2]*scaling*textNudge, rownames(loadings2), col="red4", cex=0.7)
+dev.off()
+
+## SPLIT GRAPHIC
+pdf("graphics/split_iron_siderophore_PCA.pdf", width = 8, height = 6)
+par(mfrow=c(1,2))
+## plot 1
+plot(scores[, 1], scores[, 2], xlab="PC 1", ylab="PC 2", type="n", asp=1, las=1)
+points(scores[CDW, 1], scores[CDW, 2], pch=16, cex=0.7, col="red2")
+points(scores[WW, 1], scores[WW, 2], pch=16, cex=0.7, col="dodgerblue")
+points(scores[AASW, 1], scores[AASW, 2], pch=16, cex=0.7, col="seagreen")
+points(scores[Other, 1], scores[Other, 2], pch=16, cex=0.7, col="gray")
+arrows(0, 0, loadings[, 1]* scaling, loadings[, 2]* scaling, length=0.1, angle=20, col="red4")
+text(loadings[, 1]*scaling*textNudge, loadings[, 2]*scaling*textNudge, rownames(loadings), col="red4", cex=0.7)
+# add names 
+text(4, 3.5, "CDW", col="red2")
+text(-2, 3, "WW", col="dodgerblue")
+text(-4, 4.5, "AASW", col="seagreen")
+text(2.3, -2, "Other", col="darkgray")
+
+## plot 2
+plot(scores2[, 1], scores2[, 2], xlab="PC 1", ylab="PC 2", type="n", asp=1, las=1)
+points(scores2[CDW2, 1], scores2[CDW2, 2], pch=16, cex=0.7, col="red2")
+points(scores2[WW2, 1], scores2[WW2, 2], pch=16, cex=0.7, col="dodgerblue")
+points(scores2[AASW2, 1], scores2[AASW2, 2], pch=16, cex=0.7, col="seagreen")
+points(scores2[Other2, 1], scores2[Other2, 2], pch=16, cex=0.7, col="gray")
+arrows(0, 0, loadings2[, 1]* scaling, loadings2[, 2]* scaling, length=0.1, angle=20, col="red4")
+text(loadings2[, 1]*scaling*textNudge, loadings2[, 2]*scaling*textNudge, rownames(loadings2), col="red4", cex=0.7)
+
+dev.off()
+
+pdf("graphics/split_iron_siderophore_PCA.pdf", width = 8, height = 6)
+par(mfrow=c(1,2))
+siderophore_all
+siderophore_dotson 
+dev.off()
+
+
+# for future use 
+text(-2.7, .5, "Outflow", col="red2")
+text(1, -1.5, "Inflow", col="dodgerblue")
+text(2.3, -2, "Other", col="darkgray")
