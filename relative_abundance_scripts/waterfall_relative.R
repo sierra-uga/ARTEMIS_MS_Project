@@ -10,7 +10,6 @@ library("ggpubr")
 library(tidyverse)
 library(RColorBrewer)
 
-
 ##################
 #  data culling  #
 ##################
@@ -36,7 +35,6 @@ waterfall_ps_part <- ps_sub %>% subset_samples(Filter_pores >= "2") %>% prune_ta
 ######################
 #    FREE-LIVING     # 
 ######################
-
 
 # Create a data frame for freeliving
 waterfall_data_free <- waterfall_ps_free %>% subset_samples(Transect_Name == "transect1") %>%
