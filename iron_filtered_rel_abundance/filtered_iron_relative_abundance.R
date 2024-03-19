@@ -13,7 +13,7 @@ library(tidyverse)
 # list based on table !
 phylum_to_keep=c("SAR324 clade(Marine group B)") #BACTEROIDOTA = Flavobacteriales order
 class_to_keep=c("Zetaproteobacteria","Actinobacteria","Acidimicrobiia")
-order_to_keep=c("Desulfuromonadales","Rhodobacterales","Alteromonadales","Flavobacteriales","Nitrosomonadales","Acidithiobacillales","SAR86 clade","Rhodospirillales","Acidiferrobacterales")
+order_to_keep=c("Desulfuromonadales","Rhodobacterales","Alteromonadales","Nitrosomonadales","Acidithiobacillales","SAR86 clade","Rhodospirillales","Acidiferrobacterales") # removed Flavobacteriales
 family_to_keep=c("Acetobacteraceae","Alteromonadaceae", "Nitrosomonadaceae")
 genus_to_keep=c("Caldithrix","Acidibater","SUP05 cluster","Acinetobacter") # replaced Pseudomonadales in order with acinetobacter
 species_to_keep=c("Methylococcaceae bacterium SF-BR")
@@ -59,7 +59,6 @@ tax_species <- taxonomy %>%
 species <- tax_species$Species
 tax_species$TAX <- species # make new column with tax ID
 tax_species <- select(tax_species, 9, 1:8)
-
 
 merged_ps <- list(tax_phylum, tax_class, tax_order, tax_family, tax_genus, tax_species) # make list of the filtered taxonomy tables
 merged_tax <- join_all(merged_ps, by = 'id', type = 'full') # merge taxonomy, deleting duplicates

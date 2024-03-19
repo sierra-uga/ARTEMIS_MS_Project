@@ -9,7 +9,6 @@ library("fantaxtic")
 library("ggpubr")
 library(tidyverse)
 library(RColorBrewer)
-library()
 
 
 ##################
@@ -17,7 +16,7 @@ library()
 ##################
 
 # select only bacteria, remove chloroplasts
-ps_sub <- ps %>%
+ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
     Kingdom == "Bacteria" &
       Family  != "Mitochondria" &
@@ -45,7 +44,7 @@ waterfall_data_free <- waterfall_ps_free %>% subset_samples(Transect_Name == "tr
   transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
 
 waterfall_top_free <- top_taxa(waterfall_data_free, 
-                               n_taxa = 16,
+                               n_taxa = 11,
                                include_na_taxa = T)
 
 waterfall_data_free <- waterfall_top_free$ps_obj %>%
@@ -67,7 +66,7 @@ waterfall_data_part <- waterfall_ps_part %>% subset_samples(Transect_Name == "tr
   transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
 
 waterfall_top_part <- top_taxa(waterfall_data_part, 
-                               n_taxa = 16,
+                               n_taxa = 11,
                                include_na_taxa = T)
 
 waterfall_data_part <- waterfall_top_part$ps_obj %>%
@@ -171,7 +170,7 @@ waterfall_combined <- ggarrange(
   common.legend = FALSE, legend = "right", legend.grob = legend_combined
 )
 
-annotate_figure(waterfall_combined, top = text_grob("\n waterfall Plume (Transect 2)", 
+annotate_figure(waterfall_combined, top = text_grob("\n CDW Waterfall (Transect 1)", 
                                                     color = "dodgerblue3", face = "bold", size = 18))
 
-ggsave("graphics/waterfall_order_combined_relative.pdf", width = 13, height = 7, dpi = 150)
+ggsave("graphics/decontam_waterfall_order_combined_relative.pdf", width = 13, height = 7, dpi = 150)

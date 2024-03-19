@@ -120,7 +120,7 @@ ggsave("graphics/meltwater_order_rel_abundance_free.pdf", width = 6.5, height = 
 
 # Plot 
 meltwater_barplot_part <- ggplot(meltwater_data_part, aes(x = Transect_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() + ggtitle("\n part-living (<0.2 µm)") +
+  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() + ggtitle("\n Particle-associated (>2 µm)") +
   #geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors, drop = FALSE) +
@@ -142,7 +142,7 @@ meltwater_barplot_part <- ggplot(meltwater_data_part, aes(x = Transect_Number, y
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5)) +
   theme(panel.spacing.y = unit(1, "lines")) +
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
-  ylab("Relative Abundance")
+  ylab("")
 ggsave("graphics/meltwater_order_rel_abundance_part.pdf", width = 6.5, height = 4, dpi = 150)
 
 
