@@ -1,0 +1,148 @@
+feature,method,group1,group2,p_values,adj_method,p_adjust,description
+K00124,ALDEx2_Wilcoxon rank test,0.2,3,0.03277816,BH,0.075287337,"fdoH, fdsB; formate dehydrogenase iron-sulfur subunit"
+K00184,ALDEx2_Wilcoxon rank test,0.2,3,0.005398191,BH,0.017447188,dmsB; dimethyl sulfoxide reductase iron-sulfur subunit
+K00196,ALDEx2_Wilcoxon rank test,0.2,3,0.082638935,BH,0.16640991,cooF; anaerobic carbon-monoxide dehydrogenase iron sulfur subunit
+K00205,ALDEx2_Wilcoxon rank test,0.2,3,0.611916302,BH,0.685936617,"fwdF, fmdF; 4Fe-4S ferredoxin"
+K00216,ALDEx2_Wilcoxon rank test,0.2,3,8.07E-08,BH,1.08E-06,"entA; 2,3-dihydro-2,3-dihydroxybenzoate dehydrogenase [EC:1.3.1.28]"
+K00230,ALDEx2_Wilcoxon rank test,0.2,3,0.027163037,BH,0.064402684,hemG; menaquinone-dependent protoporphyrinogen oxidase [EC:1.3.5.3]
+K00240,ALDEx2_Wilcoxon rank test,0.2,3,0.000278928,BH,0.001438682,"sdhB, frdB; succinate dehydrogenase / fumarate reductase, iron-sulfur subunit [EC:1.3.5.1 1.3.5.4]"
+K00245,ALDEx2_Wilcoxon rank test,0.2,3,0.018945519,BH,0.047653949,frdB; fumarate reductase iron-sulfur subunit [EC:1.3.5.4]
+K00380,ALDEx2_Wilcoxon rank test,0.2,3,0.007169879,BH,0.021604419,cysJ; sulfite reductase (NADPH) flavoprotein alpha-component [EC:1.8.1.2]
+K00411,ALDEx2_Wilcoxon rank test,0.2,3,0.017411287,BH,0.045704628,"UQCRFS1, RIP1, petA; ubiquinol-cytochrome c reductase iron-sulfur subunit [EC:7.1.1.8]"
+K00435,ALDEx2_Wilcoxon rank test,0.2,3,0.553361087,BH,0.635500623,hemQ; hydrogen peroxide-dependent heme synthase [EC:1.3.98.5]
+K00437,ALDEx2_Wilcoxon rank test,0.2,3,0.672700222,BH,0.731543675,hydB; [NiFe] hydrogenase large subunit [EC:1.12.2.1]
+K01252,ALDEx2_Wilcoxon rank test,0.2,3,5.06E-08,BH,8.41E-07,"entB, dhbB, vibB, mxcF; bifunctional isochorismate lyase / aryl carrier protein [EC:3.3.2.1 6.3.2.14]"
+K01851,ALDEx2_Wilcoxon rank test,0.2,3,0.013043642,BH,0.034548026,pchA; salicylate biosynthesis isochorismate synthase [EC:5.4.4.2]
+K02003,ALDEx2_Wilcoxon rank test,0.2,3,3.36E-06,BH,2.87E-05,ABC.CD.A; putative ABC transport system ATP-binding protein
+K02010,ALDEx2_Wilcoxon rank test,0.2,3,0.12236271,BH,0.219357542,"afuC, fbpC; iron(III) transport system ATP-binding protein [EC:7.2.2.7]"
+K02011,ALDEx2_Wilcoxon rank test,0.2,3,0.724209731,BH,0.778180439,"afuB, fbpB; iron(III) transport system permease protein"
+K02012,ALDEx2_Wilcoxon rank test,0.2,3,0.82572358,BH,0.854798353,"afuA, fbpA; iron(III) transport system substrate-binding protein"
+K02013,ALDEx2_Wilcoxon rank test,0.2,3,0.000157395,BH,0.000889885,ABC.FEV.A; iron complex transport system ATP-binding protein [EC:7.2.2.-]
+K02014,ALDEx2_Wilcoxon rank test,0.2,3,0.017900631,BH,0.046573324,TC.FEV.OM; iron complex outermembrane recepter protein
+K02015,ALDEx2_Wilcoxon rank test,0.2,3,3.89E-06,BH,3.09E-05,ABC.FEV.P; iron complex transport system permease protein
+K02016,ALDEx2_Wilcoxon rank test,0.2,3,0.001160916,BH,0.004740406,ABC.FEV.S; iron complex transport system substrate-binding protein
+K02074,ALDEx2_Wilcoxon rank test,0.2,3,0.46297066,BH,0.566121284,ABC.ZM.A; zinc/manganese transport system ATP-binding protein
+K02075,ALDEx2_Wilcoxon rank test,0.2,3,2.34E-09,BH,1.12E-07,ABC.ZM.P; zinc/manganese transport system permease protein
+K02076,ALDEx2_Wilcoxon rank test,0.2,3,0.000324923,BH,0.001647025,"zurR, zur; Fur family transcriptional regulator, zinc uptake regulator"
+K02077,ALDEx2_Wilcoxon rank test,0.2,3,8.98E-08,BH,1.15E-06,ABC.ZM.S; zinc/manganese transport system substrate-binding protein
+K02193,ALDEx2_Wilcoxon rank test,0.2,3,0.084107404,BH,0.168214808,ccmA; heme exporter protein A [EC:7.6.2.5]
+K02194,ALDEx2_Wilcoxon rank test,0.2,3,0.008072192,BH,0.023148686,ccmB; heme exporter protein B
+K02195,ALDEx2_Wilcoxon rank test,0.2,3,0.100429955,BH,0.188066285,ccmC; heme exporter protein C
+K02196,ALDEx2_Wilcoxon rank test,0.2,3,0.009960088,BH,0.027113573,ccmD; heme exporter protein D
+K02217,ALDEx2_Wilcoxon rank test,0.2,3,0.03589306,BH,0.081173536,"ftnA, ftn; ferritin [EC:1.16.3.2]"
+K02255,ALDEx2_Wilcoxon rank test,0.2,3,0.490649262,BH,0.579185798,ftnB; ferritin-like protein 2
+K02361,ALDEx2_Wilcoxon rank test,0.2,3,0.105844652,BH,0.196951441,entC; isochorismate synthase [EC:5.4.4.2]
+K02362,ALDEx2_Wilcoxon rank test,0.2,3,0.018890814,BH,0.047653949,entD; enterobactin synthetase component D [EC:6.3.2.14 2.7.8.-]
+K02363,ALDEx2_Wilcoxon rank test,0.2,3,5.15E-08,BH,8.41E-07,"entE, dhbE, vibE, mxcE; 2,3-dihydroxybenzoate-AMP ligase [EC:6.3.2.14 2.7.7.58]"
+K02364,ALDEx2_Wilcoxon rank test,0.2,3,3.39E-08,BH,6.65E-07,entF; enterobactin synthetase component F [EC:6.3.2.14]
+K02552,ALDEx2_Wilcoxon rank test,0.2,3,0.002499936,BH,0.009670805,menF; menaquinone-specific isochorismate synthase [EC:5.4.4.2]
+K02586,ALDEx2_Wilcoxon rank test,0.2,3,0.111547534,BH,0.203695497,nifD; nitrogenase molybdenum-iron protein alpha chain [EC:1.18.6.1]
+K02588,ALDEx2_Wilcoxon rank test,0.2,3,0.430094185,BH,0.540553892,nifH; nitrogenase iron protein NifH
+K02591,ALDEx2_Wilcoxon rank test,0.2,3,0.781335324,BH,0.81748251,nifK; nitrogenase molybdenum-iron protein beta chain [EC:1.18.6.1]
+K02592,ALDEx2_Wilcoxon rank test,0.2,3,0.022059251,BH,0.054499326,nifN; nitrogenase molybdenum-iron protein NifN
+K02636,ALDEx2_Wilcoxon rank test,0.2,3,6.30E-10,BH,4.60E-08,petC; cytochrome b6-f complex iron-sulfur subunit [EC:7.1.1.6]
+K03559,ALDEx2_Wilcoxon rank test,0.2,3,9.13E-05,BH,0.00053655,exbD; biopolymer transport protein ExbD
+K03560,ALDEx2_Wilcoxon rank test,0.2,3,0.03754969,BH,0.084271823,tolR; biopolymer transport protein TolR
+K03561,ALDEx2_Wilcoxon rank test,0.2,3,7.82E-05,BH,0.000479165,exbB; biopolymer transport protein ExbB
+K03562,ALDEx2_Wilcoxon rank test,0.2,3,0.178299088,BH,0.291221844,tolQ; biopolymer transport protein TolQ
+K03594,ALDEx2_Wilcoxon rank test,0.2,3,0.136974521,BH,0.239042124,bfr; bacterioferritin [EC:1.16.3.1]
+K03620,ALDEx2_Wilcoxon rank test,0.2,3,3.42E-06,BH,2.87E-05,hyaC; Ni/Fe-hydrogenase 1 B-type cytochrome subunit
+K03646,ALDEx2_Wilcoxon rank test,0.2,3,0.008188651,BH,0.023148686,tolA; colicin import membrane protein
+K03709,ALDEx2_Wilcoxon rank test,0.2,3,0.02691267,BH,0.064327846,"troR; DtxR family transcriptional regulator, Mn-dependent transcriptional regulator"
+K03711,ALDEx2_Wilcoxon rank test,0.2,3,3.73E-06,BH,3.05E-05,"fur, zur, furB; Fur family transcriptional regulator, ferric uptake regulator"
+K03809,ALDEx2_Wilcoxon rank test,0.2,3,0.625045202,BH,0.693446375,wrbA; NAD(P)H dehydrogenase (quinone) [EC:1.6.5.2]
+K03832,ALDEx2_Wilcoxon rank test,0.2,3,0.000356344,BH,0.001775682,tonB; periplasmic protein TonB
+K03839,ALDEx2_Wilcoxon rank test,0.2,3,3.11E-05,BH,0.000212488,"fldA, nifF, isiB; flavodoxin I"
+K03840,ALDEx2_Wilcoxon rank test,0.2,3,0.000690884,BH,0.003173749,fldB; flavodoxin II
+K03886,ALDEx2_Wilcoxon rank test,0.2,3,0.024848923,BH,0.060376722,"MQCRA, qcrA, bfcA, petC; menaquinol-cytochrome c reductase iron-sulfur subunit [EC:1.10.2.-]"
+K03890,ALDEx2_Wilcoxon rank test,0.2,3,0.019267453,BH,0.048005349,qcrA; ubiquinol-cytochrome c reductase iron-sulfur subunit
+K03937,ALDEx2_Wilcoxon rank test,0.2,3,0.137408568,BH,0.239042124,NDUFS4; NADH dehydrogenase (ubiquinone) Fe-S protein 4
+K03939,ALDEx2_Wilcoxon rank test,0.2,3,0.289184247,BH,0.420885064,NDUFS6; NADH dehydrogenase (ubiquinone) Fe-S protein 6
+K03941,ALDEx2_Wilcoxon rank test,0.2,3,0.151513143,BH,0.256292661,NDUFS8; NADH dehydrogenase (ubiquinone) Fe-S protein 8 [EC:7.1.1.2]
+K04047,ALDEx2_Wilcoxon rank test,0.2,3,0.007838188,BH,0.023044273,dps; starvation-inducible DNA-binding protein
+K04564,ALDEx2_Wilcoxon rank test,0.2,3,5.53E-07,BH,5.42E-06,"SOD2; superoxide dismutase, Fe-Mn family [EC:1.15.1.1]"
+K04755,ALDEx2_Wilcoxon rank test,0.2,3,0.007201473,BH,0.021604419,"fdx; ferredoxin, 2Fe-2S"
+K04758,ALDEx2_Wilcoxon rank test,0.2,3,0.018964326,BH,0.047653949,feoA; ferrous iron transport protein A
+K04759,ALDEx2_Wilcoxon rank test,0.2,3,3.05E-09,BH,1.12E-07,feoB; ferrous iron transport protein B
+K04781,ALDEx2_Wilcoxon rank test,0.2,3,0.277356899,BH,0.418533563,"mbtI, irp9, ybtS; salicylate synthetase [EC:5.4.4.2 4.2.99.21]"
+K04782,ALDEx2_Wilcoxon rank test,0.2,3,0.005599017,BH,0.01789251,pchB; isochorismate pyruvate lyase [EC:4.2.99.21]
+K04783,ALDEx2_Wilcoxon rank test,0.2,3,0.000979202,BH,0.004233607,"irp5, ybtE; yersiniabactin salicyl-AMP ligase [EC:6.3.2.-]"
+K04784,ALDEx2_Wilcoxon rank test,0.2,3,0.20648953,BH,0.326386677,"irp2, HMWP2; yersiniabactin nonribosomal peptide synthetase"
+K04787,ALDEx2_Wilcoxon rank test,0.2,3,0.426065003,BH,0.540424008,mbtA; mycobactin salicyl-AMP ligase [EC:6.3.2.-]
+K04788,ALDEx2_Wilcoxon rank test,0.2,3,0.461635664,BH,0.566121284,mbtB; mycobactin phenyloxazoline synthetase
+K04789,ALDEx2_Wilcoxon rank test,0.2,3,0.430548574,BH,0.540553892,mbtE; mycobactin peptide synthetase MbtE
+K04790,ALDEx2_Wilcoxon rank test,0.2,3,0.413227748,BH,0.539755249,mbtC; mycobactin polyketide synthetase MbtC
+K04791,ALDEx2_Wilcoxon rank test,0.2,3,0.425254042,BH,0.540424008,mbtD; mycobactin polyketide synthetase MbtD
+K04792,ALDEx2_Wilcoxon rank test,0.2,3,0.404733606,BH,0.539755249,mbtF; mycobactin peptide synthetase MbtF
+K04793,ALDEx2_Wilcoxon rank test,0.2,3,0.445623746,BH,0.552799077,mbtG; mycobactin lysine-N-oxygenase
+K05524,ALDEx2_Wilcoxon rank test,0.2,3,0.297258873,BH,0.428402493,fdxA; ferredoxin
+K05586,ALDEx2_Wilcoxon rank test,0.2,3,0.003281278,BH,0.012097345,hoxE; bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]
+K05587,ALDEx2_Wilcoxon rank test,0.2,3,0.00333271,BH,0.012097345,hoxF; bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]
+K05588,ALDEx2_Wilcoxon rank test,0.2,3,0.003780086,BH,0.012774084,hoxU; bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]
+K05922,ALDEx2_Wilcoxon rank test,0.2,3,0.026646207,BH,0.064212991,hydB; quinone-reactive Ni/Fe-hydrogenase large subunit [EC:1.12.5.1]
+K05927,ALDEx2_Wilcoxon rank test,0.2,3,0.027464808,BH,0.064597229,hydA; quinone-reactive Ni/Fe-hydrogenase small subunit [EC:1.12.5.1]
+K05997,ALDEx2_Wilcoxon rank test,0.2,3,0.006282184,BH,0.019524048,sufA; Fe-S cluster assembly protein SufA
+K06073,ALDEx2_Wilcoxon rank test,0.2,3,0.412741908,BH,0.539755249,btuC; vitamin B12 transport system permease protein
+K06074,ALDEx2_Wilcoxon rank test,0.2,3,2.97E-09,BH,1.12E-07,btuD; vitamin B12 transport system ATP-binding protein [EC:7.6.2.8]
+K06205,ALDEx2_Wilcoxon rank test,0.2,3,0.769892371,BH,0.811284434,mioC; MioC protein
+K06858,ALDEx2_Wilcoxon rank test,0.2,3,4.41E-10,BH,4.33E-08,btuF; vitamin B12 transport system substrate-binding protein
+K07165,ALDEx2_Wilcoxon rank test,0.2,3,0.009286347,BH,0.026001772,fecR; transmembrane sensor
+K07224,ALDEx2_Wilcoxon rank test,0.2,3,5.47E-05,BH,0.000365691,efeO; iron uptake system component EfeO
+K07225,ALDEx2_Wilcoxon rank test,0.2,3,1.14E-05,BH,8.58E-05,hmuS; putative hemin transport protein
+K07226,ALDEx2_Wilcoxon rank test,0.2,3,0.002961829,BH,0.011163817,"hugZ, hutZ; heme iron utilization protein"
+K07227,ALDEx2_Wilcoxon rank test,0.2,3,1.27E-05,BH,9.25E-05,chuX; heme iron utilization protein
+K07229,ALDEx2_Wilcoxon rank test,0.2,3,0.512752243,BH,0.59584648,yqjH; ferric-chelate reductase (NADPH) [EC:1.16.1.9]
+K07230,ALDEx2_Wilcoxon rank test,0.2,3,7.14E-08,BH,1.03E-06,"p19, ftrA; periplasmic iron binding protein"
+K07231,ALDEx2_Wilcoxon rank test,0.2,3,0.097843703,BH,0.184397749,K07231; putative iron-regulated protein
+K07243,ALDEx2_Wilcoxon rank test,0.2,3,8.47E-09,BH,2.08E-07,"FTR, FTH1, efeU; high-affinity iron transporter"
+K07400,ALDEx2_Wilcoxon rank test,0.2,3,0.006265376,BH,0.019524048,nfuA; Fe/S biogenesis protein NfuA
+K07490,ALDEx2_Wilcoxon rank test,0.2,3,0.410188758,BH,0.539755249,feoC; ferrous iron transport protein C
+K08225,ALDEx2_Wilcoxon rank test,0.2,3,0.092529639,BH,0.17772446,"entS; MFS transporter, ENTS family, enterobactin (siderophore) exporter"
+K09013,ALDEx2_Wilcoxon rank test,0.2,3,1.29E-05,BH,9.25E-05,sufC; Fe-S cluster assembly ATP-binding protein
+K09014,ALDEx2_Wilcoxon rank test,0.2,3,0.377214789,BH,0.515819292,sufB; Fe-S cluster assembly protein SufB
+K09015,ALDEx2_Wilcoxon rank test,0.2,3,0.725242994,BH,0.778180439,sufD; Fe-S cluster assembly protein SufD
+K09814,ALDEx2_Wilcoxon rank test,0.2,3,2.60E-08,BH,5.89E-07,hrtA; hemin transport system ATP-binding protein [EC:3.6.3.-]
+K09818,ALDEx2_Wilcoxon rank test,0.2,3,0.012083231,BH,0.03229518,ABC.MN.S; manganese/iron transport system substrate-binding protein
+K09819,ALDEx2_Wilcoxon rank test,0.2,3,3.28E-08,BH,6.65E-07,ABC.MN.P; manganese/iron transport system permease protein
+K09820,ALDEx2_Wilcoxon rank test,0.2,3,2.79E-06,BH,2.49E-05,ABC.MN.A; manganese/iron transport system ATP-binding protein
+K09823,ALDEx2_Wilcoxon rank test,0.2,3,0.736005226,BH,0.784005567,"zur; Fur family transcriptional regulator, zinc uptake regulator"
+K09825,ALDEx2_Wilcoxon rank test,0.2,3,0.000258893,BH,0.001359188,"perR; Fur family transcriptional regulator, peroxide stress response regulator"
+K09826,ALDEx2_Wilcoxon rank test,0.2,3,0.69425719,BH,0.750410345,"irr; Fur family transcriptional regulator, iron response regulator"
+K10123,ALDEx2_Wilcoxon rank test,0.2,3,0.130328827,BH,0.232222274,feoC; putative ferrous iron transport protein C
+K11260,ALDEx2_Wilcoxon rank test,0.2,3,0.613609967,BH,0.685936617,fwdG; 4Fe-4S ferredoxin
+K11473,ALDEx2_Wilcoxon rank test,0.2,3,0.137279966,BH,0.239042124,glcF; glycolate oxidase iron-sulfur subunit
+K11604,ALDEx2_Wilcoxon rank test,0.2,3,0.284022324,BH,0.418829507,sitA; manganese/iron transport system substrate-binding protein
+K11605,ALDEx2_Wilcoxon rank test,0.2,3,0.287444591,BH,0.420441342,sitC; manganese/iron transport system permease protein
+K11606,ALDEx2_Wilcoxon rank test,0.2,3,0.282894402,BH,0.418829507,sitD; manganese/iron transport system permease protein
+K11607,ALDEx2_Wilcoxon rank test,0.2,3,0.284364128,BH,0.418829507,sitB; manganese/iron transport system ATP-binding protein
+K11704,ALDEx2_Wilcoxon rank test,0.2,3,2.23E-07,BH,2.52E-06,mtsA; iron/zinc/manganese/copper transport system substrate-binding protein
+K11705,ALDEx2_Wilcoxon rank test,0.2,3,6.09E-08,BH,9.42E-07,mtsC; iron/zinc/manganese/copper transport system permease protein
+K11706,ALDEx2_Wilcoxon rank test,0.2,3,2.55E-07,BH,2.77E-06,mtsB; iron/zinc/manganese/copper transport system ATP-binding protein
+K11707,ALDEx2_Wilcoxon rank test,0.2,3,0.322221136,BH,0.45326801,"troA, mntA, znuA; manganese/zinc/iron transport system substrate-binding protein"
+K11708,ALDEx2_Wilcoxon rank test,0.2,3,0.327196447,BH,0.455904054,"troC, mntC, znuB; manganese/zinc/iron transport system permease protein"
+K11709,ALDEx2_Wilcoxon rank test,0.2,3,0.312944713,BH,0.448808515,"troD, mntD, znuB; manganese/zinc/iron transport system permease protein"
+K11710,ALDEx2_Wilcoxon rank test,0.2,3,0.336144228,BH,0.461805622,"troB, mntB, znuC; manganese/zinc/iron transport system ATP- binding protein [EC:7.2.2.5]"
+K12264,ALDEx2_Wilcoxon rank test,0.2,3,0.405283321,BH,0.539755249,norV; anaerobic nitric oxide reductase flavorubredoxin
+K13255,ALDEx2_Wilcoxon rank test,0.2,3,0.279022375,BH,0.418533563,fhuF; ferric iron reductase protein FhuF
+K13283,ALDEx2_Wilcoxon rank test,0.2,3,0.047922984,BH,0.10436561,fieF; ferrous-iron efflux pump FieF
+K13480,ALDEx2_Wilcoxon rank test,0.2,3,0.245184946,BH,0.377405101,"ygeU, xdhC; xanthine dehydrogenase iron-sulfur-binding subunit"
+K13483,ALDEx2_Wilcoxon rank test,0.2,3,0.000628099,BH,0.002931127,yagT; xanthine dehydrogenase YagT iron-sulfur-binding subunit
+K13628,ALDEx2_Wilcoxon rank test,0.2,3,0.423416271,BH,0.540424008,iscA; iron-sulfur cluster assembly protein
+K13643,ALDEx2_Wilcoxon rank test,0.2,3,0.006308791,BH,0.019524048,"iscR; Rrf2 family transcriptional regulator, iron-sulfur cluster assembly transcription factor"
+K13772,ALDEx2_Wilcoxon rank test,0.2,3,0.080053858,BH,0.162316099,"rirA; Rrf2 family transcriptional regulator, iron-responsive regulator"
+K14127,ALDEx2_Wilcoxon rank test,0.2,3,0.624417556,BH,0.693446375,"mvhD, vhuD, vhcD; F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.12.99.- 1.8.98.5 1.8.98.6]"
+K15023,ALDEx2_Wilcoxon rank test,0.2,3,0.077505578,BH,0.159347133,acsE; 5-methyltetrahydrofolate corrinoid/iron sulfur protein methyltransferase [EC:2.1.1.258]
+K15724,ALDEx2_Wilcoxon rank test,0.2,3,0.005146667,BH,0.01700135,erpA; iron-sulfur cluster insertion protein
+K15878,ALDEx2_Wilcoxon rank test,0.2,3,0.49250493,BH,0.579185798,"K15878, narB; rieske iron-sulfur protein"
+K16087,ALDEx2_Wilcoxon rank test,0.2,3,0.475876516,BH,0.567807525,"TC.FEV.OM3, tbpA, hemR, lbpA, hpuB, bhuR, hugA, hmbR; hemoglobin/transferrin/lactoferrin receptor protein"
+K16088,ALDEx2_Wilcoxon rank test,0.2,3,0.196964852,BH,0.313014413,"TC.FEV.OM1, fhuE, fpvA, fptA; outer-membrane receptor for ferric coprogen and ferric-rhodotorulic acid"
+K16089,ALDEx2_Wilcoxon rank test,0.2,3,0.674314068,BH,0.731543675,"TC.FEV.OM2, cirA, cfrA, hmuR; outer membrane receptor for ferrienterochelin and colicins"
+K16090,ALDEx2_Wilcoxon rank test,0.2,3,7.82E-10,BH,4.60E-08,fiu; catecholate siderophore receptor
+K16091,ALDEx2_Wilcoxon rank test,0.2,3,0.056946676,BH,0.122206736,fecA; Fe(3+) dicitrate transport protein
+K16092,ALDEx2_Wilcoxon rank test,0.2,3,1.40E-06,BH,1.29E-05,btuB; vitamin B12 transporter
+K16301,ALDEx2_Wilcoxon rank test,0.2,3,0.00016782,BH,0.000930928,efeB; deferrochelatase/peroxidase EfeB [EC:1.11.1.-]
+K16879,ALDEx2_Wilcoxon rank test,0.2,3,0.038015336,BH,0.084670521,hmfC; 2-furoyl-CoA dehydrogenase 2Fe-2S iron sulfur subunit [EC:1.3.99.8]
+K18005,ALDEx2_Wilcoxon rank test,0.2,3,0.185175172,BH,0.298509229,hoxF; [NiFe] hydrogenase diaphorase moiety large subunit [EC:1.12.1.2]
+K18006,ALDEx2_Wilcoxon rank test,0.2,3,0.604619361,BH,0.681065487,hoxU; [NiFe] hydrogenase diaphorase moiety small subunit [EC:1.12.1.2]
+K18008,ALDEx2_Wilcoxon rank test,0.2,3,0.840195645,BH,0.863697621,hydA; [NiFe] hydrogenase small subunit [EC:1.12.2.1]
+K19611,ALDEx2_Wilcoxon rank test,0.2,3,0.008144289,BH,0.023148686,"fepA, pfeA, iroN, pirA; ferric enterobactin receptor"

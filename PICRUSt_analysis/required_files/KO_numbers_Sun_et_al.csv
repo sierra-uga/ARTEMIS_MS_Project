@@ -1,0 +1,275 @@
+﻿Metabolism,Type,KO_Num,Name
+Iron uptake and metabolism,troR,K03709,"troR; DtxR family transcriptional regulator, Mn-dependent transcriptional regulator"
+Iron uptake and metabolism,Fur family,K02076,"zurR, zur; Fur family transcriptional regulator, zinc uptake regulator"
+Iron uptake and metabolism,Fur family,K03711,"fur, zur, furB; Fur family transcriptional regulator, ferric uptake regulator"
+Iron uptake and metabolism,Fur family,K09823,"zur; Fur family transcriptional regulator, zinc uptake regulator"
+Iron uptake and metabolism,Fur family,K09825,"perR; Fur family transcriptional regulator, peroxide stress response regulator"
+Iron uptake and metabolism,Fur family,K09826,"irr; Fur family transcriptional regulator, iron response regulator"
+Iron uptake and metabolism,Fur family,K22297,"furA; Fur family transcriptional regulator, stress-responsive regulator"
+Iron uptake and metabolism,Rrf2 family,K13643,"iscR; Rrf2 family transcriptional regulator, iron-sulfur cluster assembly transcription factor"
+Iron uptake and metabolism,Rrf2 family,K13772,"rirA; Rrf2 family transcriptional regulator, iron-responsive regulator"
+Iron uptake and metabolism,Fe2+ (ferrous),K04758,feoA; ferrous iron transport protein A
+Iron uptake and metabolism,Fe2+ (ferrous),K04759,feoB; ferrous iron transport protein B
+Iron uptake and metabolism,Fe2+ (ferrous),K07490,feoC; ferrous iron transport protein C
+Iron uptake and metabolism,Fe2+ (ferrous),K10123,feoC; putative ferrous iron transport protein C
+Iron uptake and metabolism,Fe2+ (ferrous),K07224,efeO; iron uptake system component EfeO
+Iron uptake and metabolism,Fe2+ (ferrous),K07230,"p19, ftrA; periplasmic iron binding protein"
+Iron uptake and metabolism,Fe2+ (ferrous),K07243,"FTR, FTH1, efeU; high-affinity iron transporter"
+Iron uptake and metabolism,Fe2+ (ferrous),K09818,ABC.MN.S; manganese/iron transport system substrate-binding protein
+Iron uptake and metabolism,Fe2+ (ferrous),K09819,ABC.MN.P; manganese/iron transport system permease protein
+Iron uptake and metabolism,Fe2+ (ferrous),K09820,ABC.MN.A; manganese/iron transport system ATP-binding protein
+Iron uptake and metabolism,Fe2+ (ferrous),K11604,sitA; manganese/iron transport system substrate-binding protein
+Iron uptake and metabolism,Fe2+ (ferrous),K11605,sitC; manganese/iron transport system permease protein
+Iron uptake and metabolism,Fe2+ (ferrous),K11606,sitD; manganese/iron transport system permease protein
+Iron uptake and metabolism,Fe2+ (ferrous),K11607,sitB; manganese/iron transport system ATP-binding protein
+Iron uptake and metabolism,Fe2+ (ferrous),K11704,mtsA; iron/zinc/manganese/copper transport system substrate-binding protein
+Iron uptake and metabolism,Fe2+ (ferrous),K11705,mtsC; iron/zinc/manganese/copper transport system permease protein
+Iron uptake and metabolism,Fe2+ (ferrous),K11706,mtsB; iron/zinc/manganese/copper transport system ATP-binding protein
+Iron uptake and metabolism,Fe2+ (ferrous),K11707,"troA, mntA, znuA; manganese/zinc/iron transport system substrate-binding protein"
+Iron uptake and metabolism,Fe2+ (ferrous),K11710,"troB, mntB, znuC; manganese/zinc/iron transport system ATP- binding protein [EC:7.2.2.5]"
+Iron uptake and metabolism,Fe2+ (ferrous),K11708,"troC, mntC, znuB; manganese/zinc/iron transport system permease protein"
+Iron uptake and metabolism,Fe2+ (ferrous),K11709,"troD, mntD, znuB; manganese/zinc/iron transport system permease protein"
+Iron uptake and metabolism,Fe2+ (ferrous),K12346,SMF; metal iron transporter
+Iron uptake and metabolism,Fe2+ (ferrous),K13283,fieF; ferrous-iron efflux pump FieF
+Iron uptake and metabolism,Fe2+ (ferrous),K15113,"SLC25A28_37, MFRN; solute carrier family 25 (mitochondrial iron transporter), member 28/37"
+Iron uptake and metabolism,Fe2+ (ferrous),K16301,efeB; deferrochelatase/peroxidase EfeB [EC:1.11.1.-]
+Iron uptake and metabolism,Fe2+ (ferrous),K19792,FET4; low-affinity ferrous iron transport protein
+Iron uptake and metabolism,Fe2+ (ferrous),K22736,VIT; vacuolar iron transporter family protein
+Iron uptake and metabolism,Fe3+ (ferric),K00521,E1.16.1.7; ferric-chelate reductase [EC:1.16.1.7]
+Iron uptake and metabolism,Fe3+ (ferric),K02012,"afuA, fbpA; iron(III) transport system substrate-binding protein"
+Iron uptake and metabolism,Fe3+ (ferric),K02011,"afuB, fbpB; iron(III) transport system permease protein"
+Iron uptake and metabolism,Fe3+ (ferric),K02010,"afuC, fbpC; iron(III) transport system ATP-binding protein [EC:7.2.2.7]"
+Iron uptake and metabolism,Fe3+ (ferric),K02013,ABC.FEV.A; iron complex transport system ATP-binding protein [EC:7.2.2.-]
+Iron uptake and metabolism,Fe3+ (ferric),K07229,yqjH; ferric-chelate reductase (NADPH) [EC:1.16.1.9]
+Iron uptake and metabolism,Fe3+ (ferric),K13255,fhuF; ferric iron reductase protein FhuF
+Iron uptake and metabolism,Fe3+ (ferric),K18915,feR; ferric-chelate reductase [NAD(P)H] [EC:1.16.1.10]
+Iron uptake and metabolism,Siderophore biosynthesis,K00216,"entA; 2,3-dihydro-2,3-dihydroxybenzoate dehydrogenase [EC:1.3.1.28]"
+Iron uptake and metabolism,Siderophore biosynthesis,K01252,"entB, dhbB, vibB, mxcF; bifunctional isochorismate lyase / aryl carrier protein [EC:3.3.2.1 6.3.2.14]"
+Iron uptake and metabolism,Siderophore biosynthesis,K02361,entC; isochorismate synthase [EC:5.4.4.2]
+Iron uptake and metabolism,Siderophore biosynthesis,K02362,entD; enterobactin synthetase component D [EC:6.3.2.14 2.7.8.-]
+Iron uptake and metabolism,Siderophore biosynthesis,K02363,"entE, dhbE, vibE, mxcE; 2,3-dihydroxybenzoate-AMP ligase [EC:6.3.2.14 2.7.7.58]"
+Iron uptake and metabolism,Siderophore biosynthesis,K02364,entF; enterobactin synthetase component F [EC:6.3.2.14]
+Iron uptake and metabolism,Siderophore biosynthesis,K08225,"entS; MFS transporter, ENTS family, enterobactin (siderophore) exporter"
+Iron uptake and metabolism,Siderophore biosynthesis,K02552,menF; menaquinone-specific isochorismate synthase [EC:5.4.4.2]
+Iron uptake and metabolism,Siderophore biosynthesis,K04778,vibH; vibriobactin synthetase
+Iron uptake and metabolism,Siderophore biosynthesis,K04780,dhbF; nonribosomal peptide synthetase DhbF
+Iron uptake and metabolism,Siderophore biosynthesis,K04781,"mbtI, irp9, ybtS; salicylate synthetase [EC:5.4.4.2 4.2.99.21]"
+Iron uptake and metabolism,Siderophore biosynthesis,K01851,pchA; salicylate biosynthesis isochorismate synthase [EC:5.4.4.2]
+Iron uptake and metabolism,Siderophore biosynthesis,K04782,pchB; isochorismate pyruvate lyase [EC:4.2.99.21]
+Iron uptake and metabolism,Siderophore biosynthesis,K12238,pchD; pyochelin biosynthesis protein PchD
+Iron uptake and metabolism,Siderophore biosynthesis,K12239,pchE; dihydroaeruginoic acid synthetase
+Iron uptake and metabolism,Siderophore biosynthesis,K12240,pchF; pyochelin synthetase
+Iron uptake and metabolism,Siderophore biosynthesis,K12241,pchG; pyochelin biosynthetic protein PchG
+Iron uptake and metabolism,Siderophore biosynthesis,K04786,"irp1, HMWP1; yersiniabactin nonribosomal peptide/polyketide synthase"
+Iron uptake and metabolism,Siderophore biosynthesis,K04784,"irp2, HMWP2; yersiniabactin nonribosomal peptide synthetase"
+Iron uptake and metabolism,Siderophore biosynthesis,K04785,"irp3, ybtU; yersiniabactin synthetase, thiazolinyl reductase component"
+Iron uptake and metabolism,Siderophore biosynthesis,K04783,"irp5, ybtE; yersiniabactin salicyl-AMP ligase [EC:6.3.2.-]"
+Iron uptake and metabolism,Siderophore biosynthesis,K04787,mbtA; mycobactin salicyl-AMP ligase [EC:6.3.2.-]
+Iron uptake and metabolism,Siderophore biosynthesis,K04788,mbtB; mycobactin phenyloxazoline synthetase
+Iron uptake and metabolism,Siderophore biosynthesis,K04790,mbtC; mycobactin polyketide synthetase MbtC
+Iron uptake and metabolism,Siderophore biosynthesis,K04791,mbtD; mycobactin polyketide synthetase MbtD
+Iron uptake and metabolism,Siderophore biosynthesis,K04789,mbtE; mycobactin peptide synthetase MbtE
+Iron uptake and metabolism,Siderophore biosynthesis,K04792,mbtF; mycobactin peptide synthetase MbtF
+Iron uptake and metabolism,Siderophore biosynthesis,K04793,mbtG; mycobactin lysine-N-oxygenase
+Iron uptake and metabolism,Siderophore biosynthesis,K12237,vibF; nonribosomal peptide synthetase VibF
+Iron uptake and metabolism,Siderophore biosynthesis,K15653,mxcG; nonribosomal peptide synthetase MxcG
+Iron uptake and metabolism,Siderophore biosynthesis,K15681,mxcL; aminotransferase MxcL
+Iron uptake and metabolism,Siderophore biosynthesis,K22148,SIDC; ferricrocin synthase
+Iron uptake and metabolism,Siderophore uptake,K02003,ABC.CD.A; putative ABC transport system ATP-binding protein
+Iron uptake and metabolism,Siderophore uptake,K02014,TC.FEV.OM; iron complex outermembrane recepter protein
+Iron uptake and metabolism,Siderophore uptake,K02015,ABC.FEV.P; iron complex transport system permease protein
+Iron uptake and metabolism,Siderophore uptake,K02016,ABC.FEV.S; iron complex transport system substrate-binding protein
+Iron uptake and metabolism,Siderophore uptake,K02074,ABC.ZM.A; zinc/manganese transport system ATP-binding protein
+Iron uptake and metabolism,Siderophore uptake,K02075,ABC.ZM.P; zinc/manganese transport system permease protein
+Iron uptake and metabolism,Siderophore uptake,K02077,ABC.ZM.S; zinc/manganese transport system substrate-binding protein
+Iron uptake and metabolism,Siderophore uptake,K03559,exbD; biopolymer transport protein ExbD
+Iron uptake and metabolism,Siderophore uptake,K03560,tolR; biopolymer transport protein TolR
+Iron uptake and metabolism,Siderophore uptake,K03832,tonB; periplasmic protein TonB
+Iron uptake and metabolism,Siderophore uptake,K08197,"ARN; MFS transporter, SIT family, siderophore-iron:H symporter"
+Iron uptake and metabolism,Siderophore uptake,K16087,"TC.FEV.OM3, tbpA, hemR, lbpA, hpuB, bhuR, hugA, hmbR; hemoglobin/transferrin/lactoferrin receptor protein"
+Iron uptake and metabolism,Siderophore uptake,K16088,"TC.FEV.OM1, fhuE, fpvA, fptA; outer-membrane receptor for ferric coprogen and ferric-rhodotorulic acid"
+Iron uptake and metabolism,Siderophore uptake,K16089,"TC.FEV.OM2, cirA, cfrA, hmuR; outer membrane receptor for ferrienterochelin and colicins"
+Iron uptake and metabolism,Siderophore uptake,K16090,fiu; catecholate siderophore receptor
+Iron uptake and metabolism,Siderophore uptake,K07165,fecR; transmembrane sensor
+Iron uptake and metabolism,Siderophore uptake,K16091,fecA; Fe(3) dicitrate transport protein
+Iron uptake and metabolism,Siderophore uptake,K23181,fecB; ferric citrate transport system substrate-binding protein
+Iron uptake and metabolism,Siderophore uptake,K23183,fecC; ferric citrate transport system permease protein
+Iron uptake and metabolism,Siderophore uptake,K23182,fecD; ferric citrate transport system permease protein
+Iron uptake and metabolism,Siderophore uptake,K23184,fecE; ferric citrate transport system ATP-binding protein [EC:7.2.2.18]
+Iron uptake and metabolism,Siderophore uptake,K19611,"fepA, pfeA, iroN, pirA; ferric enterobactin receptor"
+Iron uptake and metabolism,Siderophore uptake,K23185,fepB; ferric enterobactin transport system substrate-binding protein
+Iron uptake and metabolism,Siderophore uptake,K23188,fepC; ferric enterobactin transport system ATP-binding protein [EC:7.2.2.17]
+Iron uptake and metabolism,Siderophore uptake,K23186,fepD; ferric enterobactin transport system permease protein
+Iron uptake and metabolism,Siderophore uptake,K23187,fepG; ferric enterobactin transport system permease protein
+Iron uptake and metabolism,Siderophore uptake,K23228,fhuB; ferric hydroxamate transport system permease protein
+Iron uptake and metabolism,Siderophore uptake,K10829,fhuC; ferric hydroxamate transport system ATP-binding protein [EC:7.2.2.16]
+Iron uptake and metabolism,Siderophore uptake,K23227,fhuD; ferric hydroxamate transport system substrate-binding protein
+Iron uptake and metabolism,Siderophore uptake,K03561,exbB; biopolymer transport protein ExbB
+Iron uptake and metabolism,Siderophore uptake,K03562,tolQ; biopolymer transport protein TolQ
+Iron uptake and metabolism,Siderophore uptake,K03646,tolA; colicin import membrane protein
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K00204,fwdH; 4Fe-4S ferredoxin
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K00205,"fwdF, fmdF; 4Fe-4S ferredoxin"
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K00230,hemG; menaquinone-dependent protoporphyrinogen oxidase [EC:1.3.5.3]
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K00380,cysJ; sulfite reductase (NADPH) flavoprotein alpha-component [EC:1.8.1.2]
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K03809,wrbA; NAD(P)H dehydrogenase (quinone) [EC:1.6.5.2]
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K03839,"fldA, nifF, isiB; flavodoxin I"
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K03840,fldB; flavodoxin II
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K04755,"fdx; ferredoxin, 2Fe-2S"
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K05524,fdxA; ferredoxin
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K06205,mioC; MioC protein
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K11260,fwdG; 4Fe-4S ferredoxin
+Iron uptake and metabolism,Ferredoxin/Flavodoxin switch,K12264,norV; anaerobic nitric oxide reductase flavorubredoxin
+Iron uptake and metabolism,Heme,K07225,hmuS; putative hemin transport protein
+Iron uptake and metabolism,Heme,K21480,"HO, pbsA1, hmuO; heme oxygenase (biliverdin-producing, ferredoxin) [EC:1.14.15.20]"
+Iron uptake and metabolism,Heme,K00435,hemQ; Fe-coproporphyrin III decarboxylase [EC:1.11.1.-]
+Iron uptake and metabolism,Heme,K02193,ccmA; heme exporter protein A [EC:7.6.2.5]
+Iron uptake and metabolism,Heme,K02194,ccmB; heme exporter protein B
+Iron uptake and metabolism,Heme,K02195,ccmC; heme exporter protein C
+Iron uptake and metabolism,Heme,K02196,ccmD; heme exporter protein D
+Iron uptake and metabolism,Heme,K07226,"hugZ, hutZ; heme iron utilization protein"
+Iron uptake and metabolism,Heme,K07227,chuX; heme iron utilization protein
+Iron uptake and metabolism,Heme,K09813,hrtB; hemin transport system permease protein
+Iron uptake and metabolism,Heme,K09814,hrtA; hemin transport system ATP-binding protein [EC:3.6.3.-]
+Iron uptake and metabolism,Heme,K14193,isdA; iron-regulated surface determinant protein A
+Iron uptake and metabolism,Heme,K15650,"cmaB; non-haem Fe2, alpha-ketoglutarate-dependent halogenase"
+Iron uptake and metabolism,Fe Storage ,K00522,FTH1; ferritin heavy chain [EC:1.16.3.2]
+Iron uptake and metabolism,Fe Storage ,K02217,"ftnA, ftn; ferritin [EC:1.16.3.2]"
+Iron uptake and metabolism,Fe Storage ,K02255,ftnB; ferritin-like protein 2
+Iron uptake and metabolism,Fe Storage ,K03594,bfr; bacterioferritin [EC:1.16.3.1]
+Iron uptake and metabolism,Fe Storage ,K04047,dps; starvation-inducible DNA-binding protein
+Iron uptake and metabolism,Vitamin B12 transporter,K16092,btuB; vitamin B12 transporter
+Iron uptake and metabolism,Vitamin B12 transporter,K06858,btuF; vitamin B12 transport system substrate-binding protein
+Iron uptake and metabolism,Vitamin B12 transporter,K06073,btuC; vitamin B12 transport system permease protein
+Iron uptake and metabolism,Vitamin B12 transporter,K06074,btuD; vitamin B12 transport system ATP-binding protein [EC:7.6.2.8]
+Iron uptake and metabolism,Fe-S,K00124,"fdoH, fdsB; formate dehydrogenase iron-sulfur subunit"
+Iron uptake and metabolism,Fe-S,K00184,"K00184; prokaryotic molybdopterin-containing oxidoreductase family, iron-sulfur binding subunit"
+Iron uptake and metabolism,Fe-S,K00196,cooF; anaerobic carbon-monoxide dehydrogenase iron sulfur subunit
+Iron uptake and metabolism,Fe-S,K00235,"SDHB, SDH2; succinate dehydrogenase (ubiquinone) iron-sulfur subunit [EC:1.3.5.1]"
+Iron uptake and metabolism,Fe-S,K00240,"sdhB, frdB; succinate dehydrogenase / fumarate reductase, iron-sulfur subunit [EC:1.3.5.1 1.3.5.4]"
+Iron uptake and metabolism,Fe-S,K00245,frdB; fumarate reductase iron-sulfur subunit [EC:1.3.5.4]
+Iron uptake and metabolism,Fe-S,K00411,"UQCRFS1, RIP1, petA; ubiquinol-cytochrome c reductase iron-sulfur subunit [EC:7.1.1.8]"
+Iron uptake and metabolism,Fe-S,K00437,hydB; [NiFe] hydrogenase large subunit [EC:1.12.2.1]
+Iron uptake and metabolism,Fe-S,K02636,petC; cytochrome b6-f complex iron-sulfur subunit [EC:7.1.1.6]
+Iron uptake and metabolism,Fe-S,K03620,hyaC; Ni/Fe-hydrogenase 1 B-type cytochrome subunit
+Iron uptake and metabolism,Fe-S,K03886,"MQCRA, qcrA, bfcA, petC; menaquinol-cytochrome c reductase iron-sulfur subunit [EC:1.10.2.-]"
+Iron uptake and metabolism,Fe-S,K03890,qcrA; ubiquinol-cytochrome c reductase iron-sulfur subunit
+Iron uptake and metabolism,Fe-S,K03934,NDUFS1; NADH dehydrogenase (ubiquinone) Fe-S protein 1 [EC:7.1.1.2 1.6.99.3]
+Iron uptake and metabolism,Fe-S,K03935,NDUFS2; NADH dehydrogenase (ubiquinone) Fe-S protein 2 [EC:7.1.1.2 1.6.99.3]
+Iron uptake and metabolism,Fe-S,K03936,NDUFS3; NADH dehydrogenase (ubiquinone) Fe-S protein 3 [EC:7.1.1.2 1.6.99.3]
+Iron uptake and metabolism,Fe-S,K03937,NDUFS4; NADH dehydrogenase (ubiquinone) Fe-S protein 4
+Iron uptake and metabolism,Fe-S,K03938,NDUFS5; NADH dehydrogenase (ubiquinone) Fe-S protein 5
+Iron uptake and metabolism,Fe-S,K03939,NDUFS6; NADH dehydrogenase (ubiquinone) Fe-S protein 6
+Iron uptake and metabolism,Fe-S,K03940,NDUFS7; NADH dehydrogenase (ubiquinone) Fe-S protein 7 [EC:7.1.1.2 1.6.99.3]
+Iron uptake and metabolism,Fe-S,K03941,NDUFS8; NADH dehydrogenase (ubiquinone) Fe-S protein 8 [EC:7.1.1.2 1.6.99.3]
+Iron uptake and metabolism,Fe-S,K05586,hoxE; bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]
+Iron uptake and metabolism,Fe-S,K05587,hoxF; bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]
+Iron uptake and metabolism,Fe-S,K05588,hoxU; bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]
+Iron uptake and metabolism,Fe-S,K05922,hydB; quinone-reactive Ni/Fe-hydrogenase large subunit [EC:1.12.5.1]
+Iron uptake and metabolism,Fe-S,K05927,hydA; quinone-reactive Ni/Fe-hydrogenase small subunit [EC:1.12.5.1]
+Iron uptake and metabolism,Fe-S,K05997,sufA; Fe-S cluster assembly protein SufA
+Iron uptake and metabolism,Fe-S,K07400,nfuA; Fe/S biogenesis protein NfuA
+Iron uptake and metabolism,Fe-S,K08941,pscB; photosystem P840 reaction center iron-sulfur protein
+Iron uptake and metabolism,Fe-S,K09013,sufC; Fe-S cluster assembly ATP-binding protein
+Iron uptake and metabolism,Fe-S,K09014,sufB; Fe-S cluster assembly protein SufB
+Iron uptake and metabolism,Fe-S,K09015,sufD; Fe-S cluster assembly protein SufD
+Iron uptake and metabolism,Fe-S,K11473,glcF; glycolate oxidase iron-sulfur subunit
+Iron uptake and metabolism,Fe-S,K13480,"ygeU, xdhC; xanthine dehydrogenase iron-sulfur-binding subunit"
+Iron uptake and metabolism,Fe-S,K13483,yagT; xanthine dehydrogenase YagT iron-sulfur-binding subunit
+Iron uptake and metabolism,Fe-S,K13628,iscA; iron-sulfur cluster assembly protein
+Iron uptake and metabolism,Fe-S,K14127,"mvhD, vhuD, vhcD; F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.12.99.- 1.8.98.5 1.8.98.6]"
+Iron uptake and metabolism,Fe-S,K15023,acsE; 5-methyltetrahydrofolate corrinoid/iron sulfur protein methyltransferase [EC:2.1.1.258]
+Iron uptake and metabolism,Fe-S,K15724,erpA; iron-sulfur cluster insertion protein
+Iron uptake and metabolism,Fe-S,K15878,"K15878, narB; rieske iron-sulfur protein"
+Iron uptake and metabolism,Fe-S,K16879,hmfC; 2-furoyl-CoA dehydrogenase 2Fe-2S iron sulfur subunit [EC:1.3.99.8]
+Iron uptake and metabolism,Fe-S,K17220,sreB; sulfur reductase FeS subunit
+Iron uptake and metabolism,Fe-S,K17997,hydA; iron-hydrogenase subunit alpha [EC:1.12.1.4]
+Iron uptake and metabolism,Fe-S,K17998,hydB; iron-hydrogenase subunit beta [EC:1.12.1.4]
+Iron uptake and metabolism,Fe-S,K17999,hydC; iron-hydrogenase subunit gamma [EC:1.12.1.4]
+Iron uptake and metabolism,Fe-S,K18005,hoxF; [NiFe] hydrogenase diaphorase moiety large subunit [EC:1.12.1.2]
+Iron uptake and metabolism,Fe-S,K18006,hoxU; [NiFe] hydrogenase diaphorase moiety small subunit [EC:1.12.1.2]
+Iron uptake and metabolism,Fe-S,K18008,hydA; [NiFe] hydrogenase small subunit [EC:1.12.2.1]
+Iron uptake and metabolism,Fe-S,K18501,hmeD; heterodisulfide reductase iron-sulfur subunit
+Iron uptake and metabolism,Fe-S,K20446,ndhS; nicotinate dehydrogenase small FeS subunit [EC:1.17.1.5]
+Iron uptake and metabolism,Fe-S,K22063,ISCA1; iron-sulfur cluster assembly 1
+Iron uptake and metabolism,Fe-S,K22068,"ISCU; iron-sulfur cluster assembly enzyme ISCU, mitochondrial"
+Iron uptake and metabolism,Fe-S,K22072,ISCA2; iron-sulfur cluster assembly 2
+Iron uptake and metabolism,Fe-S,K22074,"NFU1, HIRIP5; NFU1 iron-sulfur cluster scaffold homolog, mitochondrial"
+Iron uptake and metabolism,Fe-S,K23301,"qrcC; menaquinone reductase, iron-sulfur cluster-binding subunit [EC:1.97.-.-]"
+Iron uptake and metabolism,Other,K02586,nifD; nitrogenase molybdenum-iron protein alpha chain [EC:1.18.6.1]
+Iron uptake and metabolism,Other,K02588,nifH; nitrogenase iron protein NifH
+Iron uptake and metabolism,Other,K02591,nifK; nitrogenase molybdenum-iron protein beta chain [EC:1.18.6.1]
+Iron uptake and metabolism,Other,K02592,nifN; nitrogenase molybdenum-iron protein NifN
+Iron uptake and metabolism,Other,K04564,"SOD2; superoxide dismutase, Fe-Mn family [EC:1.15.1.1]"
+Iron uptake and metabolism,Other,K07231,K07231; putative iron-regulated protein
+Iron uptake and metabolism,Other,K14685,"SLC40A1, FPN1; solute carrier family 40 (iron-regulated transporter), member 1"
+Iron uptake and metabolism,Other,K19791,FET3_5; iron transport multicopper oxidase
+Iron uptake and metabolism,Other,K20150,cyc2; iron:rusticyanin reductase [EC:1.16.9.1]
+Iron uptake and metabolism,Other,K22226,ahbC; Fe-coproporphyrin III synthase
+Iron uptake and metabolism,Other,K22416,IREB2; iron-responsive element-binding protein 2
+Iron uptake and metabolism,Other,K22737,mbfA; erythrin-vacuolar iron transport family protein
+Iron uptake and metabolism,Other,K22899,vnfH; vanadium nitrogenase iron protein
+Nitrogen metabolism,Nitrogen,K00260,"gudB, rocG; glutamate dehydrogenase [EC:1.4.1.2]"
+Nitrogen metabolism,Nitrogen,K00261,"GLUD1_2, gdhA; glutamate dehydrogenase (NAD(P)+) [EC:1.4.1.3]"
+Nitrogen metabolism,Nitrogen,K00262,"E1.4.1.4, gdhA; glutamate dehydrogenase (NADP+) [EC:1.4.1.4]"
+Nitrogen metabolism,Nitrogen,K00264,GLT1; glutamate synthase (NADH) [EC:1.4.1.14]
+Nitrogen metabolism,Nitrogen,K00265,gltB; glutamate synthase (NADPH) large chain [EC:1.4.1.13]
+Nitrogen metabolism,Nitrogen,K00266,gltD; glutamate synthase (NADPH) small chain [EC:1.4.1.13]
+Nitrogen metabolism,Nitrogen,K00284,"GLU, gltS; glutamate synthase (ferredoxin) [EC:1.4.7.1]"
+Nitrogen metabolism,Nitrogen,K00360,nasB; assimilatory nitrate reductase electron transfer subunit [EC:1.7.99.-]
+Nitrogen metabolism,Nitrogen,K00362,nirB; nitrite reductase (NADH) large subunit [EC:1.7.1.15]
+Nitrogen metabolism,Nitrogen,K00363,nirD; nitrite reductase (NADH) small subunit [EC:1.7.1.15]
+Nitrogen metabolism,Nitrogen,K00366,nirA; ferredoxin-nitrite reductase [EC:1.7.7.1]
+Nitrogen metabolism,Nitrogen,K00367,narB; ferredoxin-nitrate reductase [EC:1.7.7.2]
+Nitrogen metabolism,Nitrogen,K00368,nirK; nitrite reductase (NO-forming) [EC:1.7.2.1]
+Nitrogen metabolism,Nitrogen,K00370,"narG, narZ, nxrA; nitrate reductase / nitrite oxidoreductase, alpha subunit [EC:1.7.5.1 1.7.99.-]"
+Nitrogen metabolism,Nitrogen,K00371,"narH, narY, nxrB; nitrate reductase / nitrite oxidoreductase, beta subunit [EC:1.7.5.1 1.7.99.-]"
+Nitrogen metabolism,Nitrogen,K00372,nasA; assimilatory nitrate reductase catalytic subunit [EC:1.7.99.-]
+Nitrogen metabolism,Nitrogen,K00374,"narI, narV; nitrate reductase gamma subunit [EC:1.7.5.1 1.7.99.-]"
+Nitrogen metabolism,Nitrogen,K00376,nosZ; nitrous-oxide reductase [EC:1.7.2.4]
+Nitrogen metabolism,Nitrogen,K00459,"ncd2, npd; nitronate monooxygenase [EC:1.13.12.16]"
+Nitrogen metabolism,Nitrogen,K00531,anfG; nitrogenase delta subunit [EC:1.18.6.1]
+Nitrogen metabolism,Nitrogen,K00926,arcC; carbamate kinase [EC:2.7.2.2]
+Nitrogen metabolism,Nitrogen,K01455,E3.5.1.49; formamidase [EC:3.5.1.49]
+Nitrogen metabolism,Nitrogen,K01501,E3.5.5.1; nitrilase [EC:3.5.5.1]
+Nitrogen metabolism,Nitrogen,K01672,CA; carbonic anhydrase [EC:4.2.1.1]
+Nitrogen metabolism,Nitrogen,K01673,"cynT, can; carbonic anhydrase [EC:4.2.1.1]"
+Nitrogen metabolism,Nitrogen,K01674,cah; carbonic anhydrase [EC:4.2.1.1]
+Nitrogen metabolism,Nitrogen,K01725,cynS; cyanate lyase [EC:4.2.1.104]
+Nitrogen metabolism,Nitrogen,K01743,E4.2.1.1; carbonic anhydrase [EC:4.2.1.1]
+Nitrogen metabolism,Nitrogen,K01915,"glnA, GLUL; glutamine synthetase [EC:6.3.1.2]"
+Nitrogen metabolism,Nitrogen,K01948,CPS1; carbamoyl-phosphate synthase (ammonia) [EC:6.3.4.16]
+Nitrogen metabolism,Nitrogen,K02305,norC; nitric oxide reductase subunit C
+Nitrogen metabolism,Nitrogen,K02567,napA; nitrate reductase (cytochrome) [EC:1.9.6.1]
+Nitrogen metabolism,Nitrogen,K02568,"napB; nitrate reductase (cytochrome), electron transfer subunit"
+Nitrogen metabolism,Nitrogen,K02575,"NRT, narK, nrtP, nasA; MFS transporter, NNP family, nitrate/nitrite transporter"
+Nitrogen metabolism,Nitrogen,K02586,nifD; nitrogenase molybdenum-iron protein alpha chain [EC:1.18.6.1]
+Nitrogen metabolism,Nitrogen,K02588,nifH; nitrogenase iron protein NifH
+Nitrogen metabolism,Nitrogen,K02591,nifK; nitrogenase molybdenum-iron protein beta chain [EC:1.18.6.1]
+Nitrogen metabolism,Nitrogen,K03385,nrfA; nitrite reductase (cytochrome c-552) [EC:1.7.2.2]
+Nitrogen metabolism,Nitrogen,K04561,norB; nitric oxide reductase subunit B [EC:1.7.2.5]
+Nitrogen metabolism,Nitrogen,K05601,hcp; hydroxylamine reductase [EC:1.7.99.1]
+Nitrogen metabolism,Nitrogen,K10534,NR; nitrate reductase (NAD(P)H) [EC:1.7.1.1 1.7.1.2 1.7.1.3]
+Nitrogen metabolism,Nitrogen,K10535,hao; hydroxylamine dehydrogenase [EC:1.7.2.6]
+Nitrogen metabolism,Nitrogen,K10944,pmoA-amoA; methane/ammonia monooxygenase subunit A [EC:1.14.18.3 1.14.99.39]
+Nitrogen metabolism,Nitrogen,K10945,pmoB-amoB; methane/ammonia monooxygenase subunit B
+Nitrogen metabolism,Nitrogen,K10946,pmoC-amoC; methane/ammonia monooxygenase subunit C
+Nitrogen metabolism,Nitrogen,K15371,GDH2; glutamate dehydrogenase [EC:1.4.1.2]
+Nitrogen metabolism,Nitrogen,K15576,"nrtA, nasF, cynA; nitrate/nitrite transport system substrate-binding protein"
+Nitrogen metabolism,Nitrogen,K15577,"nrtB, nasE, cynB; nitrate/nitrite transport system permease protein"
+Nitrogen metabolism,Nitrogen,K15578,"nrtC, nasD; nitrate/nitrite transport system ATP-binding protein [EC:3.6.3.-]"
+Nitrogen metabolism,Nitrogen,K15579,"nrtD, cynD; nitrate/nitrite transport system ATP-binding protein"
+Nitrogen metabolism,Nitrogen,K15864,nirS; nitrite reductase (NO-forming) / hydroxylamine reductase [EC:1.7.2.1 1.7.99.1]
+Nitrogen metabolism,Nitrogen,K15876,nrfH; cytochrome c nitrite reductase small subunit
+Nitrogen metabolism,Nitrogen,K15877,CYP55; fungal nitric oxide reductase [EC:1.7.1.14]
+Nitrogen metabolism,Nitrogen,K17877,NIT-6; nitrite reductase (NAD(P)H) [EC:1.7.1.4]
+Nitrogen metabolism,Nitrogen,K18245,CA2; carbonic anhydrase 2 [EC:4.2.1.1]
+Nitrogen metabolism,Nitrogen,K18246,CA4; carbonic anhydrase 4 [EC:4.2.1.1]
+Nitrogen metabolism,Nitrogen,K19823,NAO; nitroalkane oxidase [EC:1.7.3.1]
+Nitrogen metabolism,Nitrogen,K20932,K20932; hydrazine synthase subunit [EC:1.7.2.7]
+Nitrogen metabolism,Nitrogen,K20933,K20933; hydrazine synthase subunit [EC:1.7.2.7]
+Nitrogen metabolism,Nitrogen,K20934,K20934; hydrazine synthase subunit [EC:1.7.2.7]
+Nitrogen metabolism,Nitrogen,K20935,hdh; hydrazine dehydrogenase [EC:1.7.2.8]
+Nitrogen metabolism,Nitrogen,K22896,vnfD; vanadium-dependent nitrogenase alpha chain [EC:1.18.6.2]
+Nitrogen metabolism,Nitrogen,K22897,vnfK; vanadium-dependent nitrogenase beta chain [EC:1.18.6.2]
+Nitrogen metabolism,Nitrogen,K22898,vnfG; vanadium nitrogenase delta subunit [EC:1.18.6.2]
+Nitrogen metabolism,Nitrogen,K22899,vnfH; vanadium nitrogenase iron protein
