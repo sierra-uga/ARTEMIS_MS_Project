@@ -65,9 +65,14 @@ ps_sub <- ps_sub %>% prune_taxa(taxa_sums(.) > 0, .) # remove 0 taxasums
 
 # free-living phyloseq
 ps_free <- ps_sub %>% subset_samples(Filter_pores == "0.2")
+ps_free <- subset_samples(ps_free, !(sample_name %in% Samples_toRemove)) # remove from phyloseq
+
 
 # particle-associated phyloseq
 ps_part <- ps_sub %>% subset_samples(Filter_pores >= "2")
+
+ps_free@sam_data$sample_name <- rownames(ps_free@sam_data)
+ps_free@sam_data$replicate_number <- gsub(".*\\.r([0-9]+)", "\\1", ps_free@sam_data$sample_name)
 
 ######################################
 # free-LIVING NMDS ordination + plot #
@@ -76,8 +81,11 @@ ps_part <- ps_sub %>% subset_samples(Filter_pores >= "2")
 set.seed(1)
 
 #unique station names = scale color
-color_breaks <- unique(sample_data(ps_free)$watertype)
-
+shape_breaks <- unique(sample_data(ps_free)$replicate_number)
+color_breaks <- unique(sample_data(ps_free)$Station)
+myColors <- c(brewer.pal(9, "Paired"), "#A43D27", "#497687", "#5E4987", "darkblue", "lightblue2", "darkgoldenrod", "dodgerblue", "seagreen", "red", "blue", "purple", "yellow")
+names(myColors) <- levels(sample_data(ps_free)$Station)
+custom_colors <- scale_colour_manual(name = "Station", values = myColors)
 # Ordinate
 ps_free_nmds <- ordinate(
   physeq = ps_free, 
@@ -88,14 +96,18 @@ ps_free_nmds <- ordinate(
 ps_free_nmds_plot <- plot_ordination(
   physeq = ps_free,
   ordination = ps_free_nmds,
-  color = "watertype",
+  color = "Station",
+  shape = "replicate_number",
   title = "NMS of free-living ASP Bacterial Communities based on Water Mass"
 ) +
-  scale_color_manual(values = c("darkgreen", "dodgerblue", "red2", "blueviolet", "aquamarine3", "gray"),
-                     name = "Water Mass",
+  scale_color_manual(values = c(myColors, "darkgreen", "dodgerblue", "red2", "blueviolet", "aquamarine3", "gray"),
+                     name = "Station",
                      breaks = color_breaks,
                      labels = color_breaks) +
-  geom_point(shape = 16, aes(color = watertype), alpha = 0.9, size = 3) +
+  scale_shape_manual(values = c(16, 8, 1, 2),
+                     name = "Replicate Number",
+                     breaks = shape_breaks,
+                     labels = shape_breaks)
   annotate("text", x = -1.6, y = -1.7, label ="2D Stress: 0.113")
 
 #takes away grid from ggplot
