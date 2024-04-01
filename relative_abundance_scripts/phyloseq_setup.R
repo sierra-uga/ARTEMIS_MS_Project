@@ -7,10 +7,12 @@ library("ggplot2")
 library("vegan")
 library("fantaxtic")
 library("ggpubr")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+  #install.packages("BiocManager")
 
-BiocManager::install("decontam")
+#BiocManager::install("decontam")
+#remotes::install_github("mikemc/speedyseq")
+library("speedyseq")
 library("decontam")
 
 ## making relative abundance plots with distance as factor
@@ -22,15 +24,20 @@ library("decontam")
 # feature table
 ASV <- qza_to_phyloseq(features="required_files/table.qza")
 # read in metadata
-metatable <- read.delim("/Users/sierra/Documents/Research/PICRUST_KEGG_analysis/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names="sample_name") 
+metatable <- read.delim("/Users/sierra/Documents/Research/PICRUST_KEGG_analysis/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE) 
 #metatable <- filter(metatable, Sample.Control == "True.Sample")# filter by transect
 metatable$is.neg <- metatable$Sample.Control == "Control.Sample"
 metatable$Final_Qubit <- as.numeric(metatable$Final_Qubit) 
+df <- metatable %>%
+  group_by(Station, Depth_Threshold) %>%
+  mutate(unique_code = paste0(Station, Depth_Threshold)) # creates a column with a unique code for watertype + station
+df <- as.data.frame(df) 
+rownames(df) <- df$sample_name
 #metatable <- filter(metatable, sample.illumina != "078_1040_PRE")
 # importing (continued)
 #row.names(metatable) <- metatable[["SampleID"]]
 #metatable <- metatable %>% select(SampleID, everything())
-META <- sample_data(metatable)
+META <- sample_data(df)
 
 # importing taxonomy
 taxonomy <- read.delim("required_files/taxonomy.tsv", sep="\t", header=TRUE) 
@@ -73,7 +80,7 @@ ps <- subset_samples(ps, sample.illumina != "078_1040_PRE") # removed bc qubit v
 ps_contamdf_comb05 <- isContaminant(ps, conc="Final_Qubit", neg="is.neg", threshold=0.5, detailed = TRUE, normalize = TRUE, method="combined")
 table(ps_contamdf_comb05$contaminant) # it identified 564 potential contaminants
 head(which(ps_contamdf_comb05$contaminant))
-ps_contamdf_comb05_list <- rownames_to_column(ps_contamdf_comb05, var = "ASV")
+#ps_contamdf_comb05_list <- rownames_to_column(ps_contamdf_comb05, var = "ASV")
 #write.csv(ps_contamdf_comb05_list, "ps_contamdf_comb05_list.csv")
 
 # Manual inspection, comparing blanks/controls and list of potential contaminants given by decontam, suggests prev05 is the most appropriated method
