@@ -63,7 +63,7 @@ data_top_part <- data_part %>%
 p <- unique(data_top_free$Station)
 level_order <- c("STN198", "STN002", "STN004", "STN181", "STN115", "STN012", "STN12.3", "STN20", "STN014", "STN089",
                  "STN132", "STN106", "STN078", "STN056a", "STN056b", "STN22", "STN068", "STN146", "STN174",
-                 "STN151.2", "STN153") 
+                 "STN151.2", "STN153") # in order, ish.
 
 ###################
 # Plot variables! #
