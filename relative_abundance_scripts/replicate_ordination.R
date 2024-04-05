@@ -37,11 +37,12 @@ for (station_name in unique_stations) {
     shape = "Depth") +
     ggtitle(paste(station_name)) +
     theme(legend.position = "bottom") + theme_bw() + 
-    geom_point(size = 2) + # Adjust point size
+    #geom_point(size = 2, stroke=1) + # Adjust point size
     scale_color_manual(values = colors,
                        name = "Depth") +
     scale_shape_manual(values = c(21, 22, 23, 24, 25, 8),
                        name = "Depth") +
+    geom_point(size = 3, stroke = 1) + # Adjust point size and stroke
     theme(panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
   
