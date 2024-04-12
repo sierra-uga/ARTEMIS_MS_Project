@@ -18,6 +18,8 @@ family_to_keep=c("Acetobacteraceae","Alteromonadaceae", "Nitrosomonadaceae")
 genus_to_keep=c("Caldithrix","Acidibater","SUP05 cluster","Acinetobacter") # replaced Pseudomonadales in order with acinetobacter
 species_to_keep=c("Methylococcaceae bacterium SF-BR")
 
+taxonomy <- as.data.frame(ps_noncontam_prev05@tax_table) #set taxonomy table from  as taxonomy (for next code)
+
 tax_phylum <- taxonomy %>%
   filter(Phylum %in% phylum_to_keep) %>% 
   rownames_to_column("id")
@@ -64,7 +66,7 @@ merged_ps <- list(tax_phylum, tax_class, tax_order, tax_family, tax_genus, tax_s
 merged_tax <- join_all(merged_ps, by = 'id', type = 'full') # merge taxonomy, deleting duplicates
 
 list_filtered_tax <- merged_tax$id # create a list of tax id's for taxonomy
-ASV_temp <- as.data.frame(ASV) %>%  rownames_to_column("id") # create dataframe from ASV, then create rowname for id
+ASV_temp <- as.data.frame(ASV) %>% rownames_to_column("id") # create dataframe from ASV, then create rowname for id
 new_ASV <- filter(ASV_temp, id %in% list_filtered_tax) # filter ASV based on list of filtered taxonomy
 rownames(new_ASV) <- new_ASV$id # make taxa rownames
 new_ASV$id <- NULL # remove column
