@@ -1,0 +1,134 @@
+---
+title: "Temp_Salinity"
+author: "Sierra Bartlett"
+date: "2023-10-12"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(devtools)
+library(marelac)
+library(plot3D)
+library(oce)
+```
+
+```{r}
+CTD <- read.table("CTD_meta.csv", sep=",", header=TRUE)
+metadata <- read.table("artemis-metadata.csv", sep=",", header=TRUE)
+```
+
+```{r gg plot}
+dat2 <- CTD %>% select(Station, Salinity, Temperature) %>%
+  group_by(Station) %>%
+  do(as.data.frame(spline(x= .[["Salinity"]], y= .[["Temperature"]], n = nrow(.)*10)))
+
+ggplot(CTD, aes(Salinity, Temperature)) +
+  geom_point(aes(color = factor(Station))) +
+  geom_smooth(data = dat2, aes(x = x, y = y, color = factor(Station)))
+
+ggplot(CTD, aes(x=Salinity,y=Temperature, col=Station))+geom_point()
+```
+
+```{r plot3d}
+# https://hafezahmad.medium.com/making-temperature-salinity-diagrams-called-the-t-s-diagram-with-python-and-r-programming-5deec6378a29
+library(marelac)
+library(plot3D)
+data <- read.table("CTD_meta.csv", sep=",", header=TRUE)
+ts<-data[,c(5,10)]
+mint=min(ts['Temperature'])
+maxt=max(ts['Temperature'])
+mins=min(ts['Salinity'])
+maxs=max(ts['Salinity'])
+salC<-seq(from=mins,to=maxs,length.out = 156)
+tempC<-seq(from=mint,to=maxt,length.out = 156)
+sigma.c<-outer(salC,tempC,FUN = function(S,t)sw_dens(S = S, t = t)-1000)
+sigma.c
+
+png(file = 'ts_diagram.png',width = 15,res=500,pointsize = 12,bg='white')
+
+jpeg(file="ts_diagram.jpeg")
+
+par(mar=c(5,5,4,6))
+contour2D(x=salC,y=tempC,z=sigma.c,lwd=2,main='ARTEMIS (DNA Stations) TS Diagram',
+          col='black',xlab=expression('Salinity'),ylab=expression('Temperature("~degree*C")'))
+temp<-unlist(ts['Temperature'],use.names = FALSE)
+sal<-unlist(ts['Salinity'],use.names = FALSE)
+sigma_theta<-sw_dens(S=sal,t=temp)-1000
+scatter2D(sal,temp,colvar = sigma_theta,pch=16,cex=1.25,add=TRUE,
+          clim = range(sigma.c),colkey = FALSE)
+colkey(clim = range(sigma.c),dist = 0.005,side=4,add=TRUE,
+       clab = expression('Density(kg m"^-3")'),col.clab = 'black',
+       side.clab = 4,line.clab = 2.5,length = 1,width = 0.8,
+       col.axis = 'black',col.ticks = 'black',cex.axis = 0.9)
+dev.off()
+```
+
+```{r oce}
+library(oce)
+CTD <- read.table("CTD_meta.csv", sep=",", header=TRUE)
+TS <- as.ctd(CTD$Salinity, CTD$Temperature, CTD$PrDM)
+plotTS(TS, pch=16, col="dodgerblue")
+```
+
+```{r gg Ocean Plots}
+#ggOceanPlots
+library(ggOceanPlots)
+# library(remotes)
+
+data <- read.delim("ARTEMIS-metadata-final.tsv")
+water_masses <- read.table("water_type_characterization.csv", sep=",", header=TRUE)
+cols <- c("CDW" = "red2", "WW" = "dodgerblue", "AASW" = "limegreen", "WW-CDW" = "purple", "AASW-WW" = "seagreen")
+
+# colorpallete + shapes
+
+water_type <- define_water_type(
+  data,
+  sal_col = "Salinity",
+  temp_col = "Temperature",
+  WM = water_masses,
+  bind = TRUE
+)
+
+
+# write.csv(ugga, "water_type_improved.csv")
+
+ts_plot(
+  ugga, 
+  color="watertype",
+  temp_col = "Tempearture",
+  sal_col = "Salinity")
+
+colnames(df) <- make.unique(names(df))
+
+new <- df %>% filter(!is.na(Temperature)) %>% filter(!is.na(Salinity))
+
+ts_plot(ts)
+
+# > eastern notch Pine island --> 89 
+# > station 198, shelf water own color , comparing depths to see
+# then triangle
+
+# genus level iron stuff
+# metadata for sediment
+# species richness for each side
+# polynya vs non-polynya
+# annoxic samples
+# methods section
+# map schematic
+# workflow diagram
+# histogram of different categories
+# grep + cat mini otus level
+
+
+plot(df, x=df$Salinity, y=df$Temperature)
+
+CTD <- read.table("CTD_meta.csv", sep=",", header=TRUE)
+```
+
+```{r}
+section_plot(CTD, x = "Latitude", y = "Temperature", z = "Lab_NO3",
+  bottom = "bdepth", interpolate = TRUE)
+```
+
