@@ -65,6 +65,8 @@ waterfall_data_part <- waterfall_ps_part %>% subset_samples(Transect_Name == "tr
   tax_glom(taxrank = "TAX") %>% # agglomerate at genus level
 transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
 
+waterfall_data_part_temp <- waterfall_data_part
+
 waterfall_data_part <- waterfall_data_part %>%
   psmelt() #%>%
 #arrange(Transect_Number)    
@@ -214,9 +216,9 @@ plot_data <- plot_data %>%
   mutate(Relative = Abundance / sum(Abundance))
 
 # Calculate total abundance of selected taxa and other taxa
-ggplot(plot_data, aes(x = Taxa, y = Relative, fill = Taxa)) +
+ggplot(plot_data, aes(x = Transect, y = Ratio_Selected_Other, fill = Ratio_Selected_Other)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "Taxa", y = "Total Abundance", title = "Abundance Comparison") +
+  labs(x = "Transect", y = "Ratio_Selected_other", title = "Abundance Comparison") +
   scale_fill_manual(values = c("Other" = "lightblue", "Selected" = "salmon")) +
   theme_minimal()
 
@@ -225,86 +227,37 @@ ggplot(plot_data, aes(x = Taxa, y = Relative, fill = Taxa)) +
 
 # Extract abundance data from phyloseq object
 all_ps_free <- ps_noncontam_prev05 %>% subset_samples(Transect_Name == "transect1") %>% subset_samples(Filter_pores == "0.2")
-###########
+all_ps_part <- ps_noncontam_prev05 %>% subset_samples(Transect_Name == "transect1") %>% subset_samples(Filter_pores >= "2")
+#waterfall_data_free_temp <- waterfall_data_free  # from above  
+#waterfall_data_part_temp <- waterfall_data_part
+
+###############
+# free-living #
+###############
+abundance_selected_free <- phyloseq::otu_table(waterfall_data_free_temp)
+df_abundance_selected_free <- as.data.frame(abundance_selected_free)
+selected_taxa_names_free <- rownames(df_abundance_selected_free) # List of specific taxa names, that i want to exclude
 
 # Extract abundance data from phyloseq objects
-abundance_all <- t(as.data.frame(otu_table(all_ps_free)))
-abundance_selected <- t(as.data.frame(otu_table(waterfall_data_free_temp)))
-
+abundance_all_free <- t(as.data.frame(otu_table(all_ps_free)))
 # Extract transect numbers from metadata (assuming it's available in both data frames)
-transect_numbers_all <- as.factor(sample_data(all_ps_free)$Transect_Number)
-transect_numbers_selected <- as.factor(sample_data(waterfall_data_free_temp)$Transect_Number)
+transect_numbers_all_free <- as.factor(sample_data(all_ps_free)$Transect_Number)
+result_waterfall_free <- calculate_relative_abundance(abundance_all_free, transect_numbers_all_free, selected_taxa_names_free)
 
-calculate_relative_abundance <- function(abundance_df, transect_numbers, selected_taxa_names) {
-  # Initialize empty data frame to store debug information
-  debug_df <- data.frame(
-    Transect = character(),
-    Abundance = numeric(),
-    data_source = character(),
-    stringsAsFactors = FALSE
-  )
-  
-  # Initialize vectors to store results
-  total_abundance_other <- numeric(length = length(unique(transect_numbers)))
-  total_abundance_selected <- numeric(length = length(unique(transect_numbers)))
-  
-  # Loop over unique transect numbers
-  for (i in 1:length(unique(transect_numbers))) {
-    transect <- unique(transect_numbers)[i]
-    indices <- which(transect_numbers == transect)
-    selected_indices <- colnames(abundance_df) %in% selected_taxa_names
-    
-    # Calculate total abundance of other taxa
-    total_abundance_other[i] <- sum(rowSums(abundance_df[indices, !selected_indices, drop = FALSE]))
-    
-    # Calculate total abundance of selected taxa
-    total_abundance_selected[i] <- sum(rowSums(abundance_df[indices, selected_indices, drop = FALSE]))
-    
-    # Determine data source based on column name
-    if (length(selected_taxa_names) > 0) {
-      # Create a row of debug information
-      debug_row_other <- data.frame(
-        Transect = as.character(transect),
-        Abundance = total_abundance_other[i],
-        data_source = "other",
-        stringsAsFactors = FALSE
-      )
-      
-      debug_row_selected <- data.frame(
-        Transect = as.character(transect),
-        Abundance = total_abundance_selected[i],
-        data_source = "selected",
-        stringsAsFactors = FALSE
-      )
-      
-      # Append the debug rows to the debug data frame
-      debug_df <- rbind(debug_df, debug_row_other, debug_row_selected)
-    }
-  }
-  
-  # Calculate relative abundance (percentage) of selected taxa
-  relative_abundance <- total_abundance_selected / (total_abundance_other + total_abundance_selected) * 100
-  
-  # Create data frame with results
-  result_df <- data.frame(
-    Transect = as.character(unique(transect_numbers)),
-    Relative_Abundance = relative_abundance
-  )
-  
-  # Return both the result data frame and the debug data frame
-  list(Result = result_df, Debug = debug_df)
-}
+# Access the debug data frame with relative abundance values
+waterfall_relative_result_free <- result_waterfall_free$Debug
 
-fill <- ggplot(relative_abundance_all[["Debug"]], aes(x = Transect, y = Abundance, fill = data_source)) +
+fill_free <- ggplot(waterfall_relative_result_free, aes(x = Transect, y = Abundance, fill = data_source)) +
   geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.3) +
   scale_y_continuous(expand = c(0, 0)) +
-  labs(x = "Transect Number", y = "Relative Abundance (%)", title = "") +
+  labs(x = "Transect Number", y = "Relative Abundance (%)", title = "Free-living") +
   scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
-                    labels = c("All other taxa", "Iron-related taxa")) +
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
 
-dodge <- ggplot(relative_abundance_all[["Debug"]], aes(x = Transect, y = Abundance, fill = data_source)) +
+dodge_free <- ggplot(waterfall_relative_result_free, aes(x = Transect, y = Abundance, fill = data_source)) +
   geom_bar(stat = "identity", position = "dodge", color = "black", linewidth = 0.3) +
   scale_y_continuous(expand = c(0, 0)) +
   labs(x = "Transect Number", y = "Total Abundance", title = "") +
@@ -314,9 +267,53 @@ dodge <- ggplot(relative_abundance_all[["Debug"]], aes(x = Transect, y = Abundan
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
 
 abun <- ggarrange(
-  fill, dodge, labels = NULL,
+  fill_free, dodge_free, labels = NULL,
   common.legend = TRUE, legend = "right"
 )
 
 ggsave("graphics/filtered_waterfall_total_selected.pdf", width = 8, height = 4, dpi = 150)
+
+#######################
+# particle-associated #
+#######################
+abundance_selected_part <- phyloseq::otu_table(waterfall_data_part_temp)
+df_abundance_selected_part <- as.data.frame(abundance_selected_part)
+selected_taxa_names_part <- rownames(df_abundance_selected_part) # List of specific taxa names, that i want to exclude
+
+# Extract abundance data from phyloseq objects
+abundance_all_part <- t(as.data.frame(otu_table(all_ps_part)))
+# Extract transect numbers from metadata (assuming it's available in both data frames)
+transect_numbers_all_part <- as.factor(sample_data(all_ps_part)$Transect_Number)
+result_waterfall_part <- calculate_relative_abundance(abundance_all_part, transect_numbers_all_part, selected_taxa_names_part)
+
+# Access the debug data frame with relative abundance values
+waterfall_relative_result_part <- result_waterfall_part$Debug
+
+fill_part <- ggplot(waterfall_relative_result_part, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Relative Abundance (%)", title = "Particle-associated") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+dodge_part <- ggplot(waterfall_relative_result_part, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Total Abundance", title = "") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+waterfall_iron_abundance_together <- ggarrange(
+  fill_free, fill_part, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+ggsave("iron_filtered_rel_abundance/graphics/waterfall_total_vs_iron.pdf", width = 8, height = 4, dpi = 150)
+
 

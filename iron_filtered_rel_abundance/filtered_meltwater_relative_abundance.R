@@ -16,6 +16,8 @@ meltwater_data_free <- meltwater_ps_free %>% subset_samples(Transect_Name == "tr
   tax_glom(taxrank = "TAX") # agglomerate at tax level
 #transform_sample_counts(function(x) {x/sum(x)} ) # Transform to rel. abundance
 
+meltwater_data_free_temp <- meltwater_data_free
+
 meltwater_data_free <- meltwater_data_free %>%
   psmelt() #%>%  # Melt to long format
 #arrange(Transect_Number) %>%
@@ -72,6 +74,7 @@ meltwater_data_part <- meltwater_ps_part %>% subset_samples(Transect_Name == "tr
   subset_samples(., Station != "STN22") %>% # Filter out low abundance taxa
   tax_glom(taxrank = "TAX") #%>% # agglomerate at genus level
 #transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
+meltwater_data_part_temp <- meltwater_data_part
 
 meltwater_data_part <- meltwater_data_part %>%
   psmelt() #%>%
@@ -203,4 +206,100 @@ annotate_figure(meltwater_combined, top = text_grob("\n Meltwater Plume (Transec
                                                     color = "dodgerblue3", face = "bold", size = 18))
 
 ggsave("graphics/filtered_meltwater_order_combined_relative.pdf", width = 13, height = 7, dpi = 150)
+
+
+#### iron vs total ###
+
+# Extract abundance data from phyloseq object
+all_ps_free <- ps_noncontam_prev05 %>% subset_samples(Transect_Name == "transect2") %>% subset_samples(Filter_pores == "0.2")
+all_ps_part <- ps_noncontam_prev05 %>% subset_samples(Transect_Name == "transect2") %>% subset_samples(Filter_pores >= "2")
+#meltwater_data_free_temp <- meltwater_data_free  # from above  
+#meltwater_data_part_temp <- meltwater_data_part
+
+###############
+# free-living #
+###############
+abundance_selected_free <- phyloseq::otu_table(meltwater_data_free_temp)
+df_abundance_selected_free <- as.data.frame(abundance_selected_free)
+selected_taxa_names_free <- rownames(df_abundance_selected_free) # List of specific taxa names, that i want to exclude
+
+# Extract abundance data from phyloseq objects
+abundance_all_free <- t(as.data.frame(otu_table(all_ps_free)))
+# Extract transect numbers from metadata (assuming it's available in both data frames)
+transect_numbers_all_free <- as.factor(sample_data(all_ps_free)$Transect_Number)
+result_meltwater_free <- calculate_relative_abundance(abundance_all_free, transect_numbers_all_free, selected_taxa_names_free)
+
+# Access the debug data frame with relative abundance values
+meltwater_relative_result_free <- result_meltwater_free$Debug
+
+fill_free <- ggplot(meltwater_relative_result_free, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Relative Abundance (%)", title = "Free-living") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+dodge_free <- ggplot(meltwater_relative_result_free, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Total Abundance", title = "") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa")) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+abun <- ggarrange(
+  fill_free, dodge_free, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+ggsave("graphics/filtered_meltwater_total_selected.pdf", width = 8, height = 4, dpi = 150)
+
+#######################
+# particle-associated #
+#######################
+abundance_selected_part <- phyloseq::otu_table(meltwater_data_part_temp)
+df_abundance_selected_part <- as.data.frame(abundance_selected_part)
+selected_taxa_names_part <- rownames(df_abundance_selected_part) # List of specific taxa names, that i want to exclude
+
+# Extract abundance data from phyloseq objects
+abundance_all_part <- t(as.data.frame(otu_table(all_ps_part)))
+# Extract transect numbers from metadata (assuming it's available in both data frames)
+transect_numbers_all_part <- as.factor(sample_data(all_ps_part)$Transect_Number)
+result_meltwater_part <- calculate_relative_abundance(abundance_all_part, transect_numbers_all_part, selected_taxa_names_part)
+
+# Access the debug data frame with relative abundance values
+meltwater_relative_result_part <- result_meltwater_part$Debug
+
+fill_part <- ggplot(meltwater_relative_result_part, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Relative Abundance (%)", title = "Particle-associated") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+dodge_part <- ggplot(meltwater_relative_result_part, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Total Abundance", title = "") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+meltwater_iron_abundance_together <- ggarrange(
+  fill_free, fill_part, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+ggsave("iron_filtered_rel_abundance/graphics/meltwater_total_vs_iron.pdf", width = 8, height = 4, dpi = 150)
+
+
 

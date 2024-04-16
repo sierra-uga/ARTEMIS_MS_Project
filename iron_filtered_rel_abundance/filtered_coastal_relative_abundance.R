@@ -14,6 +14,8 @@ coastal_ps_part <- filtered_ps %>% subset_samples(Filter_pores >= "2") %>% prune
 coastal_data_free <- coastal_ps_free %>% subset_samples(Coastal_Current_Name == "transect3") %>%
   tax_glom(taxrank = "TAX") # agglomerate at tax level
 #transform_sample_counts(function(x) {x/sum(x)} ) # Transform to rel. abundance
+coastal_data_free_temp <- coastal_data_free  # from above  
+
 
 coastal_data_free <- coastal_data_free %>%
   psmelt() %>% filter(., Coastal_Current_Number != "4") %>%  
@@ -63,6 +65,7 @@ coastal_data_free <- coastal_data_free_combined %>%
 coastal_data_part <- coastal_ps_part %>% subset_samples(Coastal_Current_Name == "transect3") %>% # Filter out low abundance taxa
   tax_glom(taxrank = "TAX") #%>% # agglomerate at genus level
 #transform_sample_counts(function(x) {x/sum(x)} )# Transform to rel. abundance
+coastal_data_part_temp <- coastal_data_part
 
 coastal_data_part <- coastal_data_part %>%
   psmelt() %>% filter(., Coastal_Current_Number != "4") %>%  
@@ -188,4 +191,98 @@ annotate_figure(coastal_combined, top = text_grob("\n Coastal Current (Transect 
                                                     color = "dodgerblue3", face = "bold", size = 18))
 
 ggsave("graphics/filtered_coastal_order_combined_relative.pdf", width = 13, height = 7, dpi = 150)
+
+
+#### total vs iron-only ####
+
+# Extract abundance data from phyloseq object
+all_ps_free <- ps_noncontam_prev05 %>% subset_samples(Coastal_Current_Name == "transect3") %>% subset_samples(Filter_pores == "0.2")
+all_ps_part <- ps_noncontam_prev05 %>% subset_samples(Coastal_Current_Name == "transect3") %>% subset_samples(Filter_pores >= "2")
+#coastal_data_free_temp <- coastal_data_free  # from above  
+#coastal_data_part_temp <- coastal_data_part
+
+###############
+# free-living #
+###############
+abundance_selected_free <- phyloseq::otu_table(coastal_data_free_temp)
+df_abundance_selected_free <- as.data.frame(abundance_selected_free)
+selected_taxa_names_free <- rownames(df_abundance_selected_free) # List of specific taxa names, that i want to exclude
+
+# Extract abundance data from phyloseq objects
+abundance_all_free <- t(as.data.frame(otu_table(all_ps_free)))
+# Extract transect numbers from metadata (assuming it's available in both data frames)
+transect_numbers_all_free <- as.factor(sample_data(all_ps_free)$Coastal_Current_Number)
+result_coastal_free <- calculate_relative_abundance(abundance_all_free, transect_numbers_all_free, selected_taxa_names_free)
+
+# Access the debug data frame with relative abundance values
+coastal_relative_result_free <- result_coastal_free$Debug
+
+fill_free <- ggplot(coastal_relative_result_free, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Relative Abundance (%)", title = "Free-living") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+dodge_free <- ggplot(coastal_relative_result_free, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Total Abundance", title = "") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa")) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+abun <- ggarrange(
+  fill_free, dodge_free, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+#######################
+# particle-associated #
+#######################
+abundance_selected_part <- phyloseq::otu_table(coastal_data_part_temp)
+df_abundance_selected_part <- as.data.frame(abundance_selected_part)
+selected_taxa_names_part <- rownames(df_abundance_selected_part) # List of specific taxa names, that i want to exclude
+
+# Extract abundance data from phyloseq objects
+abundance_all_part <- t(as.data.frame(otu_table(all_ps_part)))
+# Extract transect numbers from metadata (assuming it's available in both data frames)
+transect_numbers_all_part <- as.factor(sample_data(all_ps_part)$Coastal_Current_Number)
+result_coastal_part <- calculate_relative_abundance(abundance_all_part, transect_numbers_all_part, selected_taxa_names_part)
+
+# Access the debug data frame with relative abundance values
+coastal_relative_result_part <- result_coastal_part$Debug
+
+fill_part <- ggplot(coastal_relative_result_part, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Relative Abundance (%)", title = "Particle-associated") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+dodge_part <- ggplot(coastal_relative_result_part, aes(x = Transect, y = Abundance, fill = data_source)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black", linewidth = 0.3) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Transect Number", y = "Total Abundance", title = "") +
+  scale_fill_manual(values = c("other" = "gray", "selected" = "salmon"),
+                    labels = c("All other taxa", "Iron-related taxa"), 
+                    name = "Taxa") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+coastal_iron_abundance_together <- ggarrange(
+  fill_free, fill_part, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+ggsave("iron_filtered_rel_abundance/graphics/coastal_total_vs_iron.pdf", width = 8, height = 4, dpi = 150)
+
+
 
