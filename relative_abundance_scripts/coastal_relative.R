@@ -15,7 +15,7 @@ library(RColorBrewer)
 ##################
 
 # select only bacteria, remove chloroplasts
-ps_sub <- ps %>%
+ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
     Kingdom == "Bacteria" &
       Family  != "Mitochondria" &
@@ -103,7 +103,8 @@ custom_colors <- scale_colour_manual(name = "Order", values = myColors)
 
 # Plot 
 coastal_barplot_free <- ggplot(coastal_data_free, aes(x = Coastal_Current_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=6) + theme_classic() + ggtitle("\n Free-living (<0.2 µm)") +
+  facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate"))~.) +
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=5) + theme_classic() + ggtitle("\n Free-living (<0.2 µm)") +
   #geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors, drop = FALSE) +
@@ -136,7 +137,8 @@ ggsave("graphics/coastal_order_rel_abundance_free.pdf", width = 6.5, height = 4,
 
 # Plot 
 coastal_barplot_part <- ggplot(coastal_data_part, aes(x = Coastal_Current_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=6) + theme_classic() + ggtitle("\n Particle-associated (>2 µm)") +
+  facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate"))~.) +
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=5) + theme_classic() + ggtitle("\n Particle-associated (>2 µm)") +
   # geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors) + # set manual colors

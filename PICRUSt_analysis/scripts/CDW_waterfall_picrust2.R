@@ -30,9 +30,9 @@ library(LinDA)
 #install.packages("IgAScores")
 library(IgAScores) # gives relative abundance of count table
 
-abundance_file <- "pred_metagenome_unstrat.tsv" # read in abundance file (KO)
+abundance_file <- "PICRUSt_analysis/required_files/pred_metagenome_unstrat.tsv" # read in abundance file (KO)
 metadata <- read_delim(
-  "artemis-eDNA-metadata-final.tsv",  # read in metadata file
+  "required_files/artemis-eDNA-metadata-final.tsv",  # read in metadata file
   delim = "\t",
   escape_double = FALSE,
   trim_ws = TRUE
@@ -55,7 +55,7 @@ KO_abundance_data <- subset(abundance_data, select = ColumnstoKeep) # subset (se
 #write.table(abundance_final, file='inflow_abundance.tsv', quote=TRUE, sep='\t', row.names=FALSE) #slay , works
 
 # subset KO_abundance by KO_number in reference table
-iron_KO <- read.csv("KO_numbers_Sun_et_al.csv") # read in KO_number reference
+iron_KO <- read.csv("PICRUSt_analysis/required_files/KO_numbers_Sun_et_al.csv") # read in KO_number reference
 iron_KO <- iron_KO %>% filter(., Metabolism == "Iron uptake and metabolism") # filter by iron metabolism only
 
 KO_iron_numbers <- iron_KO$KO_Num # set vector
