@@ -29,11 +29,11 @@ ps_part <- ps_sub %>% subset_samples(Filter_pores >= "2") %>% prune_taxa(taxa_su
 
 #created a unique code based on Depth_Threshold, so took the MEAN of each depth threshold from each STATION.
 # potentially frowned upon
-ps0 <- merge_samples2(ps_free, "unique_code",
+ps0 <- merge_samples2(ps_free, "unique_depth",
                       fun_otu = mean
 )
 
-ps1 <- merge_samples2(ps_part, "unique_code",
+ps1 <- merge_samples2(ps_part, "unique_depth",
                       fun_otu = mean
 )
 ##################
@@ -60,18 +60,21 @@ data_top_part <- data_part %>%
   filter(Abundance > 0.02) %>%   # Filter out low abundance taxa
   arrange(Order)  # arrange by Order
 
-p <- unique(data_top_free$Station)
-level_order <- c("STN198", "STN002", "STN004", "STN181", "STN115", "STN012", "STN12.3", "STN20", "STN014", "STN089",
+level_order_prev <- c("STN198", "STN002", "STN004", "STN181", "STN012", "STN115", "STN12.3", "STN20", "STN014", "STN089",
                  "STN132", "STN106", "STN078", "STN056a", "STN056b", "STN22", "STN068", "STN146", "STN174",
                  "STN151.2", "STN153") # in order, ish.
+
+level_order_prev_inf <- c("STN198", "STN002", "STN004", "STN153", "STN151.2", "STN174", "STN181", "STN012", "STN115", "STN12.3", "STN20", "STN146","STN068", "STN056a", "STN056b", "STN22", "STN078", "STN014", "STN106", "STN132", "STN089")
+
+level_order <- c("STN089", "STN132", "STN106", "STN20", "STN198", "STN002", "STN004", "STN012", "STN115", "STN12.3", "STN014", "STN078", "STN056a", "STN056b", "STN22", "STN068", "STN146", "STN181", "STN174", "STN151.2", "STN153")
 
 ###################
 # Plot variables! #
 ###################
 
-plot_labels <- unique(sample_data(ps_free)$Station) # plot labels for graph, each Station (3 total)
-plot_breaks <- unique(sample_data(ps_free)$Station) # plot breaks for graph, each Station (3 total)
-myColors <- c(brewer.pal(9, "Paired"),'#e66101','#fdb863','#b2abd2','#5e3c99', '#543005','#8c510a','#bf812d','#dfc27d','#f6e8c3','#f5f5f5','#c7eae5','#80cdc1','#35978f','#01665e','#003c30', "#A43D27", "#497687", "#5E4987", "darkgoldenrod", "lightblue2", "darkblue", "dodgerblue", "seagreen", "purple", "black") # this must equal the levels of the Order
+plot_labels <- unique(sample_data(ps_free)$Station) #
+plot_breaks <- unique(sample_data(ps_free)$Station) # 
+myColors <- c(brewer.pal(9, "Paired"),'#e66101','darkgreen','#fdb863','#5e3c99', '#543005','#8c510a','#bf812d','#dfc27d','#f6e8c3','darkred','#c7eae5','#80cdc1','#35978f','#01665e','#003c30', "#A43D27", "#497687", "#5E4987", "darkgoldenrod", "lightblue2", "darkblue", "dodgerblue", "seagreen", "purple", "black") # this must equal the levels of the Order
 data_top_free$Order <- as.factor(data_top_free$Order) # setting the Order columns to factor
 data_top_part$Order <- as.factor(data_top_part$Order) # setting the Order columns to factor
 names(myColors) <- levels(c(data_top_free$Order, data_top_part$Order)) # setting the names of the colors to coordinate with the Order columns of each dataframe
@@ -91,16 +94,18 @@ barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_orde
     labels = plot_labels, # settting levels
     drop = FALSE
   ) +
-  #theme(plot.title = element_text(hjust = 0.5, size=17)) + # remove # if you want title
-  theme(axis.title.x = element_blank()) + # removing x-axis title
-  theme(axis.text.x = element_text(size=9, angle=90)) + # setting x-axis title
-  theme(axis.title.y = element_blank()) + # removing y-axis title
-  theme(legend.position = "none") + # remove legend, delete line if you want a legend
-  theme(panel.spacing.y = unit(1, "lines")) +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(size=9, angle=90),
+        axis.title.y = element_blank(),
+        legend.position = "none",
+        panel.spacing.x = unit(0, "points"), # Reducing space between facets
+        strip.background = element_blank(), # Optionally hide the strip background for a cleaner look
+        panel.border = element_blank()) + # Optionally remove panel borders
+  geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
   ggtitle("Free-living (<0.2 µm)")
-ggsave("graphics/free_living_barplot.pdf", width = 8, height = 6, dpi = 150)
+ggsave("graphics/free_living_barplot_3.pdf", width = 8, height = 6, dpi = 150)
 
 ###################### 
 #  stacked barplots  #
@@ -109,7 +114,7 @@ ggsave("graphics/free_living_barplot.pdf", width = 8, height = 6, dpi = 150)
 ######################
 
 # the following plot is basically the same as above, look at annotation for free-living barplot if confused about what each line does!
-barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate", "Bottom_water"))~.) +
+barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate", "Bottom_water"))~., scales = "free_x", space = "free_x") +
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors, drop = FALSE) +
@@ -118,16 +123,20 @@ barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_orde
     labels = plot_labels,
     drop = FALSE
   ) +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(size=9, angle=90),
+        axis.title.y = element_blank(),
+        axis.text.y = element_text(size=9 , color="white"),
+        legend.position = "none",
+        panel.spacing.x = unit(0, "points"), # Reducing space between facets
+        strip.background = element_blank(), # Optionally hide the strip background for a cleaner look
+        panel.border = element_blank()) + # Optionally remove panel borders
+  geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
   #theme(plot.title = element_text(hjust = 0.5, size=17)) +
-  theme(axis.title.x = element_blank()) + 
-  theme(axis.text.x = element_text(size=9, angle=90)) +
-  theme(axis.title.y = element_blank()) +
-  theme(axis.text.y = element_text(size=9 , color="white")) + # makes color of y-axis text white so its even when combining plots, remove entire color if want back to normal.
-  theme(legend.position = "none") +
-  theme(panel.spacing.y = unit(1, "lines")) +
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
   ggtitle("Particle-associated (>3 µm)")
-ggsave("graphics/part_associated_barplot.pdf", width = 8, height = 6, dpi = 150)
+
+ggsave("graphics/part_associated_barplot_3.pdf", width = 8, height = 6, dpi = 150)
 
 ###################### 
 #  stacked barplots  #
@@ -159,24 +168,4 @@ ps_combined <- ggarrange(
 annotate_figure(ps_combined, top = text_grob("Total Relative Abundance for All ARTEMIS Stations", 
                                              color = "black", face = "bold", size = 18))
 
-ggsave("graphics/combined_barplot.pdf", width = 13, height = 7, dpi = 150)
-
-barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate", "Bottom_water"))~.) +
-  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_manual(values = myColors, drop = FALSE) +
-  scale_x_discrete(
-    breaks = plot_breaks,
-    labels = plot_labels,
-    drop = FALSE
-  ) +
-  #theme(plot.title = element_text(hjust = 0.5, size=17)) +
-  theme(axis.title.x = element_blank()) + 
-  theme(axis.text.x = element_text(size=9, angle=90)) +
-  theme(axis.title.y = element_blank()) +
-  theme(axis.text.y = element_text(size=9 , color="white")) + # makes color of y-axis text white so its even when combining plots, remove entire color if want back to normal.
-  theme(legend.position = "none") +
-  theme(panel.spacing.y = unit(1, "lines")) +
-  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
-  ggtitle("Particle-associated (>3 µm)")
-ggsave("graphics/part_associated_barplot.pdf", width = 8, height = 6, dpi = 150)
+ggsave("graphics/combined_barplot_mid_thresholds_diff_order.pdf", width = 13, height = 7, dpi = 150)

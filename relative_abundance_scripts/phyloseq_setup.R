@@ -24,19 +24,36 @@ library("decontam")
 # feature table
 ASV <- qza_to_phyloseq(features="required_files/table.qza")
 # read in metadata
-metatable <- read.delim("/Users/sierra/Documents/Research/PICRUST_KEGG_analysis/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE) 
+metatable <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE) 
 #metatable <- filter(metatable, Sample.Control == "True.Sample")# filter by transect
 metatable$is.neg <- metatable$Sample.Control == "Control.Sample"
 metatable$Final_Qubit <- as.numeric(metatable$Final_Qubit) 
 df <- metatable %>%
+  group_by(Station, More_Depth_Threshold) %>%
+  mutate(unique_code = paste0(Station, More_Depth_Threshold))# creates a column with a unique code for watertype + station
+df <- df %>%
   group_by(Station, Depth_Threshold) %>%
-  mutate(unique_code = paste0(Station, Depth_Threshold)) # creates a column with a unique code for watertype + station
+mutate(unique_depth = paste0(Station, Depth_Threshold))
 df <- as.data.frame(df) 
+
+# Define a function to extract the replicate number
+extract_replicate <- function(sample_name) {
+  parts <- strsplit(sample_name, "\\.")[[1]]
+  last_part <- tail(parts, 1)
+  
+  if (grepl("LG$", last_part)) {
+    return("NA")  # Special case for "LG"
+  } else {
+    num <- gsub("[^0-9]", "", last_part)  # Extract numeric part
+    return(num)
+  }
+}
+
+# Apply the function to create the Replicate_Number column
+df <- df %>%
+  mutate(Replicate_Number = sapply(sample_name, extract_replicate))
+
 rownames(df) <- df$sample_name
-#metatable <- filter(metatable, sample.illumina != "078_1040_PRE")
-# importing (continued)
-#row.names(metatable) <- metatable[["SampleID"]]
-#metatable <- metatable %>% select(SampleID, everything())
 META <- sample_data(df)
 
 # importing taxonomy
@@ -88,4 +105,9 @@ head(which(ps_contamdf_comb05$contaminant))
 ps_noncontam_prev05 <- prune_taxa(!ps_contamdf_comb05$contaminant, ps)
 ps_noncontam_prev05 #  4559 taxa and 279 samples (originally was 4692 taxa)
 
-
+####
+filtered_df <- as.data.frame(dist_bray_mtx)
+threshold <- 0.2
+# Use dplyr's mutate and ifelse to replace values
+df_filtered <- filtered_df %>%
+  mutate_all(~if_else(. >= threshold, NA_real_, .))

@@ -13,7 +13,7 @@ agg_by_tax <- function(transect_number, main_data_frame) {
   #transect_data_temp$TAX <- rownames(transect_data_temp)
   
   # Aggregate abundance by TAX
-  transect_data_temp <- aggregate(. ~ TAX, data = transect_data_temp, FUN = sum)
+  transect_data_temp <- aggregate(. ~ TAX, data = transect_data_temp, FUN = mean)
   colnames(transect_data_temp) <- c("TAX", "Abundance")
   
   # Add Transect_Number column
@@ -41,7 +41,7 @@ agg_by_tax_coastal <- function(transect_number, main_data_frame) {
   #transect_data_temp$TAX <- rownames(transect_data_temp)
   
   # Aggregate abundance by TAX
-  transect_data_temp <- aggregate(. ~ TAX, data = transect_data_temp, FUN = sum)
+  transect_data_temp <- aggregate(. ~ TAX, data = transect_data_temp, FUN = mean)
   colnames(transect_data_temp) <- c("TAX", "Abundance")
   
   # Add Coastal_Current_Number column

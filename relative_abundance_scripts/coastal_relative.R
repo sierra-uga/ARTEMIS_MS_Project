@@ -26,7 +26,17 @@ ps_sub <- ps_noncontam_prev05 %>%
 
 # free-living phyloseq
 coastal_ps_free <- ps_sub %>% subset_samples(Filter_pores == "0.2") %>% prune_taxa(taxa_sums(.) > 0, .) 
+test_community_matrix <- t(otu_table(coastal_ps_free))
+test_community_dist <- vegdist(test_community_matrix, method="bray", binary=FALSE, diag=TRUE, upper=FALSE,
+        na.rm = FALSE)
 
+pcoa_bc = ordinate(test_community_matrix, "PCoA", "bray") 
+
+data(pplots)
+# Without time
+df <- subset(pplots, year == 2002)
+plot_ordination(ps_free, pcoa_bc, color = "Depth_Threshold") + 
+  geom_point(size = 3) 
 # particle-associated phyloseq
 coastal_ps_part <- ps_sub %>% subset_samples(Filter_pores >= "2") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
@@ -94,6 +104,7 @@ coastal_plot_breaks <- unique(coastal_data_part$Coastal_Current_Number) # HAVE T
 coastal_sec_labels <- seq(0 , 140, by=20)
 coastal_sec_breaks <- seq(0 , 140, by=20)
 
+myColors <- c(brewer.pal(9, "Paired"),'#e66101','#fdb863','#b2abd2','#5e3c99', '#543005','#8c510a','#bf812d','#dfc27d','#f6e8c3','#f5f5f5','#c7eae5','#80cdc1','#35978f','#01665e','#003c30', "#A43D27", "#497687", "#5E4987", "darkgoldenrod", "lightblue2", "darkblue", "dodgerblue", "seagreen", "purple", "black") # this must equal the levels of the Order
 myColors <- c(brewer.pal(9, "Paired"), "#A43D27", "#497687", "#5E4987", "darkblue", "lightblue2", "darkgoldenrod", "dodgerblue", "seagreen")
 coastal_data_free$Order <- as.factor(coastal_data_free$Order)
 coastal_data_part$Order <- as.factor(coastal_data_part$Order)
@@ -168,7 +179,7 @@ ggsave("graphics/coastal_order_rel_abundance_part.pdf", width = 6.5, height = 4,
 total <- rbind(coastal_data_part, coastal_data_free)
 # make combined FAKE plot to grab legend from and to put in the comine plot :^)
 legend_plot <- ggplot(total, aes(x = Coastal_Current_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() +
+  geom_bar(stat = "identity", position="fill", width=2, linewidth=0.3, color="black") + theme_classic() +
   # geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors) 
@@ -183,4 +194,4 @@ coastal_combined <- ggarrange(
 annotate_figure(coastal_combined, top = text_grob("\n Coastal Current (Transect 3)", 
                                                   color = "dodgerblue3", face = "bold", size = 18))
 
-ggsave("graphics/coastal_order_combined_relative.pdf", width = 13, height = 7, dpi = 150)
+ggsave("graphics/coastal_order_combined_relative_surf_int.pdf", width = 13, height = 7, dpi = 150)
