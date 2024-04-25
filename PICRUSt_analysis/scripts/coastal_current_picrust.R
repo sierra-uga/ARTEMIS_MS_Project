@@ -30,9 +30,9 @@ library(LinDA)
 #install.packages("IgAScores")
 library(IgAScores) # gives relative abundance of count table
 
-abundance_file <- "pred_metagenome_unstrat.tsv" # read in abundance file (KO)
+abundance_file <- "PICRUSt_analysis/required_files/pred_metagenome_unstrat.tsv" # read in abundance file (KO)
 metadata <- read_delim(
-  "artemis-eDNA-metadata-final.tsv",  # read in metadata file
+  "required_files/artemis-eDNA-metadata-final.tsv",  # read in metadata file
   delim = "\t",
   escape_double = FALSE,
   trim_ws = TRUE

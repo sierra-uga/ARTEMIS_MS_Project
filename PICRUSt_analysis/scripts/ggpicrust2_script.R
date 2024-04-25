@@ -26,41 +26,38 @@ library(ggpubr)
 library(ggprism)
 library(patchwork)
 require(grid)
-
 #install.packages("IgAScores")
 library(IgAScores) # gives relative abundance of count table
 
-abundance_file <- "pred_metagenome_unstrat.tsv" # read in abundance file (KO)
-metadata <- read_delim(
-  "artemis-eDNA-metadata-final.tsv",  # read in metadata file
+abundance_file <- "PICRUSt_analysis/required_files/pred_metagenome_unstrat.tsv" # read in abundance file (KO)
+outflow_metadata <- read_delim(
+  "required_files/artemis-eDNA-metadata-final.tsv",  # read in outflow_metadata file
   delim = "\t",
   escape_double = FALSE,
   trim_ws = TRUE
 )
+# test to make sure they sample names are the same
+#list1 <- outflow_metadata$sample_name
+#list2 <- colnames(abundance_data)
+#list2[!(list1 %in% list2)] # output: [1] "STN115.35.fil.dura.r1"
 
-list1 <- metadata$sample_name
-list2 <- colnames(abundance_data)
-list2[!(list1 %in% list2)] # output: [1] "STN115.35.fil.dura.r1"
-
-metadata <- metadata %>% filter(., Sample.Control == "True.Sample") %>% filter(., sample_name != "STN115.35.fil.dura.r1") 
+outflow_metadata <- outflow_metadata %>% filter(., Sample.Control == "True.Sample") %>% filter(., sample_name != "STN115.35.fil.dura.r1") %>% 
+  filter(., sample_name != "STN089.200.fil.dura.r2") %>% filter(., Transect_Name == "transect2") %>% filter(., Station != "STN22") #%>% distinct(Filter_pores, .keep_all = TRUE) 
 # remove sample that isn't in kegg abundance for some reason
-outflow_metadata <- metadata %>% filter(., Transect_Name == "transect2") %>% filter(., Station != "STN22") #remove station 22
-# for some reason it wont filter by a string or more than two samples, so had to do separately.
 
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE) # read in KO dataset
 ColumnstoKeep <- c("#NAME", outflow_metadata$sample_name) # set vector of list of names to keep + KO Name column
 KO_abundance_data <- subset(abundance_data, select = ColumnstoKeep) # subset (select columns) based on ColumnstoKeep
 
-#### following pipeline from picrust github ### OUTFLOW ONLY
-#write.table(abundance_final, file='outflow_abundance.tsv', quote=TRUE, sep='\t', row.names=FALSE) #slay , works
-
+#### Creating dataframe for all stations #######
 # subset KO_abundance by KO_number in reference table
-iron_KO <- read.csv("KO_numbers_Sun_et_al.csv") # read in KO_number reference
+iron_KO <- read.csv("PICRUSt_analysis/required_files/KO_numbers_Sun_et_al.csv") # read in KO_number reference
 iron_KO <- iron_KO %>% filter(., Metabolism == "Iron uptake and metabolism") # filter by iron metabolism only
 
-KO_iron_numbers <- iron_KO$KO_Num # set vector
+KO_iron_numbers <- iron_KO$KO_Num # set vector for numbers
 KO_iron_abundance_data <- KO_abundance_data[KO_abundance_data$`#NAME` %in% KO_iron_numbers, ] #filter by KO_number using KO_iron_number ref
 
+######### for total rel abundance
 # BASED ON KO NUMBER ONLY, not type
 KO_iron_abundance_data_row <- KO_iron_abundance_data %>% column_to_rownames("#NAME")
 KO_relative_abundance <- relabund(KO_iron_abundance_data_row, percentage = FALSE) # calculates relative abundance
@@ -133,7 +130,7 @@ station_type_abundance_intermediate <- mutate_all(station_type_abundance_interme
 station_type_abundance_intermediate$Transect_Number <- as.character(station_type_abundance_intermediate$Transect_Number)
 station_type_abundance_intermediate$Community <- as.character(station_type_abundance_intermediate$Community)
 
-#station_type_abundance_intermediate_agg <- aggregate(. ~ Transect_Number, data = station_type_abundance_intermediate, FUN = mean) 
+station_type_abundance_intermediate_agg <- aggregate(. ~ Transect_Number * Community, data = station_type_abundance_intermediate, FUN = mean) 
 #station_type_abundance_intermediate_agg$Transect_Number <- as.factor(station_type_abundance_intermediate_agg$Transect_Number)
 
 transect_plot_df <- station_type_abundance_intermediate %>% 
@@ -146,7 +143,6 @@ transect_plot_df_community <- station_type_abundance_intermediate %>%
 
 transect_plot_df$Community <- transect_plot_df_community$Community 
 transect_plot_df$pathway_mean <- as.numeric(transect_plot_df$pathway_mean)
-
 
 # variables for plots
 remove_x_lab <- xlab("")
@@ -221,5 +217,19 @@ linda_plot <- linda.plot(linda.obj, c("Transect_Number"),
 plot_print <- linda_plot[["plot.lfc"]]
 ggsave("linda_outflow_Conf.pdf", width=10, height=6)
 
-daa_results_df_transect <- pathway_daa(abundance = station_type_abundance_mean %>% column_to_rownames("Type"), metadata = outflow_metadata, group = "Transect_Number", daa_method = "LinDA", select = NULL, p.adjust = "BH", reference = "1")
-daa_results_df_community <- pathway_daa(abundance = station_type_abundance_mean %>% column_to_rownames("Type"), metadata = outflow_metadata, group = "Filter_pores", daa_method = "LinDA", select = NULL, p.adjust = "BH", reference = "1")
+daa_results_df_transect <- pathway_daa(abundance = station_type_abundance_mean %>% column_to_rownames("Type"), outflow_metadata = outflow_metadata, group = "Transect_Number", daa_method = "LinDA", select = NULL, p.adjust = "BH", reference = "1")
+daa_results_df_community <- pathway_daa(abundance = station_type_abundance_mean %>% column_to_rownames("Type"), outflow_metadata = outflow_metadata, group = "Filter_pores", daa_method = "LinDA", select = NULL, p.adjust = "BH", reference = "1")
+
+
+
+#### bar/line plots -- going from line 133
+rel_abun_temp <- station_type_abundance_intermediate_agg %>% select(., !c("Community", "Transect_Number"))
+rel_abun_numbers <- relabund(rel_abun_temp)
+
+rel_abun_comm <- data.frame(station_type_abundance_intermediate_agg$Community, station_type_abundance_intermediate_agg$Transect_Number, rel_abun_numbers)
+
+# subset dataframe based on specific variables
+Fe_S <- subset(rel_abun_comm, rel_abun_comm$variable == "Fe.S")
+Fe_S_plot <- ggplot(Fe_S, aes(x = station_type_abundance_intermediate_agg.Transect_Number, y = pathway_mean, fill = station_type_abundance_intermediate_agg.Community, color = station_type_abundance_intermediate_agg.Community)) + bold_theme +
+  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("\n Fe-S") + remove_x_lab + remove_y_lab + add_outline + add_color
+

@@ -138,3 +138,16 @@ separate_by_row_and_column <- function(matrix) {
 
 # Separate the dissimilarity matrix into submatrices by row and column names
 station_matrices <- separate_by_row_and_column(dist_bray_mtx)
+
+
+extract_replicate <- function(sample_name) {
+  if (grepl("LG$", sample_name)) {
+    return("NA")  # Special case for "LG"
+  } else {
+    num <- gsub(".*\\.r([0-9]+)$", "\\1", sample_name)  # Extract numeric part after '.r'
+    return(num)
+  }
+}
+
+# Apply the function to create Replicate_Number column
+metadata$Replicate_Number <- sapply(df$sample_name, extract_replicate)
