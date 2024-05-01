@@ -81,7 +81,55 @@ KO_joined <- data.frame(iron_KO$Type, iron_KO$KO_Num)
 colnames(KO_joined) <- c("Type", "#NAME")
 
 KO_iron_abundance_type <- left_join(KO_iron_abundance_data, KO_joined) %>% column_to_rownames("#NAME")
-       
+### all stations -- stacked barplot ##
+test <- aggregate(. ~ Type, data = KO_iron_abundance_type, FUN = mean)
+dataframe_to_combine <- outflow_metadata %>% select(sample_name, Transect_Number, Station, Filter_pores) 
+df_test <- as.data.frame(t(test)) 
+colnames(df_test) <- df_test[1,]
+df_test <- df_test[-1,]
+df_test$sample_name <- rownames(df_test)
+test_up <- left_join(df_test, dataframe_to_combine)
+test_up_long <- test_up %>% # combines by type
+  pivot_longer(cols = -c(Station, Transect_Number, Filter_pores, sample_name),
+               names_to = "Type",
+               values_to = "Abundance")
+test_up_long$Abundance <- as.numeric(test_up_long$Abundance)
+agg_test <- aggregate(Abundance ~ Transect_Number * Filter_pores + Type, data = test_up_long, FUN = mean)
+agg_test$Filter_pores <- ifelse(agg_test$Filter_pores >= 0.2 & agg_test$Filter_pores <= 2.0, "free-living", 
+                                ifelse(agg_test$Filter_pores == 3.0, "particle-associated", agg_test$Filter_pores))
+
+type_free <- agg_test %>% filter(Filter_pores == "free-living")
+
+barplot_free <- ggplot(type_free, aes(x = Transect_Number, y = Abundance, fill = Type)) + # facet grid seperates by different levels, horizontally
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
+  scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
+  #scale_fill_manual(values = pathway_colors, drop = FALSE) + # set the colors with custom colors (myColors)
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(size=9, angle=90),
+        axis.title.y = element_blank(),
+        panel.spacing.x = unit(0, "points"), # Reducing space between facets
+        strip.background = element_blank(), # Optionally hide the strip background for a cleaner look
+        panel.border = element_blank()) + # Optionally remove panel borders
+  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
+  #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
+  ggtitle("Free-living (<0.2 µm)")
+
+type_part <- agg_test %>% filter(Filter_pores == "particle-associated")
+barplot_part <- ggplot(type_part, aes(x = Transect_Number, y = Abundance, fill = Type)) + # facet grid seperates by different levels, horizontally
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
+  scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
+  #scale_fill_manual(values = pathway_colors, drop = FALSE) + # set the colors with custom colors (myColors)
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(size=9, angle=90),
+        axis.title.y = element_blank(),
+        panel.spacing.x = unit(0, "points"), # Reducing space between facets
+        strip.background = element_blank(), # Optionally hide the strip background for a cleaner look
+        panel.border = element_blank()) + # Optionally remove panel borders
+  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
+  #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
+  ggtitle("Free-living (<0.2 µm)")
+
+
 type_vector <- KO_iron_abundance_type$Type
 KO_iron_abundance_type$Type <- NULL # temporarily remove column to figure out sums
 KO_iron_abundance_type$sum <- rowSums(KO_iron_abundance_type)
@@ -143,6 +191,11 @@ transect_plot_df_community <- station_type_abundance_intermediate %>%
 
 transect_plot_df$Community <- transect_plot_df_community$Community 
 transect_plot_df$pathway_mean <- as.numeric(transect_plot_df$pathway_mean)
+transect_plot_df2 <- aggregate(pathway_mean ~ Transect_Number * variable * Community, data = transect_plot_df, FUN = mean) # take mean per TYPE, for each station
+transect_plot_df2 <- transect_plot_df2 %>% filter(., variable != "Community")
+total_count <- sum(transect_plot_df2$pathway_mean)
+# Calculate relative abundance
+transect_plot_df2$relative_abundance <- transect_plot_df2$pathway_mean / total_count
 
 # variables for plots
 remove_x_lab <- xlab("")
@@ -151,58 +204,97 @@ bold_theme <- theme(plot.title = element_text(size = 11, face = "bold", hjust = 
                     axis.text.x = element_text(face="bold", size=10))
 cols <- c("seagreen", "dodgerblue2")
 add_color <- scale_fill_manual(values = cols, name = "Community", labels = c("Particle- \nassociated", "Free-living"))
-add_outline <- scale_color_manual(values= c("darkgreen", "darkblue"))
+add_outline <- scale_color_manual(values= c("seagreen", "dodgerblue2"))
 
 # subset dataframe based on specific variables
-Fe_S <- subset(transect_plot_df, transect_plot_df$variable == "Fe.S")
-Fe_S_plot <- ggplot(Fe_S, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("\n Fe-S") + remove_x_lab + remove_y_lab + add_outline + add_color
+Fe_S <- subset(transect_plot_df2, transect_plot_df2$variable == "Fe.S")
+# bar
+Fe_S_plot <- ggplot(Fe_S, aes(x = Transect_Number, y = relative_abundance, color = Community, fill = Community, group = factor(Community))) + bold_theme + add_color +
+  geom_bar(stat="identity", position="dodge", width=0.65) + ggtitle("\n Fe-S") + remove_x_lab + remove_y_lab + add_outline + theme_classic2()
+# line
+Fe_S_plot <- ggplot(Fe_S, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) + bold_theme +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + ggtitle("Fe-S") + remove_x_lab + remove_y_lab + add_outline + theme_classic2()
 
-Siderophore_uptake <- subset(transect_plot_df, transect_plot_df$variable == "Siderophore.uptake")
-Sid_uptake_plot <- ggplot(Siderophore_uptake, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("Siderophore \n uptake") + remove_x_lab + remove_y_lab + add_outline + add_color
+# Siderophore uptake
+Siderophore_uptake <- subset(transect_plot_df2, variable == "Siderophore.uptake")
+Sid_uptake_plot <- ggplot(Siderophore_uptake, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + 
+  ggtitle("Siderophore uptake") + remove_x_lab + remove_y_lab + add_outline + theme_classic()
 
-sid_bio <- subset(transect_plot_df, transect_plot_df$variable == "Siderophore.biosynthesis")
-Sid_bio_plot <- ggplot(sid_bio, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("Siderophore \n biosynthesis") + remove_x_lab + remove_y_lab + add_outline + add_color
+# Siderophore biosynthesis
+sid_bio <- subset(transect_plot_df2, variable == "Siderophore.biosynthesis")
+Sid_bio_plot <- ggplot(sid_bio, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + 
+  ggtitle("Siderophore biosynthesis") + remove_x_lab + remove_y_lab + add_outline + theme_classic()
 
-ferric <- subset(transect_plot_df, transect_plot_df$variable == "Fe3...ferric.")
-ferric_plot <- ggplot(ferric, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("Fe3+ \n metabolism") + remove_x_lab + remove_y_lab + add_outline + add_color
+# Fe3+ metabolism
+ferric <- subset(transect_plot_df2, variable == "Fe3...ferric.")
+ferric_plot <- ggplot(ferric, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + 
+  ggtitle("Fe3+ metabolism") + remove_x_lab + remove_y_lab + add_outline + theme_classic()
 
-ferrous <- subset(transect_plot_df, transect_plot_df$variable == "Fur.family")
-ferrous_plot <- ggplot(ferrous, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("\n Fe3+ uptake") + remove_x_lab + remove_y_lab + add_outline + add_color
+# Fur family (labeled incorrectly as Fe3+ uptake in the original question)
+ferrous <- subset(transect_plot_df2, variable == "Fur.family")
+ferrous_plot <- ggplot(ferrous, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + 
+  ggtitle("Fur family") + remove_x_lab + remove_y_lab + add_outline + theme_classic()
 
-ferric_uptake <- subset(transect_plot_df, transect_plot_df$variable == "Fe2...ferrous.")
-ferric_uptake_plot <- ggplot(ferric_uptake, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("Fe2+ metabolism") + remove_x_lab + remove_y_lab + add_outline + add_color
+# Fe2+ metabolism
+ferric_uptake <- subset(transect_plot_df2, variable == "Fe2...ferrous.")
+ferric_uptake_plot <- ggplot(ferric_uptake, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + 
+  ggtitle("Fe2+ metabolism") + remove_x_lab + remove_y_lab + add_outline + theme_classic()
 
-storage <- subset(transect_plot_df, transect_plot_df$variable == "Fe.Storage.")
-storage_plot <- ggplot(storage, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("\n Fe storage") + remove_x_lab + remove_y_lab + add_outline + add_color
+# Fe storage
+storage <- subset(transect_plot_df2, variable == "Fe.Storage.")
+storage_plot <- ggplot(storage, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + 
+  ggtitle("Fe storage") + remove_x_lab + remove_y_lab + add_outline + theme_classic()
 
-heme <- subset(transect_plot_df, transect_plot_df$variable == "Heme")
-heme_plot <- ggplot(heme, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("\n Heme") + remove_x_lab + remove_y_lab + add_outline + add_color
+# Heme
+heme <- subset(transect_plot_df2, variable == "Heme")
+heme_plot <- ggplot(heme, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + 
+  ggtitle("Heme") + remove_x_lab + remove_y_lab + add_outline + theme_classic()
 
-tror <- subset(transect_plot_df, transect_plot_df$variable == "troR")
-tror_plot <- ggplot(heme, aes(x = Transect_Number, y = pathway_mean, fill = Community, color = Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("Iron \n homeostasis") + remove_x_lab + remove_y_lab + add_outline + add_color
+# troR
+tror <- subset(transect_plot_df2, variable == "troR")
+tror_plot <- ggplot(tror, aes(x = Transect_Number, y = relative_abundance, color = Community, group = factor(Community))) +
+  geom_point(size=1.5) + geom_line(linewidth=0.7) + 
+  ggtitle("Iron homeostasis") + remove_x_lab + remove_y_lab + add_outline + theme_classic()
 
 # actual boxplot
 boxplot <- ggarrange(Sid_uptake_plot, ferric_plot, ferrous_plot, storage_plot, heme_plot, tror_plot, Fe_S_plot, Sid_bio_plot,
           ncol = 4, nrow = 2, common.legend = TRUE, legend = "right")
 annotate_figure(boxplot, left = textGrob("Pathway abundance mean", rot = 90, vjust = 1, gp = gpar(cex = 1)), # adding x and y to actual annotations
                 bottom = textGrob("Transect number", gp = gpar(cex = 1), vjust=.2))
-ggsave("meltwater_iron_boxplots.pdf", width=10, height=8) # save as pdf
+ggsave("meltwater_iron_lineplots.pdf", width=10, height=8) # save as pdf
 
 variable_list <- c("Fe.S", "Siderophore.uptake", "Siderophore.biosynthesis", "Fe3...ferric.", "Fur.family", "Fe2...ferrous.", "Fe.Storage.", "Heme")
-subset_transect_plot_df <- transect_plot_df[transect_plot_df$variable %in% variable_list,]
+subset_transect_plot_df <- transect_plot_df2[transect_plot_df2$variable %in% variable_list,]
 
-CombinedPlotNOTCH=ggplot(subset_transect_plot_df, aes(x=Transect_Number, y=pathway_mean, fill=Community)) + geom_boxplot() + facet_grid(~variable)
+CombinedPlotNOTCH=ggplot(subset_transect_plot_df, aes(x=Transect_Number, y=relative_abundance, color=Community, group = factor(Community))) + geom_point() +
+  geom_line() + facet_grid(~variable)
 CombinedPlotNOTCH
-ggsave("ONE_PLOT_changed_transect_iron_boxplots.pdf", width=10, height=8)
+ggsave("ONE_PLOT_changed_transect_iron_line.pdf", width=10, height=8)
+
+
+#### stacked barplot
+test <- aggregate(. ~ Type, data = KO_iron_abundance_type, FUN = mean)
+df_test <- as.data.frame(t(test)) 
+colnames(df_test) <- df_test[1,]
+df_test <- df_test[-1,]
+df_test$sample_name <- rownames(df_test)
+test_up <- left_join(df_test, dataframe_to_combine)
+test_up_long <- test_up %>% # combines by type
+  pivot_longer(cols = -c(Station, Depth_Threshold, Filter_pores, sample_name),
+               names_to = "Type",
+               values_to = "Abundance")
+test_up_long$Abundance <- as.numeric(test_up_long$Abundance)
+agg_test <- aggregate(Abundance ~ Depth_Threshold * Station * Filter_pores + Type, data = test_up_long, FUN = mean)
+
+
+
 
 ### trying LINDA anaylsis
 linda_station_type_abundance_mean <- station_type_abundance_mean
@@ -219,17 +311,3 @@ ggsave("linda_outflow_Conf.pdf", width=10, height=6)
 
 daa_results_df_transect <- pathway_daa(abundance = station_type_abundance_mean %>% column_to_rownames("Type"), outflow_metadata = outflow_metadata, group = "Transect_Number", daa_method = "LinDA", select = NULL, p.adjust = "BH", reference = "1")
 daa_results_df_community <- pathway_daa(abundance = station_type_abundance_mean %>% column_to_rownames("Type"), outflow_metadata = outflow_metadata, group = "Filter_pores", daa_method = "LinDA", select = NULL, p.adjust = "BH", reference = "1")
-
-
-
-#### bar/line plots -- going from line 133
-rel_abun_temp <- station_type_abundance_intermediate_agg %>% select(., !c("Community", "Transect_Number"))
-rel_abun_numbers <- relabund(rel_abun_temp)
-
-rel_abun_comm <- data.frame(station_type_abundance_intermediate_agg$Community, station_type_abundance_intermediate_agg$Transect_Number, rel_abun_numbers)
-
-# subset dataframe based on specific variables
-Fe_S <- subset(rel_abun_comm, rel_abun_comm$variable == "Fe.S")
-Fe_S_plot <- ggplot(Fe_S, aes(x = station_type_abundance_intermediate_agg.Transect_Number, y = pathway_mean, fill = station_type_abundance_intermediate_agg.Community, color = station_type_abundance_intermediate_agg.Community)) + bold_theme +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=1) + ggtitle("\n Fe-S") + remove_x_lab + remove_y_lab + add_outline + add_color
-

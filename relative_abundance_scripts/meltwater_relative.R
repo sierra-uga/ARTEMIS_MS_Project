@@ -12,7 +12,7 @@ library(tidyverse)
 library(RColorBrewer)
 
 # select only bacteria, remove chloroplasts
-ps_sub <- ps %>%
+ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
     Kingdom == "Bacteria" &
       Family  != "Mitochondria" &
@@ -86,8 +86,10 @@ names(myColors) <- levels(c(meltwater_data_free$Order, meltwater_data_part$Order
 custom_colors <- scale_colour_manual(name = "Order", values = myColors)
 
 # Plot 
+meltwater_data_free <- aggregate(Abundance ~ Transect_Number * Order, data = meltwater_data_free, FUN = mean)
+
 meltwater_barplot_free <- ggplot(meltwater_data_free, aes(x = Transect_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() + ggtitle("\n Free-living (<0.2 µm)") +
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=3) + theme_classic() + ggtitle("\n Free-living (<0.2 µm)") +
   #geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors, drop = FALSE) +
@@ -118,9 +120,11 @@ ggsave("graphics/meltwater_order_rel_abundance_free.pdf", width = 6.5, height = 
 #      PARTICLE      # 
 ######################
 
+meltwater_data_part <- aggregate(Abundance ~ Transect_Number * Order, data = meltwater_data_part, FUN = mean)
+
 # Plot 
 meltwater_barplot_part <- ggplot(meltwater_data_part, aes(x = Transect_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() + ggtitle("\n Particle-associated (>2 µm)") +
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=3) + theme_classic() + ggtitle("\n Particle-associated (>2 µm)") +
   #geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors, drop = FALSE) +
@@ -151,7 +155,7 @@ ggsave("graphics/meltwater_order_rel_abundance_part.pdf", width = 6.5, height = 
 total <- rbind(meltwater_data_part, meltwater_data_free)
 # make combined FAKE plot to grab legend from and to put in the comine plot :^)
 legend_plot <- ggplot(total, aes(x = Transect_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() +
+  geom_bar(stat = "identity", position="fill", width=2, linewidth=0.3, color="black") + theme_classic() +
   # geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors) 
@@ -164,7 +168,7 @@ meltwater_combined <- ggarrange(
 )
 
 annotate_figure(meltwater_combined, top = text_grob("\n Meltwater Plume (Transect 2)", 
-                                                    color = "dodgerblue3", face = "bold", size = 18))
+                                                    color = "black", face = "bold", size = 18))
 
-ggsave("graphics/meltwater_order_combined_relative.pdf", width = 13, height = 7, dpi = 150)
+ggsave("relative_abundance_scripts/graphics/new_real_outflow_int.pdf", width = 13, height = 7, dpi = 150)
 

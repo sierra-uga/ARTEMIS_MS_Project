@@ -69,7 +69,7 @@ coastal_data_free <- coastal_data_free %>%
   mutate(Coastal_Current_Number = replace(Coastal_Current_Number, Coastal_Current_Number == "3", 48.56614)) %>%
   #mutate(Coastal_Current_Number = replace(Coastal_Current_Number, Coastal_Current_Number == "4", 61.17885)) %>% # REMOVED
   mutate(Coastal_Current_Number = replace(Coastal_Current_Number, Coastal_Current_Number == "5", 62.78023)) %>%
-  #mutate(Coastal_Current_Number = replace(Coastal_Current_Number, Coastal_Current_Number == "6", 80.58525)) %>%  # REMOVED BECAUSE doesn't have free-living.
+  mutate(Coastal_Current_Number = replace(Coastal_Current_Number, Coastal_Current_Number == "6", 80.58525)) %>%  # REMOVED BECAUSE doesn't have free-living.
   mutate(Coastal_Current_Number = replace(Coastal_Current_Number, Coastal_Current_Number == "7", 101.50049)) %>%
   mutate(Coastal_Current_Number = replace(Coastal_Current_Number, Coastal_Current_Number == "8", 106.99770)) %>%
   mutate(Coastal_Current_Number = replace(Coastal_Current_Number, Coastal_Current_Number == "9", 133.80764))
@@ -104,12 +104,14 @@ coastal_plot_breaks <- unique(coastal_data_part$Coastal_Current_Number) # HAVE T
 coastal_sec_labels <- seq(0 , 140, by=20)
 coastal_sec_breaks <- seq(0 , 140, by=20)
 
-myColors <- c(brewer.pal(9, "Paired"),'#e66101','#fdb863','#b2abd2','#5e3c99', '#543005','#8c510a','#bf812d','#dfc27d','#f6e8c3','#f5f5f5','#c7eae5','#80cdc1','#35978f','#01665e','#003c30', "#A43D27", "#497687", "#5E4987", "darkgoldenrod", "lightblue2", "darkblue", "dodgerblue", "seagreen", "purple", "black") # this must equal the levels of the Order
+myColors <- c(brewer.pal(9, "Paired"),'#e66101','#fdb863','#b2abd2','#5e3c99', '#543005','#8c510a','#bf812d','seagreen','#f6e8c3','#f5f5f5','#c7eae5','#80cdc1','#35978f','#01665e','#003c30', "#A43D27", "#497687", "#5E4987", "darkgoldenrod", "lightblue2", "darkblue", "dodgerblue", "#dfc27d", "purple", "black") # this must equal the levels of the Order
 myColors <- c(brewer.pal(9, "Paired"), "#A43D27", "#497687", "#5E4987", "darkblue", "lightblue2", "darkgoldenrod", "dodgerblue", "seagreen")
 coastal_data_free$Order <- as.factor(coastal_data_free$Order)
 coastal_data_part$Order <- as.factor(coastal_data_part$Order)
 names(myColors) <- levels(c(coastal_data_free$Order, coastal_data_part$Order))
 custom_colors <- scale_colour_manual(name = "Order", values = myColors)
+
+coastal_data_free <- aggregate(Abundance ~ Coastal_Current_Number * Order * Depth_Threshold, data = coastal_data_free, FUN = mean)
 # Melt to long format
 
 # Plot 
@@ -145,6 +147,7 @@ ggsave("graphics/coastal_order_rel_abundance_free.pdf", width = 6.5, height = 4,
 ######################
 #      PARTICLE      # 
 ######################
+coastal_data_part <- aggregate(Abundance ~ Coastal_Current_Number * Order * Depth_Threshold, data = coastal_data_part, FUN = mean)
 
 # Plot 
 coastal_barplot_part <- ggplot(coastal_data_part, aes(x = Coastal_Current_Number, y = Abundance, fill = Order)) +
@@ -192,6 +195,6 @@ coastal_combined <- ggarrange(
 )
 
 annotate_figure(coastal_combined, top = text_grob("\n Coastal Current (Transect 3)", 
-                                                  color = "dodgerblue3", face = "bold", size = 18))
+                                                  color = "black", face = "bold", size = 18))
 
-ggsave("graphics/coastal_order_combined_relative_surf_int.pdf", width = 13, height = 7, dpi = 150)
+ggsave("relative_abundance_scripts/graphics/new_real_coastal_int.pdf", width = 13, height = 7, dpi = 150)
