@@ -79,7 +79,7 @@ waterfall_data_part <- waterfall_data_part %>%
   mutate(Transect_Number = replace(Transect_Number, Transect_Number == "5", 343.60091))
 
 
-waterfall_plot_labels <- c("STN198","STN002", "STN004", "STN012", "STN014")
+waterfall_plot_labels <- c("198","2", "4", "12", "14")
 waterfall_plot_breaks <- unique(sample_data(waterfall_data_free)$Transect_Number)
 waterfall_sec_labels <- seq(0 , 350.60, by=50)
 waterfall_sec_breaks <- seq(0 , 350.60, by=50)
@@ -88,12 +88,15 @@ myColors <- c(brewer.pal(9, "Paired"), "#A43D27", "#497687", "#5E4987", "darkblu
 waterfall_data_free$Order <- as.factor(waterfall_data_free$Order)
 waterfall_data_part$Order <- as.factor(waterfall_data_part$Order)
 names(myColors) <- levels(c(waterfall_data_free$Order, waterfall_data_part$Order))
+myColors <- c(myColors, "Vibrionales" = "#497687", "Bacteriovoracales" = "darkblue")
 custom_colors <- scale_colour_manual(name = "Order", values = myColors)
 # Melt to long format
 
 # Plot 
+waterfall_data_free <- aggregate(Abundance ~ Transect_Number * Order, data = waterfall_data_free, FUN = mean)
+
 waterfall_barplot_free <- ggplot(waterfall_data_free, aes(x = Transect_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=15) + theme_classic() + ggtitle("\n Free-living (<0.2 µm)") +
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=24) + theme_classic() + ggtitle("\n Free-living (<0.2 µm)") +
   #geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors, drop = FALSE) +
@@ -123,10 +126,11 @@ ggsave("graphics/waterfall_order_rel_abundance_free.pdf", width = 6.5, height = 
 ######################
 #      PARTICLE      # 
 ######################
+waterfall_data_part <- aggregate(Abundance ~ Transect_Number * Order, data = waterfall_data_part, FUN = mean)
 
 # Plot 
 waterfall_barplot_part <- ggplot(waterfall_data_part, aes(x = Transect_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=15) + theme_classic() + ggtitle("\n Particle-associated (>2 µm)") +
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=24) + theme_classic() + ggtitle("\n Particle-associated (>2 µm)") +
   # geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors) + # set manual colors
@@ -156,7 +160,7 @@ ggsave("graphics/waterfall_order_rel_abundance_part.pdf", width = 6.5, height = 
 total <- rbind(waterfall_data_part, waterfall_data_free)
 # make combined FAKE plot to grab legend from and to put in the comine plot :^)
 legend_plot <- ggplot(total, aes(x = Transect_Number, y = Abundance, fill = Order)) +
-  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() +
+  geom_bar(stat = "identity", position="fill", width=2, linewidth=0.3, color="black") + theme_classic() +
   # geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors) 
@@ -169,6 +173,6 @@ waterfall_combined <- ggarrange(
 )
 
 annotate_figure(waterfall_combined, top = text_grob("\n CDW Waterfall (Transect 1)", 
-                                                    color = "dodgerblue3", face = "bold", size = 18))
+                                                    color = "black", face = "bold", size = 18))
 
-ggsave("graphics/decontam_waterfall_order_combined_relative.pdf", width = 13, height = 7, dpi = 150)
+ggsave("relative_abundance_scripts/graphics/new_real_CDW_inflow_int.pdf", width = 13, height = 7, dpi = 150)

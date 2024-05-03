@@ -82,9 +82,11 @@ total_count <- sum(type_part$Abundance)
 
 # Calculate relative abundance
 type_part$relative_abundance <- type_part$Abundance / total_count
-barplot_part <- ggplot(type_part, aes(x = Transect_Number, y = relative_abundance, color = Type)) + # facet grid seperates by different levels, horizontally
-  geom_line(linewidth=0.6) + theme_classic() + # adds black outline to boxes
-  scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
+barplot_part <- ggplot(type_part, aes(x = factor(Transect_Number), y = relative_abundance, color = Type, group=Type)) + # facet grid seperates by different levels, horizontally
+  geom_line(linewidth=0.6) + theme_classic() + 
+  geom_point() + # adds black outline to boxes
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_discrete(expand = c(0, .1)) +# extends the barplots to the axies
   scale_color_manual(values = pathway_colors, drop = TRUE) + # set the colors with custom colors (myColors)
   theme(axis.title.x = element_blank(),
         axis.text.x = element_text(size=9, angle=90),
@@ -92,6 +94,17 @@ barplot_part <- ggplot(type_part, aes(x = Transect_Number, y = relative_abundanc
         panel.spacing.x = unit(0, "points"), # Reducing space between facets
         strip.background = element_blank(), # Optionally hide the strip background for a cleaner look
         panel.border = element_blank()) + # Optionally remove panel borders
-  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
+  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + 
+  geom_vline(xintercept = c(1,2,3), linetype = "dashed", linewidth=0.2, color = "lightgrey") +# for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
-  ggtitle("Free-living (<0.2 µm)")
+  ggtitle("Particle-associated (>3 µm)")
+
+ps_combined <- ggarrange(
+  barplot_free, barplot_part, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+annotate_figure(ps_combined, top = text_grob("\n Outflow (Transect 2)", 
+                                                  color = "black", face = "bold", size = 18))
+
+ggsave("PICRUSt_analysis/graphics/outflow_type_bar_line_plot.pdf", width = 8, height = 7, dpi = 150)

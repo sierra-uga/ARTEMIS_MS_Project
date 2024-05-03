@@ -96,7 +96,6 @@ imagep(meltwater_distance, meltwater_p, meltwater_O, colormap=meltwater_Ocm, fli
        zlab='oxygen [mL/L]', xlim=c(min(meltwater_distance), max(meltwater_distance))) 
 points(meltwater_distance, y=meltwater_depths, pch=25, col="black", bg="red", cex=1.2)
 
-meltwater_map
 dev.off()
 
 

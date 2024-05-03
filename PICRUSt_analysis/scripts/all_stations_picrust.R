@@ -316,4 +316,11 @@ barplot_free <- ggplot(type_free, aes(x = factor(Station, level = level_order), 
   geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
-  ggtitle("Particle-associated (>3 µm)")
+  ggtitle("Free-living (<0.2 µm)")
+
+coastal_combined <- ggarrange(
+  barplot_free, barplot_part, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+ggsave("PICRUSt_analysis/graphics/all_vs_iron-related_barplot.pdf", width = 13, height = 7, dpi = 150)

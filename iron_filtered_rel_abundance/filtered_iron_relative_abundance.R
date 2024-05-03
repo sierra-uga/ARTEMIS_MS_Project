@@ -13,7 +13,8 @@ library(tidyverse)
 # list based on table !
 phylum_to_keep=c("SAR324 clade(Marine group B)") #BACTEROIDOTA = Flavobacteriales order
 class_to_keep=c("Zetaproteobacteria","Actinobacteria","Acidimicrobiia")
-order_to_keep=c("Desulfuromonadales","Rhodobacterales","Alteromonadales","Nitrosomonadales","Acidithiobacillales","SAR86 clade","Rhodospirillales","Acidiferrobacterales") # removed Flavobacteriales
+order_to_keep=c("Desulfuromonadales","Rhodobacterales","Alteromonadales","Nitrosomonadales",
+                "Acidithiobacillales","SAR86 clade","Rhodospirillales","Acidiferrobacterales") # removed Flavobacteriales
 family_to_keep=c("Acetobacteraceae","Alteromonadaceae", "Nitrosomonadaceae")
 genus_to_keep=c("Caldithrix","Acidibater","SUP05 cluster","Acinetobacter") # replaced Pseudomonadales in order with acinetobacter
 species_to_keep=c("Methylococcaceae bacterium SF-BR")

@@ -45,18 +45,18 @@ colnames(KO_joined) <- c("Type", "#NAME")
 KO_iron_abundance_type <- left_join(KO_iron_abundance_data, KO_joined) %>% column_to_rownames("#NAME")
 ### all stations -- stacked barplot ##
 test <- aggregate(. ~ Type, data = KO_iron_abundance_type, FUN = mean)
-dataframe_to_combine <- coastal_metadata %>% select(sample_name, Coastal_Current_Number, Station, Filter_pores) 
+dataframe_to_combine <- coastal_metadata %>% select(sample_name, Coastal_Current_Number, Station, Filter_pores, Depth_Threshold) 
 df_test <- as.data.frame(t(test)) 
 colnames(df_test) <- df_test[1,]
 df_test <- df_test[-1,]
 df_test$sample_name <- rownames(df_test)
 test_up <- left_join(df_test, dataframe_to_combine)
 test_up_long <- test_up %>% # combines by type
-  pivot_longer(cols = -c(Station, Coastal_Current_Number, Filter_pores, sample_name),
+  pivot_longer(cols = -c(Station, Coastal_Current_Number, Filter_pores, Depth_Threshold, sample_name),
                names_to = "Type",
                values_to = "Abundance")
 test_up_long$Abundance <- as.numeric(test_up_long$Abundance)
-agg_test <- aggregate(Abundance ~ Coastal_Current_Number * Filter_pores * Type, data = test_up_long, FUN = mean)
+agg_test <- aggregate(Abundance ~ Coastal_Current_Number * Filter_pores * Type * Depth_Threshold, data = test_up_long, FUN = mean)
 agg_test$Filter_pores <- ifelse(agg_test$Filter_pores >= 0.2 & agg_test$Filter_pores <= 2.0, "free-living", 
                                 ifelse(agg_test$Filter_pores == 3.0, "particle-associated", agg_test$Filter_pores))
 
@@ -65,10 +65,12 @@ type_free <- agg_test %>% filter(Filter_pores == "free-living") %>% filter(Type 
 pathway_colors <- c("darkred", "darkgoldenrod", "#e66101", "darkorange", "#35978f", "#c7eae5", "seagreen", "dodgerblue3")
 type_free$Type <- as.factor(type_free$Type) # setting the Order columns to factor
 names(pathway_colors) <- levels(type_free$Type)
-type_free <- aggregate(Abundance ~ Coastal_Current_Number * Type, data = type_free, FUN = mean)
+type_free <- aggregate(Abundance ~ Coastal_Current_Number * Type * Depth_Threshold, data = type_free, FUN = mean)
 
-barplot_free <- ggplot(type_free, aes(x = factor(Coastal_Current_Number), y = Abundance, fill = Type)) + # facet grid seperates by different levels, horizontally
-  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
+barplot_free <- ggplot(type_free, aes(x = factor(Coastal_Current_Number), y = Abundance, fill = Type)) + 
+  facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate"))~.) + # facet grid seperates by different levels, horizontally
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + 
+  # adds black outline to boxes
   scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
   scale_fill_manual(values = pathway_colors, drop = FALSE) + # set the colors with custom colors (myColors)
   theme(axis.title.x = element_blank(),
@@ -82,7 +84,8 @@ barplot_free <- ggplot(type_free, aes(x = factor(Coastal_Current_Number), y = Ab
   ggtitle("Free-living (<0.2 µm)")
 
 type_part <- agg_test %>% filter(Filter_pores == "particle-associated") %>% filter(Type %in% wanted_types)
-barplot_part <- ggplot(type_part, aes(x = factor(Coastal_Current_Number), y = Abundance, fill = Type)) + # facet grid seperates by different levels, horizontally
+barplot_part <- ggplot(type_part, aes(x = factor(Coastal_Current_Number), y = Abundance, fill = Type)) + 
+  facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate"))~.) + # facet grid seperates by different levels, horizontally
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
   scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
   scale_fill_manual(values = pathway_colors, drop = FALSE) + # set the colors with custom colors (myColors)
@@ -95,3 +98,13 @@ barplot_part <- ggplot(type_part, aes(x = factor(Coastal_Current_Number), y = Ab
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
   ggtitle("Particle-associated (>3 µm)")
+
+coastal_combined <- ggarrange(
+  barplot_free, barplot_part, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+annotate_figure(coastal_combined, top = text_grob("\n Coastal Current (Transect 3)", 
+                                                  color = "black", face = "bold", size = 18))
+
+ggsave("PICRUSt_analysis/graphics/coastal_type_barplot.pdf", width = 13, height = 7, dpi = 150)
