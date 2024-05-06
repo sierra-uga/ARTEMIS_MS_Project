@@ -12,3 +12,209 @@ casts <- list()
 for (ifile in 1:length(files)) {
   casts[[ifile]] <- read.ctd.sbe(files[ifile])
 }
+
+
+# Define the list of casts (assuming you have something similar)
+casts <- list()  # This should be your actual list of cast objects
+
+# Target station values
+target_stations <- c("89", "132", "106", "20", "198", "2", "4", "12", "115", "12.3", "14", "78", "56a", "56b", "22", "68", "146", "181", "174", "151.2", "153")
+
+# Initialize a list to hold the results
+matched_casts <- list()
+
+# Loop through each cast
+for (i in seq_along(casts)) {
+  # Extract station metadata, assuming casts are S4 objects
+  station_value <- casts[[i]]@metadata[["station"]]
+  
+  # Check if the station value is in the target list
+  if (station_value %in% target_stations) {
+    matched_casts[[length(matched_casts) + 1]] <- casts[[i]]
+  }
+}
+
+
+# Now matched_casts contains all the casts whose station metadata matches the target values
+# You can print or return this list
+print(matched_casts)
+
+updat <- c(matched_casts, casts[[3]])
+
+plotTS(casts)
+
+coastal_stations <- c(casts[[153]], casts[[202]], casts[[169]], casts[[26]], casts[[16]], casts[[142]],
+                      casts[[66]], casts[[128]], casts[[216]])
+meltwater_stations <- c(casts[[116]], casts[[128]], casts[[216]])
+waterfall_stations <- c(casts[[269]], casts[[3]], casts[[5]], casts[[13]], casts[[16]], casts[[66]], casts[[33]], casts[[116]])  #station 22/56b
+
+all_stations <- unique(c(coastal_stations, meltwater_stations, waterfall_stations))
+map_stations <- as.section(casts, sectionId = "map")
+
+station_numbers <- sapply(matched_casts, function(cast) cast@metadata[["station"]])
+
+
+data <- read.table("ocean_section_plots/required_files/CTD_meta.csv", sep=",", header=TRUE)
+dt <- select(data, c("Station", "Latitude", "Longitude")) %>% na.omit(.) %>% distinct(., Station, .keep_all= TRUE) %>%
+  rename(., c(Latitude = lat, Longitude = lon))
+
+test_ctd <- as.ctd(data$Salinity, data$Temperature, data$PrDM, data$Longitude, data$Latitude, data$"Sbeox0ML/L", station=data$Station)
+test_sec <- as.section(data$Salinity, data$Temperature, data$PrDM, data$Longitude, data$Latitude, station=data$Station)
+test_s <- sectionGrid(test_sec, p=seq(0,1500,5), method="boxcar") # best method for CTD data
+
+drawPalette(colormap=test_s, zlab="Oxygen")
+
+plotTS(all_s, pch=19, col=all_Ocm$zcol, mar=par("mar"), type="p") # the mar adjusts for the palette
+
+
+all_points <- basemap(data = dt, limits = c(-120, -109, -75, -71.5), bathymetry = TRUE, rotate = TRUE, glaciers = TRUE, bathy.style="rcb") +
+  ggspatial::geom_spatial_point(data = dt, aes(x = Longitude, y = Latitude), color = "black", pch=23, cex=1.2, fill="red") + 
+  ggspatial::geom_spatial_text_repel(
+    data = dt, aes(x = Longitude, y = Latitude, label = Station), cex=3)
+
+ggsave(file="ocean_section_plots/graphics/station_map.pdf", width=7, height=6)
+
+
+all <- as.section(filtered_casts, sectionId = "all")
+plot(all, which='map')
+
+# Define constants
+
+#calcualte gade line
+#0.5 °C and 34.55  (via paper)
+#1.1 and 34.8
+Tocean <- 1
+Socean <- 34.8
+Lf <- 334
+Cp <- 3.97
+
+# Define a function for Tp(Sp) based on the equation
+Tp <- function(Sp) {
+  Tocean + Lf/Cp * (1 - Socean/Sp)
+}
+
+# Generate a range of salinities
+Sp <- seq(32, 38, by = 0.01)
+
+# Calculate corresponding temperatures using the Tp function
+Tp_values <- Tp(Sp)
+
+
+#plot for the actual line
+# Plot Tp vs. Sp
+plot(Sp, Tp_values, type = "l", xlab = "Salinity (Sp)", ylim=c(-2,2), ylab = "Temperature (Tp)", main = "Temperature vs. Salinity")
+
+
+
+plotTS(all, pch=19, col=all_Ocm$zcol, mar=par("mar"), type="p") # the mar adjusts for the palette
+
+
+all_s <- sectionGrid(all, p=seq(0,1500,5), method="boxcar") # best method for CTD data
+all_nstation <- length(all_s[['station']])
+all_p <- unique(all_s[['pressure']])
+
+all_np <- length(all_p)
+
+all_T <- all_O <- all_S <- all_P <- array(NA, dim=c(all_nstation, all_np))
+for (i in 1:all_nstation) {
+  all_T[i, ] <- all_s[['station']][[i]][['temperature']]
+  all_S[i, ] <- all_s[['station']][[i]][['salinity']]
+  all_O[i, ] <- all_s[['station']][[i]][['oxygen2']]
+  all_P[i, ] <- all_s[['station']][[i]][['pressure']]
+}
+
+all_ox_min <- 4
+all_ox_max <- 10
+
+all_station <- all_s[['station']]
+
+# colormaps
+all_Tcm <- colormap(all_T, breaks=seq(-2, 2, 0.5), col=oceColorsTemperature) # parameters for Temperature colormap
+all_Ocm <- colormap(all_O, breaks=seq(all_ox_min, all_ox_max, 0.25), col=oceColorsViridis) # parameters for Oxygen colormap
+
+
+cm <- colormap(all_s[["oxygen2"]], breaks=seq(all_ox_min, all_ox_max, 0.25))
+
+all_p <- all_s[['pressure']]
+
+pdf(file="ocean_section_plots/graphics/temperature_salinity_plot.pdf", width=7, height=6)
+drawPalette(colormap=cm, zlab=expression(paste("Oxygen [mL L"^"-1","]")))
+plotTS(all_s, inSitu=TRUE, add=TRUE, pch=16, col=cm$zcol, type="n", Slim = c(33.5, 35), referencePressure = all_p, eos = "gsw", drawFreezing = TRUE, mar=par("mar")+c(0, 0, 0, .2))
+plotTS(all_s, inSitu=TRUE, pch=16, col=cm$zcol, type="p", Slim = c(33.5, 35), referencePressure = all_p, eos = "gsw", drawFreezing = TRUE, mar=par("mar")+c(0, 0, 0, .2))
+lines(Sp, Tp_values, col="gray")
+dev.off()
+
+
+# Define the prefix
+prefix <- "d:\\data\\raw\\nbp2202_"
+
+# Define target identifiers based on the format of hexfilename
+target_identifiers <- c("ctd005", "ctd008", "ctd018", "ctd022", "ctd033", "ctd296", "ctd041", 
+                        "ctd075", "ctd126", "ctd139", "ctd155", "ctd167", "ctd184", "ctd194", 
+                        "ctd220", "ctd235", "ctd245", "ctd258", "ctd267", "ctd271", "ctd279")
+
+# Concatenate prefix with each target identifier
+target_identifiers_with_prefix <- paste0(prefix, target_identifiers, ".hex")
+target_identifiers <- target_identifiers_with_prefix
+
+# Initialize a list to hold the filtered casts
+filtered_casts <- list()
+
+# Loop through each cast
+for (i in seq_along(casts)) {
+  # Extract hexfilename from the metadata, assuming it's an S4 object
+  hexfilename <- casts[[i]]@metadata[["hexfilename"]]
+  
+  # Extract the significant part of the filename
+  # Adjusted regex for Windows paths and correct extraction
+  significant_part <- sub(".*\\\\(CTD\\d+)\\.hex$", "\\1", basename(hexfilename))
+  
+  # Convert the extracted part to lowercase
+  significant_part <- tolower(significant_part)
+  
+  # Check if the extracted part is in the target identifiers list
+  if (significant_part %in% target_identifiers) {
+    filtered_casts[[length(filtered_casts) + 1]] <- casts[[i]]
+  }
+}
+
+# Print or inspect the filtered casts
+if (length(filtered_casts) > 0) {
+  print(filtered_casts)
+} else {
+  print("No casts matched the criteria.")
+}
+
+
+
+library(ocedata) #for the coastlineWorldFine data
+data(coastlineWorldFine)
+
+
+c(-120, -109, -75, -71.5)
+
+mp <- function() {
+  mapPlot(coastlineWorldFine, projection="+proj=stere +lon_0=-90 +lat_0=90",
+          longitudelim = c(-115, -111),
+          latitudelim = c(-74.5, -71), col='grey')
+}
+
+
+library(marmap)
+b <- as.topo(getNOAA.bathy(-180, 0, -55, -90, keep=TRUE))
+
+
+cm <- colormap(all_s[["pressure"]], col=oceColorsGebco)
+cm <- colormap(seq(-4000, 0, 500), col=oceColorsGebco)
+drawPalette(colormap=cm, drawTriangles = TRUE)
+
+pdf(file="ocean_section_plots/graphics/station_alt.pdf", width=7, height=6)
+drawPalette(colormap=cm, zlab = "Depth [m]")
+mp()
+mapImage(b, col=oceColorsGebco, breaks=seq(-4000, 0, 500))
+mapPolygon(coastlineWorldFine, col='grey')
+mapGrid() 
+mapPoints(all, col="black", pch=25, cex=0.7, bg="red")
+dev.off()
+
+
