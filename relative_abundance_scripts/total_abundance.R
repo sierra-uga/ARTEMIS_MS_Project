@@ -9,6 +9,7 @@ library("fantaxtic")
 library("ggpubr")
 library(tidyverse)
 library(RColorBrewer)
+library("speedyseq")
 
 ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
@@ -36,29 +37,35 @@ ps0 <- merge_samples2(ps_free, "unique_depth",
 ps1 <- merge_samples2(ps_part, "unique_depth",
                       fun_otu = mean
 )
+
 ##################
 #  data culling  #
 ##################
 
 # Create a data frame for freeliving, agglomerate by Order, transform to rel.abundance
-data_free <- ps0 %>%
+data_free <- ps_free %>%
   tax_glom(taxrank = "Order") %>% # agglomerate at Order level, can change to different taxonomic level!
   transform_sample_counts(function(x) {x/sum(x)}) # Transform to rel. abundance (normalize data
 
 data_top_free <- data_free %>%
   psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
-  filter(Abundance > 0.02) %>%  # Filter out low abundance taxa
-  arrange(watertype)# arrange by Order
+  filter(Abundance > 0.02) %>% # Filter out low abundance taxa
+  arrange(Order)
+
+data_top_free <- aggregate(Abundance ~ Station * Order * More_Depth_Threshold, data = data_top_free, FUN = mean)
+
 
 # particle-associated
-data_part <- ps1 %>%
+data_part <- ps_part %>%
   tax_glom(taxrank = "Order") %>% # agglomerate at Order level
   transform_sample_counts(function(x) {x/sum(x)} )  # Transform to rel. abundance (normalize data)
 
 data_top_part <- data_part %>%
   psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
-  filter(Abundance > 0.02) %>%   # Filter out low abundance taxa
-  arrange(Order)  # arrange by Order
+  filter(Abundance > 0.02) %>%
+  arrange(Order)# Filter out low abundance taxa
+
+data_top_part <- aggregate(Abundance ~ Station * Order * More_Depth_Threshold, data = data_top_part, FUN = mean)
 
 level_order_prev <- c("STN198", "STN002", "STN004", "STN181", "STN012", "STN115", "STN12.3", "STN20", "STN014", "STN089",
                  "STN132", "STN106", "STN078", "STN056a", "STN056b", "STN22", "STN068", "STN146", "STN174",
@@ -85,7 +92,7 @@ names(myColors) <- levels(c(data_top_free$Order, data_top_part$Order)) # setting
 #    FREE-LIVING     # 
 ######################
 
-barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate", "Bottom_water"))~.) + # facet grid seperates by different levels, horizontally
+barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(More_Depth_Threshold, levels=c("Surface","Intermediate_3", "Intermediate_2", "Intermediate_1", "Bottom_water"))~.) + # facet grid seperates by different levels, horizontally
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
   scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
   scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
@@ -114,7 +121,7 @@ ggsave("graphics/free_living_barplot_3.pdf", width = 8, height = 6, dpi = 150)
 ######################
 
 # the following plot is basically the same as above, look at annotation for free-living barplot if confused about what each line does!
-barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(Depth_Threshold, levels=c("Surface", "Intermediate", "Bottom_water"))~., scales = "free_x", space = "free_x") +
+barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(More_Depth_Threshold, levels=c("Surface","Intermediate_3", "Intermediate_2", "Intermediate_1", "Bottom_water"))~., scales = "free_x", space = "free_x") +
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors, drop = FALSE) +
