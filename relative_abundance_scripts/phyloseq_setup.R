@@ -34,6 +34,8 @@ df <- metatable %>%
 df <- df %>%
   group_by(Station, Depth_Threshold) %>%
 mutate(unique_depth = paste0(Station, Depth_Threshold))
+
+df <- df %>% mutate_at(c(21:26, 31:40), as.numeric) 
 df <- as.data.frame(df) 
 
 # Define a function to extract the replicate number

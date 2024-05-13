@@ -92,7 +92,7 @@ names(myColors) <- levels(c(data_top_free$Order, data_top_part$Order)) # setting
 #    FREE-LIVING     # 
 ######################
 
-barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(More_Depth_Threshold, levels=c("Surface","Intermediate_3", "Intermediate_2", "Intermediate_1", "Bottom_water"))~.) + # facet grid seperates by different levels, horizontally
+barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(More_Depth_Threshold, levels=c("Surface", "Mid-Surface", "Mid", "Mid-Bottom", "Bottom"))~.) + # facet grid seperates by different levels, horizontally
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
   scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
   scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
@@ -104,10 +104,9 @@ barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_orde
   theme(axis.title.x = element_blank(),
         axis.text.x = element_text(size=9, angle=90),
         axis.title.y = element_blank(),
-        legend.position = "none",
-        panel.spacing.x = unit(0, "points"), # Reducing space between facets
-        strip.background = element_blank(), # Optionally hide the strip background for a cleaner look
-        panel.border = element_blank()) + # Optionally remove panel borders
+        legend.position = "none"
+        # Reducing space between facets
+        ) + # Optionally remove panel borders
   geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
@@ -121,7 +120,7 @@ ggsave("graphics/free_living_barplot_3.pdf", width = 8, height = 6, dpi = 150)
 ######################
 
 # the following plot is basically the same as above, look at annotation for free-living barplot if confused about what each line does!
-barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(More_Depth_Threshold, levels=c("Surface","Intermediate_3", "Intermediate_2", "Intermediate_1", "Bottom_water"))~., scales = "free_x", space = "free_x") +
+barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(More_Depth_Threshold, levels=c("Surface", "Mid-Surface", "Mid", "Mid-Bottom", "Bottom"))~., scales = "free_x", space = "free_x") +
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_fill_manual(values = myColors, drop = FALSE) +
@@ -134,10 +133,9 @@ barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_orde
         axis.text.x = element_text(size=9, angle=90),
         axis.title.y = element_blank(),
         axis.text.y = element_text(size=9 , color="white"),
-        legend.position = "none",
-        panel.spacing.x = unit(0, "points"), # Reducing space between facets
-        strip.background = element_blank(), # Optionally hide the strip background for a cleaner look
-        panel.border = element_blank()) + # Optionally remove panel borders
+        legend.position = "none") +# Reducing space between facets
+ # Optionally hide the strip background for a cleaner look
+# Optionally remove panel borders
   geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
   #theme(plot.title = element_text(hjust = 0.5, size=17)) +
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
