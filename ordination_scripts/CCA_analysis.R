@@ -13,73 +13,18 @@ library("ggpubr")
 # phloseq setup  #
 ##################
 
-# feature table
-ASV <- qza_to_phyloseq(features="table.qza")
-
-# read in metadata
-metatable <- read.delim("artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names="Sample.illumina") 
-# fixing metadata
 # metatable <- metatable[-159,] # removes row 89_200_FIL_R2 because taxasum was 0.
 metatable <- filter(metatable, Sample.Control == "True.Sample") %>% 
   mutate_at(c(20:27, 29:38, 44), as.numeric) # remove blanks, convert character columns for env. data to numeric
-metatable <- metatable[-(which(metatable$Station %in% c("STN153", "STN174", "STN089", "STN151.2", "STN198", "STN002", "STN004"))),] 
+#metatable <- metatable[-(which(metatable$Station %in% c("STN153", "STN174", "STN089", "STN151.2", "STN198", "STN002", "STN004"))),] 
 
-
-# importing (continued)
-row.names(metatable) <- metatable[["SampleID"]]
-metatable <- metatable %>% select(SampleID, everything())
-META <- sample_data(metatable)
-
-
-list_true <- replace_na(META$True_Flow, "Other") #replace NA with "Other" for coloring
-META$True_Flow <- list_true # changing actual column in dataframe
-
-# importing taxonomy
-taxonomy <- read.delim("taxonomy.tsv", sep="\t", header=TRUE) 
-names(taxonomy) <- c("row", "tax", "Confidence") # rename columns
-row.names(taxonomy) <- taxonomy[[1]] # making the row names the tax name
-taxonomy <- taxonomy[,(-1)] # removing the duplicate column
-# SILVA taxonomy is in one column, separate to be able to work with different taxonomic levels:
-taxonomy <-  separate(taxonomy, tax, c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species", 
-                                       "D7", "D8", "D9", "D10", "D11", 
-                                       "D12", "D13", "D14"), sep = ";", fill = "right")
-taxonomy <- taxonomy[,c(1:7)] # select only first 1-7 columns (to genus)
-nm1 <- colnames(taxonomy)
-taxonomy[nm1] <- lapply(taxonomy[nm1], gsub, pattern = "D_.__", replacement = "")
-
-# turn the otu_table into a data.frame
-taxonomy <- taxonomy[-1, ] # removes first row of taxonomy table
-
-# change tax table
-genus <- taxonomy$Genus 
-
-taxonomy$TAX <- genus # make new column with 
-taxonomy <- select(taxonomy, 8, 1:7) # moves new column to front
-# OPTIONAL - makes actual row names the genus
-.rowNamesDF(taxonomy, make.names=TRUE) <- genus
-names <- row.names(taxonomy)
-row.names(ASV) <- names
-
-taxmat <- as.matrix(taxonomy)
-TAX <- tax_table(taxmat) #covert taxonomy table to phyloseq object
-
-# import rooted tree
-TREE <- qza_to_phyloseq(tree="rooted-tree.qza")
-TREE[["tip.label"]] <- names
-
-# merge all imported objects into phyloseq
-ps <- merge_phyloseq(ASV, TAX, META, TREE)
-ps
 
 ##################
 #  data culling  #
 ##################
 
-Samples_toRemove <- c("STN089.200.fil.dura.r2", "STN078.1040.pre.poly.3.LG")  # remove from phyloseq
-ps <- subset_samples(ps, !(SampleID %in% Samples_toRemove)) # remove from phyloseq
-
 # select only bacteria, remove chloroplasts
-ps_sub <- ps %>%
+ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
     Kingdom == "Bacteria" &
       Family  != "Mitochondria" &
@@ -88,40 +33,76 @@ ps_sub <- ps %>%
       Family  != "Mitochondria" 
   )
 
-ps_sub <- ps_sub %>% prune_taxa(taxa_sums(.) > 0, .) # remove 0 taxasums
+ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample")
+# Assuming ps_sub is your phyloseq object
+ps_sub_depth <- subset_samples(ps_sub, More_Depth_Threshold %in% c("Bottom", "T-min"))
+ps_sub_depth_no_polynya <- subset_samples(ps_sub_depth, Transect_Name %in% c("transect1"))
+ps_sub_outflow <- subset_samples(ps_sub, True_Flow %in% c("Outflow"))
+
+combined_ps <- merge_phyloseq(ps_sub_depth_no_polynya, ps_sub_outflow)
+ps_sub_depth_no_polynya <- subset_samples(ps_sub_depth_no_polynya, !Location %in% c("Cont_Shelf"))
+ps_sub_depth_no_polynya <- subset_samples(ps_sub_depth_no_polynya, !Location %in% c("Getz"))
+temp <- sample_data(ps_sub)
+
+temp$Local <- "Other"
+
+# Update "Local" column where "Location" is "Open_polynya"
+temp$Local[temp$Location == "Open_polynya"] <- "Open_Polynya"
+
+temp$More_Depth_Threshold[temp$More_Depth_Threshold == "Mid-Bottom"] <- "T-min"
+temp$More_Depth_Threshold[temp$More_Depth_Threshold == "Mid-Surface"] <- "Mixed Layer"
+
+sample_data(ps_sub) <- temp
+
+Samples_toRemove <- c("STN089.200.fil.dura.r2", "STN078.1040.pre.poly.3.LG")  # remove from phyloseq
+ps_sub <- subset_samples(ps_sub, !(sample.illumina %in% Samples_toRemove)) # remove from phyloseq
+
+ps_sub <- ps_sub %>% prune_taxa(taxa_sums(.) > 0, .) %>% prune_samples(sample_sums(.)>0, .)# remove 0 taxasums
+
+uwu <- otu_table(ps_sub)
+
+uwu <- uwu[rowSums(uwu) !=0,
+           c(which(colSums(uwu) !=0))] # REMOVES 0s for CCA
+
+uwu <- na.omit(uwu)
+otu_table(ps_sub) <- uwu
 
 # free-living phyloseq
 ps_free <- ps_sub %>% subset_samples(Filter_pores == "0.2") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_free <- combined_ps %>% subset_samples(Filter_pores == "0.2") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 # particle-associated phyloseq
 ps_part <- ps_sub %>% subset_samples(Filter_pores >= "2") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- combined_ps %>% subset_samples(Filter_pores >= "2") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 # top taxa from all taxa
 top_all <- top_taxa(ps_sub, 
-                     tax_level = "Genus", 
-                     n_taxa = 10)
+                    tax_level = "Order", 
+                    n_taxa = 10)
 
 # selecting the top free-living taxa
 top_free <- top_taxa(ps_free, 
-                tax_level = "Genus", 
-                n_taxa = 10)
+                     tax_level = "Genus", 
+                     n_taxa = 10)
 
 # selecting the top particle-associated taxa
 top_part <- top_taxa(ps_part, 
-                tax_level = "Genus", 
-                n_taxa = 10)
+                     tax_level = "Genus", 
+                     n_taxa = 10)
 
 top_taxa_free <- as.data.frame(top_free[["top_taxa"]])
 top_taxa_part <- as.data.frame(top_part[["top_taxa"]])
+
+
 
 ##################
 # CCA ordination #
 ##################
 
 # Ordinate 2
-cca <- ordinate(ps_sub, method = "CCA", formula = ~ watertype)
-cca1 <- ordinate(ps_free, method = "CCA", formula = ~ watertype)
-cca2 <- ordinate(ps_part, method = "CCA", formula = ~ watertype)
+cca <- ordinate(ps_sub_depth_no_polynya, method = "CCA", formula = ~ Latitude + Longitude + Salinity + Temperature + Sb_Oxygen)
+cca1 <- ordinate(ps_free, method = "CCA", formula = ~ Depth + Latitude + Longitude + Salinity + Temperature + Sb_Oxygen)
+cca2 <- ordinate(ps_part, method = "CCA", formula = ~ Depth + Latitude + Longitude + Salinity + Temperature + Sb_Oxygen )
 # Ordinate 3
 top_cca <- ordinate(top_all$ps_obj, "CCA", formula= ~ watertype)
 top_cca1 <- ordinate(top_free$ps_obj, "CCA", formula= ~ watertype)
@@ -130,34 +111,36 @@ top_cca2 <- ordinate(top_part$ps_obj, "CCA", formula= ~ watertype)
 ## aesthetics
 # set ggplot shortcut to remove grid
 remove_grid <- theme(legend.position = "bottom") + theme_bw() + # removes grid
-        theme(panel.grid.major = element_blank(),
-              panel.grid.minor = element_blank(), 
-              axis.line = element_line(colour = "black"))
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.line = element_line(colour = "black"))
 
 # color for ggplot points
-color_breaks <- unique(sample_data(ps_sub)$watertype)
-color_point <- scale_color_manual(values = c("darkgreen", "dodgerblue", "red2", "blueviolet", "aquamarine3", "gray"),
-                   name = "Water Mass",
-                   breaks = color_breaks,
-                   labels = color_breaks)
+color_breaks <- c("Surface", "Mixed Layer", "Mid", "T-min", "Bottom")
+color_point <- scale_color_manual(values = c("seagreen", "dodgerblue","purple", "darkred", "red2"),
+                                  name = "Depth Threshold",
+                                  breaks = color_breaks,
+                                  labels = color_breaks)
 
 # Both free-living + particle-associated CCA
 all_CCA <- plot_ordination(ps_sub, cca,
-                                   type = "samples", color = "watertype")
-all_CCA <- all_CCA + geom_point(size = 2) + remove_grid + color_point
+                           type = "samples", color="Station", shape="Filter_pores")
+all_CCA <- all_CCA + geom_point(size = 2) + remove_grid
 all_CCA
 ggsave("graphics/all_CCA.pdf", width = 7, height = 6, dpi = 150)
 
 # Free-living CCA 
 free_CCA <- plot_ordination(ps_free, cca1,
-                     type = "samples", color = "watertype")
-f_CCA <- free_CCA + geom_point(size = 2) + remove_grid + color_point
+                            type = "samples", color="Flow_of_CDW", shape="Location")
+f_CCA <- free_CCA + geom_point(size = 2.5, alpha=0.7, fill="black") + remove_grid  #+ color_point +# X for other locations
+#scale_shape_manual(values = c(16, 4)) # 1 for circle, 4 for Xremove_gri
 f_CCA
 
 # Particle-associated CCA
 part_CCA <- plot_ordination(ps_part, cca2,
-                                   type = "samples", color = "watertype")
-p_CCA <- part_CCA + geom_point(size = 2) + remove_grid + color_point
+                            type = "samples", color = "Flow_of_CDW", shape="Location")
+p_CCA <- part_CCA + geom_point(size = 2.5, alpha=0.7) + remove_grid #+ color_point + 
+#scale_shape_manual(values = c(16, 4)) 
 p_CCA
 
 # split plot for both communities
@@ -176,6 +159,54 @@ ggsave("graphics/split_CCA.pdf", width = 7, height = 6, dpi = 150)
 #  Using function to  #
 #   make split graph  #
 #######################
+library(ggrepel)
+
+arrowmat = vegan::scores(cca, display = "bp")
+labels <- c("Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", "Salinity", "Temperature", "Oxygen", "Latitude", "Longitude")
+# Add labels, make a data.frame
+arrowdf <- data.frame(labels = rownames(arrowmat), arrowmat)
+# Define the arrow aesthetic mapping
+arrow_map = aes(xend = 1.6 * CCA1, yend = 1.6 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
+                label = labels)
+label_map = aes(x = 1.7 * CCA1, y = 1.7 * CCA2, shape = NULL, color = NULL, 
+                label = labels)
+# Make a new graphic
+arrowhead = arrow(length = unit(0.02, "npc"))
+p0 = all_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "darkgray", 
+                            arrow = arrowhead) + geom_text_repel(label_map, size = 3, data = arrowdf, max.overlaps =  30)
+p0
+
+arrowmat = vegan::scores(cca1, display = "bp")
+labels <- c("Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", "Salinity", "Temperature", "Oxygen", "Latitude", "Longitude")
+# Add labels, make a data.frame
+arrowdf <- data.frame(labels = rownames(arrowmat), arrowmat)
+# Define the arrow aesthetic mapping
+arrow_map = aes(xend = 1.6 * CCA1, yend = 1.6 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
+                label = labels)
+label_map = aes(x = 1.7 * CCA1, y = 1.7 * CCA2, shape = NULL, color = NULL, 
+                label = labels)
+# Make a new graphic
+arrowhead = arrow(length = unit(0.02, "npc"))
+p1 = f_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "darkgray", 
+                          arrow = arrowhead) + geom_text_repel(label_map, size = 3, data = arrowdf, max.overlaps =  30)
+p1
+
+
+
+arrowmat = vegan::scores(cca2, display = "bp")
+labels <- c("Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", "Salinity", "Temperature", "Oxygen", "Latitude", "Longitude")
+# Add labels, make a data.frame
+arrowdf <- data.frame(labels = rownames(arrowmat), arrowmat)
+# Define the arrow aesthetic mapping
+arrow_map = aes(xend = 1.3 * CCA1, yend = 1.3 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
+                label = labels)
+label_map = aes(x = 1.5 * CCA1, y = 1.5 * CCA2, shape = NULL, color = NULL, 
+                label = labels)
+# Make a new graphic
+arrowhead = arrow(length = unit(0.02, "npc"))
+p2 = p_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "darkgray", 
+                          arrow = arrowhead, arrow.fill="black") + geom_text_repel(label_map, size = 3, data = arrowdf)
+p2
 
 # use CCA_ord function (see files) to make graphs
 final_free_plot <- CCA_ord(top_cca1, free_CCA, "CCA Top 10 Taxa (Genus)", final_free_plot)
@@ -183,23 +214,21 @@ final_part_plot <- CCA_ord(top_cca2, part_CCA, "CCA Top 10 Taxa (Genus)", final_
 
 # split plot for both communities
 ggarrange(
-  final_free_plot, final_part_plot, labels = c("F", "P"),
+  p1, p2, labels = c("F", "P"),
   common.legend = TRUE, legend = "right"
 )
-ggsave("graphics/split_CCA_genus.pdf", width = 11, height = 8, dpi = 150)
+ggsave("graphics/split_CCA_with_inflow_outflow.pdf", width = 11, height = 8, dpi = 150)
 
 
-arrowmat1 <- scores(top_cca1, display = "species")
-arrowmat2 <- scores(top_cca2, display = "species")
+arrowmat1 <- scores(cca1, display = "species")
+arrowmat2 <- scores(cca2, display = "species")
 arrowdf1 <- data.frame(labels = rownames(arrowmat1), arrowmat1)
 
 # Define the arrow aesthetic mapping
 arrow_map1 = aes(xend = CCA1, yend = CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
-                label = labels)
+                 label = labels)
 
 # Add labels, make a data.frame
 arrowdf_free <- data.frame(labels = rownames(arrowmat1), arrowmat1)
 
 arrowdf_part <- data.frame(labels = rownames(arrowmat2), arrowmat2)
-
-
