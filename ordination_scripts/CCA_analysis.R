@@ -101,8 +101,8 @@ top_taxa_part <- as.data.frame(top_part[["top_taxa"]])
 
 # Ordinate 2
 cca <- ordinate(ps_sub_depth_no_polynya, method = "CCA", formula = ~ Latitude + Longitude + Salinity + Temperature + Sb_Oxygen)
-cca1 <- ordinate(ps_free, method = "CCA", formula = ~ Depth + Latitude + Longitude + Salinity + Temperature + Sb_Oxygen)
-cca2 <- ordinate(ps_part, method = "CCA", formula = ~ Depth + Latitude + Longitude + Salinity + Temperature + Sb_Oxygen )
+cca1 <- ordinate(ps_free, method = "CCA", formula = ~ Location + CTD_Depth + Salinity + Temperature + Sb_Oxygen)
+cca2 <- ordinate(ps_part, method = "CCA", formula = ~ Location + CTD_Depth + Salinity + Temperature + Sb_Oxygen)
 # Ordinate 3
 top_cca <- ordinate(top_all$ps_obj, "CCA", formula= ~ watertype)
 top_cca1 <- ordinate(top_free$ps_obj, "CCA", formula= ~ watertype)
@@ -122,6 +122,11 @@ color_point <- scale_color_manual(values = c("seagreen", "dodgerblue","purple", 
                                   breaks = color_breaks,
                                   labels = color_breaks)
 
+shapes <- scale_shape_manual(values = c(16,4),
+                                  name = "Area",
+                                  breaks = c("Open_Polynya", "Other"),
+                                  labels = c("Open Polynya", "Other Stations"))
+
 # Both free-living + particle-associated CCA
 all_CCA <- plot_ordination(ps_sub, cca,
                            type = "samples", color="Station", shape="Filter_pores")
@@ -131,16 +136,16 @@ ggsave("graphics/all_CCA.pdf", width = 7, height = 6, dpi = 150)
 
 # Free-living CCA 
 free_CCA <- plot_ordination(ps_free, cca1,
-                            type = "samples", color="Flow_of_CDW", shape="Location")
-f_CCA <- free_CCA + geom_point(size = 2.5, alpha=0.7, fill="black") + remove_grid  #+ color_point +# X for other locations
-#scale_shape_manual(values = c(16, 4)) # 1 for circle, 4 for Xremove_gri
+                            type = "samples", color="More_Depth_Threshold", shape="Local")
+f_CCA <- free_CCA + geom_point(size = 2.5, alpha=0.7, fill="black") + remove_grid  + color_point +# X for other locations
+ shapes + theme(text = element_text(family = "Helvetica"))
 f_CCA
 
 # Particle-associated CCA
 part_CCA <- plot_ordination(ps_part, cca2,
-                            type = "samples", color = "Flow_of_CDW", shape="Location")
-p_CCA <- part_CCA + geom_point(size = 2.5, alpha=0.7) + remove_grid #+ color_point + 
-#scale_shape_manual(values = c(16, 4)) 
+                            type = "samples", color = "More_Depth_Threshold", shape="Local")
+p_CCA <- part_CCA + geom_point(size = 2.5, alpha=0.7) + remove_grid + color_point + 
+  shapes + theme(text = element_text(family = "Helvetica"))
 p_CCA
 
 # split plot for both communities
@@ -168,43 +173,41 @@ arrowdf <- data.frame(labels = rownames(arrowmat), arrowmat)
 # Define the arrow aesthetic mapping
 arrow_map = aes(xend = 1.6 * CCA1, yend = 1.6 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
                 label = labels)
-label_map = aes(x = 1.7 * CCA1, y = 1.7 * CCA2, shape = NULL, color = NULL, 
+label_map = aes(x = 1.8 * CCA1, y = 1.8 * CCA2, shape = NULL, color = NULL, 
                 label = labels)
 # Make a new graphic
 arrowhead = arrow(length = unit(0.02, "npc"))
-p0 = all_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "darkgray", 
+p0 = all_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "black", 
                             arrow = arrowhead) + geom_text_repel(label_map, size = 3, data = arrowdf, max.overlaps =  30)
 p0
 
 arrowmat = vegan::scores(cca1, display = "bp")
-labels <- c("Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", "Salinity", "Temperature", "Oxygen", "Latitude", "Longitude")
+labels <- c("Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", "Depth", "Salinity", "Temperature", "Oxygen")
 # Add labels, make a data.frame
-arrowdf <- data.frame(labels = rownames(arrowmat), arrowmat)
+arrowdf <- data.frame(labels = labels, arrowmat)
 # Define the arrow aesthetic mapping
 arrow_map = aes(xend = 1.6 * CCA1, yend = 1.6 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
                 label = labels)
-label_map = aes(x = 1.7 * CCA1, y = 1.7 * CCA2, shape = NULL, color = NULL, 
+label_map = aes(x = 1.8 * CCA1, y = 1.8 * CCA2, shape = NULL, color = NULL, 
                 label = labels)
 # Make a new graphic
 arrowhead = arrow(length = unit(0.02, "npc"))
-p1 = f_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "darkgray", 
+p1 = f_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "black", 
                           arrow = arrowhead) + geom_text_repel(label_map, size = 3, data = arrowdf, max.overlaps =  30)
 p1
 
 
-
 arrowmat = vegan::scores(cca2, display = "bp")
-labels <- c("Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", "Salinity", "Temperature", "Oxygen", "Latitude", "Longitude")
 # Add labels, make a data.frame
-arrowdf <- data.frame(labels = rownames(arrowmat), arrowmat)
+arrowdf <- data.frame(labels = labels, arrowmat)
 # Define the arrow aesthetic mapping
-arrow_map = aes(xend = 1.3 * CCA1, yend = 1.3 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
+arrow_map = aes(xend = 1.6 * CCA1, yend = 1.6 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
                 label = labels)
-label_map = aes(x = 1.5 * CCA1, y = 1.5 * CCA2, shape = NULL, color = NULL, 
+label_map = aes(x = 1.8 * CCA1, y = 1.8 * CCA2, shape = NULL, color = NULL, 
                 label = labels)
 # Make a new graphic
 arrowhead = arrow(length = unit(0.02, "npc"))
-p2 = p_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "darkgray", 
+p2 = p_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "black", 
                           arrow = arrowhead, arrow.fill="black") + geom_text_repel(label_map, size = 3, data = arrowdf)
 p2
 
@@ -213,12 +216,15 @@ final_free_plot <- CCA_ord(top_cca1, free_CCA, "CCA Top 10 Taxa (Genus)", final_
 final_part_plot <- CCA_ord(top_cca2, part_CCA, "CCA Top 10 Taxa (Genus)", final_part_plot)
 
 # split plot for both communities
-ggarrange(
+combined <- ggarrange(
   p1, p2, labels = c("F", "P"),
   common.legend = TRUE, legend = "right"
 )
-ggsave("graphics/split_CCA_with_inflow_outflow.pdf", width = 11, height = 8, dpi = 150)
+annotate_figure(combined, top = text_grob("CCA of Different Communties by Location and Environmental Factors", 
+                                             color = "black", face = "bold", size = 16, family = "Helvetica"))
+ggsave("graphics/POSTER_split_CCA.pdf", width = 11, height = 8, dpi = 150)
 
+#canonical correspondence analysis
 
 arrowmat1 <- scores(cca1, display = "species")
 arrowmat2 <- scores(cca2, display = "species")

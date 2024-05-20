@@ -67,16 +67,62 @@ drawPalette(colormap=test_s, zlab="Oxygen")
 plotTS(all_s, pch=19, col=all_Ocm$zcol, mar=par("mar"), type="p") # the mar adjusts for the palette
 
 
-all_points <- basemap(data = dt, limits = c(-120, -109, -75, -71.5), bathymetry = TRUE, rotate = TRUE, glaciers = TRUE, bathy.style="rcb") +
+all_points <- basemap(data = dt, limits = c(-120, -109, -75, -71.5), bathymetry = TRUE, rotate = TRUE, glaciers = TRUE, bathy.style="rbb") +
   ggspatial::geom_spatial_point(data = dt, aes(x = Longitude, y = Latitude), color = "black", pch=23, cex=1.2, fill="red") + 
   ggspatial::geom_spatial_text_repel(
-    data = dt, aes(x = Longitude, y = Latitude, label = Station), cex=3)
+    data = dt, aes(x = Longitude, y = Latitude, label = Station), cex=3) +
+theme(legend.position = "none",
+      text = element_text(family = "Helvetica"),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank())
 
-ggsave(file="ocean_section_plots/graphics/station_map.pdf", width=7, height=6)
+pdf(file="ocean_section_plots/graphics/POSTER_station_map_legend.pdf", width=7, height=6)
+drawPalette(colormap=cm, zlab = "Depth [m]")
+dev.off()
+ggsave(file="ocean_section_plots/graphics/POSTER_station_map_legend.pdf", width=7, height=5)
 
 
 all <- as.section(filtered_casts, sectionId = "all")
 plot(all, which='map')
+
+Eastern_CC <- c("STN20", "STN089", "STN106", "STN132")
+Dotson <- c("STN014", "STN022", "STN056", "STN078")
+Open_polynya <- c("STN002", "STN004", "STN012", "STN115", "STN12.3", "STN174", "STN181")
+Western_CC <- c("STN068", "STN146")
+Cont_Shelf <- c("STN198")
+Getz <- c("STN153", "STN151.2")
+
+east <- dt %>% filter(Station %in% Eastern_CC)
+dot <- dt %>% filter(Station %in% Dotson)
+west <- dt %>% filter(Station %in% Western_CC)
+open <- dt %>% filter(Station %in% Open_polynya)
+cont <- dt %>% filter(Station %in% Cont_Shelf)
+getz <- dt %>% filter(Station %in% Getz)
+
+all_points <- basemap(data = dt, limits = c(-120, -109, -75, -71.5), bathymetry = TRUE, rotate = TRUE, glaciers = TRUE, bathy.style="rbb") +
+  ggspatial::geom_spatial_point(data = dot, aes(x = Longitude, y = Latitude), color = "black", pch=23, cex=3, fill="#5AD0FC") +
+  ggspatial::geom_spatial_point(data = east, aes(x = Longitude, y = Latitude), color = "black", pch=23, cex=3, fill="darkred") +
+  ggspatial::geom_spatial_point(data = west, aes(x = Longitude, y = Latitude), color = "black", pch=23, cex=3, fill="red") +
+  ggspatial::geom_spatial_point(data = open, aes(x = Longitude, y = Latitude), color = "black", pch=23, cex=3, fill="#09A20D") +
+  ggspatial::geom_spatial_point(data = cont, aes(x = Longitude, y = Latitude), color = "black", pch=23, cex=3, fill="#A3DCA5") +
+  ggspatial::geom_spatial_point(data = getz, aes(x = Longitude, y = Latitude), color = "black", pch=23, cex=3, fill="#006B93") +
+  ggspatial::geom_spatial_text_repel(
+    data = dt, aes(x = Longitude, y = Latitude, label = Station), cex=3.5) +
+  theme(legend.position = "none",
+        text = element_text(family = "Helvetica"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank())
+ggsave(file="ocean_section_plots/graphics/POSTER_alt_station_map_legend.pdf", width=9, height=7)
+
+
+antarctica <- basemap(-60, bathymetry = TRUE, glaciers = TRUE, legends= FALSE)
+ggsave(file="ocean_section_plots/graphics/antarctica_inlet.png", width=9, height=7)
+
+all_points <- basemap(data = dt, limits = c(-120, -109, -75, -71.5), bathymetry = TRUE, rotate = TRUE, glaciers = TRUE, bathy.style="rbb") +
+  theme(legend.position = "none",
+        text = element_text(family = "Helvetica"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank())
 
 # Define constants
 
@@ -137,11 +183,12 @@ cm <- colormap(all_s[["oxygen2"]], breaks=seq(all_ox_min, all_ox_max, 0.25))
 
 all_p <- all_s[['pressure']]
 
-pdf(file="ocean_section_plots/graphics/temperature_salinity_plot.pdf", width=7, height=6)
-drawPalette(colormap=cm, zlab=expression(paste("Oxygen [mL L"^"-1","]")))
+pdf(file="ocean_section_plots/graphics/POSTER_temperature_salinity_plot.pdf", width=7, height=6)
+#drawPalette(colormap=cm, zlab=expression(paste("Oxygen [mL L"^"-1","]")))
+drawPalette(colormap=cm, zlab=expression(paste("Oxygen [mL/L]")))
 plotTS(all_s, inSitu=TRUE, add=TRUE, pch=16, col=cm$zcol, type="n", Slim = c(33.5, 35), referencePressure = all_p, eos = "gsw", drawFreezing = TRUE, mar=par("mar")+c(0, 0, 0, .2))
 plotTS(all_s, inSitu=TRUE, pch=16, col=cm$zcol, type="p", Slim = c(33.5, 35), referencePressure = all_p, eos = "gsw", drawFreezing = TRUE, mar=par("mar")+c(0, 0, 0, .2))
-lines(Sp, Tp_values, col="gray")
+#lines(Sp, Tp_values, col="gray")
 dev.off()
 
 
@@ -204,9 +251,16 @@ library(marmap)
 b <- as.topo(getNOAA.bathy(-180, 0, -55, -90, keep=TRUE))
 
 
-cm <- colormap(all_s[["pressure"]], col=oceColorsGebco)
-cm <- colormap(seq(-4000, 0, 500), col=oceColorsGebco)
-drawPalette(colormap=cm, drawTriangles = TRUE)
+cm <- colormap(all_s[["pressure"]], col1="#08316b", col0="#f7fbff", x0=)
+
+cm <- colormap(x0=c(0, 50, 300, 500, 1000, 1500, 2000),
+               x1=c(50, 300, 500, 1000, 1500, 2000, 3500),
+               col0=c("#f7fbff","#e6f0f9","#c9dfee","#9ecae1", "#60a4cf", "#2f70a6", "#08316b"),
+               col1=c("#e6f0f9","#c9dfee","#9ecae1","#60a4cf", "#2f70a6", "#08316b", "#08316b"), zlim=c(0,3500))
+
+
+cm <- colormap(seq(-4000, 0, 500), col=oceColorsJet)
+drawPalette(colormap=cm)
 
 pdf(file="ocean_section_plots/graphics/station_alt.pdf", width=7, height=6)
 drawPalette(colormap=cm, zlab = "Depth [m]")
