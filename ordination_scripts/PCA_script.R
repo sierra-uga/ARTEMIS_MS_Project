@@ -4,24 +4,28 @@ library("tidyr")
 library("phyloseq")
 
 # read in metadata
-org_metadata <- read.delim("artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names="Sample.illumina") 
+org_metadata <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names="sample_name") 
 
 ## data culling 
 org_metadata <- filter(org_metadata, Sample.Control == "True.Sample") # use tidyr to select "real samples" (non-blanks)
 # metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
 metadata <- org_metadata[ -c( 1, 26:29)] # remove filter-related stuff
-metadata <- metadata[-(which(metadata$Station %in% c("STN198", "STN056b"))),] 
+#metadata <- metadata[-(which(metadata$Station %in% c("STN198", "STN056b"))),] 
 metadata <- metadata[ -c( 1, 2:18)] # remove barcode seq/uneeded stuff
-metadata <- select(metadata, 1:16, 22, 18) # select numeric + siderophore column + watertype
+metadata <- select(metadata, 1:16, 21, 18) # select numeric + siderophore column + watertype
 
 #metadata[is.na(metadata)] <- 0 # replace NAs with 0's for PCA
-list_true <- replace_na(metadata$True_Flow, "Other") #replace NA with "Other" for coloring
-metadata$True_Flow <- list_true # changing actual column in dataframe
+#list_true <- replace_na(metadata$True_Flow, "Other") #replace NA with "Other" for coloring
+#metadata$True_Flow <- list_true # changing actual column in dataframe
 
-metadata <- metadata %>% mutate_at(1:17, as.numeric) # convert character columns (except sampleID) to numeric for analysis 
+metadata_iron <- filter(metadata, Iron != "NA")
+
+metadata <- metadata %>% mutate_at(1:11, as.numeric) # convert character columns (except sampleID) to numeric for analysis 
 
 # remove unneeded columns (Oxygen, FIECO, Par, Siderophore)
-metadata <- select(metadata,-c(Oxygen, FlECO.AFL, CTD_Depth, Siderophore, Par, Chl_a))
+metadata <- select(metadata,-c(Oxygen, FlECO.AFL, CTD_Depth, Par, Chl_a))
+metadata <- metadata %>% mutate_at(1:11, as.numeric) 
+
 metadata <- metadata %>% rename(c(Nitrate = Lab_NO3, 
                                   Nitrite = Lab_NO2, 
                                   Ammonium = Lab_NH4, 
@@ -46,6 +50,10 @@ AASW_WW <- metadata$watertype == "AASW-WW"
 AASW <- metadata$watertype == "AASW"
 Other <- metadata$watertype == "Other"
 
+# set vectors for Location
+
+# set vectors for More depth threshold
+
 metadata <- select(metadata, 1:11) # select only numerical columns
 
 # create vectors from orginial metadata file for watertype
@@ -54,6 +62,7 @@ metadataPca <- prcomp(metadata, scale.=TRUE)
 # plot sample scores
 dev.new(height=7, width=7)
 biplot(metadataPca, cex=0.7)
+dev.off()
 
 sd <- metadataPca$sdev
 loadings <- metadataPca$rotation

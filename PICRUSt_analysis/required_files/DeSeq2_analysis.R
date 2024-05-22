@@ -33,5 +33,7 @@ daa_results_df_community <- pathway_daa(abundance = station_type_abundance_mean 
 
 
 # sources:
+ # https://cran.r-project.org/web/packages/ggpicrust2/vignettes/using_ggpicrust2.html ## GGPICRUST2 deseq method?
  # https://www.r-bloggers.com/2016/09/deseq2-course-work/ -- deseq2 heatmap
  # https://hbctraining.github.io/DGE_workshop/lessons/04_DGE_DESeq2_analysis.html -- deseq2 explanation
+ # https://microbiome.github.io/course_2021_radboud/differential-abundance-analysis.html - comparison of diff. abundance methods
