@@ -31,6 +31,8 @@ daa_results_df_transect <- pathway_daa(abundance = station_type_abundance_mean %
 daa_results_df_community <- pathway_daa(abundance = station_type_abundance_mean %>% column_to_rownames("Type"), metadata = inflow_metadata, group = "Filter_pores", daa_method = "LinDA", select = NULL, p.adjust = "BH", reference = "1")
 
 
+# extend Deseq2 function?
+
 
 # sources:
  # https://cran.r-project.org/web/packages/ggpicrust2/vignettes/using_ggpicrust2.html ## GGPICRUST2 deseq method?

@@ -7,14 +7,20 @@ library("ggplot2")
 library("vegan")
 library("fantaxtic")
 library("ggpubr")
-#if (!requireNamespace("BiocManager", quietly = TRUE))
-  #install.packages("BiocManager")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
 
 #BiocManager::install("decontam")
 #remotes::install_github("mikemc/speedyseq")
 library("speedyseq")
 library("decontam")
+install.packages("oce")
+install.packages("phyloseq")
 
+if(!requireNamespace("BiocManager")){
+  install.packages("BiocManager")
+}
+BiocManager::install("phyloseq")
 ## making relative abundance plots with distance as factor
 
 ##################

@@ -4,20 +4,19 @@ library("tidyr")
 library("phyloseq")
 library("qiime2R")
 library("ggplot2")
-# devtools::install_github("gmteunisse/fantaxtic")
+devtools::install_github("gmteunisse/fantaxtic")
 library("fantaxtic")
 library("vegan")
 library("ggpubr")
+install.packages("ggrepel")
+library("ggrepel")
+library("microbiome")
+BiocManager::install("microbiome")
+library("microbiome")
 
 ##################
 # phloseq setup  #
 ##################
-
-# metatable <- metatable[-159,] # removes row 89_200_FIL_R2 because taxasum was 0.
-metatable <- filter(metatable, Sample.Control == "True.Sample") %>% 
-  mutate_at(c(20:27, 29:38, 44), as.numeric) # remove blanks, convert character columns for env. data to numeric
-#metatable <- metatable[-(which(metatable$Station %in% c("STN153", "STN174", "STN089", "STN151.2", "STN198", "STN002", "STN004"))),] 
-
 
 ##################
 #  data culling  #
@@ -33,7 +32,9 @@ ps_sub <- ps_noncontam_prev05 %>%
       Family  != "Mitochondria" 
   )
 
-ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample")
+## filter by iron!
+ps_iron <- subset_samples(ps_sub, Iron != "NA")
+
 # Assuming ps_sub is your phyloseq object
 ps_sub_depth <- subset_samples(ps_sub, More_Depth_Threshold %in% c("Bottom", "T-min"))
 ps_sub_depth_no_polynya <- subset_samples(ps_sub_depth, Transect_Name %in% c("transect1"))
@@ -54,6 +55,11 @@ temp$More_Depth_Threshold[temp$More_Depth_Threshold == "Mid-Surface"] <- "Mixed 
 
 sample_data(ps_sub) <- temp
 
+ps_sub <- ps_iron
+ps_sub <- subset_samples(ps_sub, !Station %in% c("STN198"))
+ps_sub <- subset_samples(ps_sub, !Station %in% c("STN174"))
+ps_sub <- subset_samples(ps_sub, !Station %in% c("STN153"))
+
 Samples_toRemove <- c("STN089.200.fil.dura.r2", "STN078.1040.pre.poly.3.LG")  # remove from phyloseq
 ps_sub <- subset_samples(ps_sub, !(sample.illumina %in% Samples_toRemove)) # remove from phyloseq
 
@@ -66,6 +72,12 @@ uwu <- uwu[rowSums(uwu) !=0,
 
 uwu <- na.omit(uwu)
 otu_table(ps_sub) <- uwu
+
+ps_sub <- tax_glom(ps_sub, "Order", NArm = TRUE)
+
+ps_sub <-label_duplicate_taxa(ps_sub,
+                     tax_level = "Order")
+taxa_names(ps_sub) <- tax_table(ps_sub)[,"Order"]
 
 # free-living phyloseq
 ps_free <- ps_sub %>% subset_samples(Filter_pores == "0.2") %>% prune_taxa(taxa_sums(.) > 0, .) 
@@ -82,12 +94,12 @@ top_all <- top_taxa(ps_sub,
 
 # selecting the top free-living taxa
 top_free <- top_taxa(ps_free, 
-                     tax_level = "Genus", 
+                     tax_level = "Order",
                      n_taxa = 10)
 
 # selecting the top particle-associated taxa
 top_part <- top_taxa(ps_part, 
-                     tax_level = "Genus", 
+                     tax_level = "Order", 
                      n_taxa = 10)
 
 top_taxa_free <- as.data.frame(top_free[["top_taxa"]])
@@ -101,12 +113,12 @@ top_taxa_part <- as.data.frame(top_part[["top_taxa"]])
 
 # Ordinate 2
 cca <- ordinate(ps_sub_depth_no_polynya, method = "CCA", formula = ~ Latitude + Longitude + Salinity + Temperature + Sb_Oxygen)
-cca1 <- ordinate(ps_free, method = "CCA", formula = ~ Location + CTD_Depth + Salinity + Temperature + Sb_Oxygen)
-cca2 <- ordinate(ps_part, method = "CCA", formula = ~ Location + CTD_Depth + Salinity + Temperature + Sb_Oxygen)
+cca1 <- ordinate(ps_free, method = "CCA", formula = ~ Location + CTD_Depth + Salinity + Temperature + Sb_Oxygen + Iron)
+cca2 <- ordinate(ps_part, method = "CCA", formula = ~ Location + CTD_Depth + Salinity + Temperature + Sb_Oxygen + Iron)
 # Ordinate 3
-top_cca <- ordinate(top_all$ps_obj, "CCA", formula= ~ watertype)
-top_cca1 <- ordinate(top_free$ps_obj, "CCA", formula= ~ watertype)
-top_cca2 <- ordinate(top_part$ps_obj, "CCA", formula= ~ watertype)
+top_cca <- ordinate(top_all$ps_obj, "CCA", formula= ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + Iron)
+top_cca1 <- ordinate(top_free$ps_obj, "CCA", formula= ~ Location + CTD_Depth + Salinity + Temperature + Sb_Oxygen + Iron)
+top_cca2 <- ordinate(top_part$ps_obj, "CCA", formula= ~ Location + CTD_Depth + Salinity + Temperature + Sb_Oxygen + Iron)
 
 ## aesthetics
 # set ggplot shortcut to remove grid
@@ -116,16 +128,27 @@ remove_grid <- theme(legend.position = "bottom") + theme_bw() + # removes grid
         axis.line = element_line(colour = "black"))
 
 # color for ggplot points
-color_breaks <- c("Surface", "Mixed Layer", "Mid", "T-min", "Bottom")
+color_breaks <- c("Dotson", "Eastern_CC", "Cont_Shelf", "Western_CC", "Getz", "Open_polynya")
+color_point <- scale_color_manual(values = c("#5AD0FC", "darkred","#A3DCA5", "red", "#006B93", "#09A20D"),
+                                  name = "Depth Threshold",
+                                  breaks = color_breaks,
+                                  labels = color_breaks)
+
 color_point <- scale_color_manual(values = c("seagreen", "dodgerblue","purple", "darkred", "red2"),
                                   name = "Depth Threshold",
                                   breaks = color_breaks,
                                   labels = color_breaks)
 
-shapes <- scale_shape_manual(values = c(16,4),
+cols <- rev(rainbow(7)[-7])
+iron_point <- scale_color_gradientn(colors = c(cols, "darkred"), name = "dFe (nmol/kg)")
+iron_point <- scale_color_gradient(low = "pink", high = "darkred",
+                                    name = "dFe (nmol/kg)")
+
+
+shapes <- scale_shape_manual(values = c(16,4,13),
                                   name = "Area",
-                                  breaks = c("Open_Polynya", "Other"),
-                                  labels = c("Open Polynya", "Other Stations"))
+                                  breaks = c("Outflow", "Inflow", "NA"),
+                                  labels = c("Outflow", "Inflow", "NA"))
 
 # Both free-living + particle-associated CCA
 all_CCA <- plot_ordination(ps_sub, cca,
@@ -135,17 +158,17 @@ all_CCA
 ggsave("graphics/all_CCA.pdf", width = 7, height = 6, dpi = 150)
 
 # Free-living CCA 
-free_CCA <- plot_ordination(ps_free, cca1,
-                            type = "samples", color="More_Depth_Threshold", shape="Local")
-f_CCA <- free_CCA + geom_point(size = 2.5, alpha=0.7, fill="black") + remove_grid  + color_point +# X for other locations
- shapes + theme(text = element_text(family = "Helvetica"))
+free_CCA <- plot_ordination(ps_free, top_cca1,
+                            type = "samples", color="Iron")
+f_CCA <- free_CCA + geom_point(pch=16, size = 3, alpha=0.7,) + remove_grid  + iron_point +# X for other locations
+ theme(text = element_text(family = "Helvetica"))
 f_CCA
 
 # Particle-associated CCA
-part_CCA <- plot_ordination(ps_part, cca2,
-                            type = "samples", color = "More_Depth_Threshold", shape="Local")
-p_CCA <- part_CCA + geom_point(size = 2.5, alpha=0.7) + remove_grid + color_point + 
-  shapes + theme(text = element_text(family = "Helvetica"))
+part_CCA <- plot_ordination(ps_part, top_cca2,
+                            type = "samples", color="Iron")
+p_CCA <- part_CCA + geom_point(pch=16, size = 3, alpha=0.7) + remove_grid + iron_point +
+  theme(text = element_text(family = "Helvetica"))
 p_CCA
 
 # split plot for both communities
@@ -183,6 +206,7 @@ p0
 
 arrowmat = vegan::scores(cca1, display = "bp")
 labels <- c("Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", "Depth", "Salinity", "Temperature", "Oxygen")
+labels <- rownames(arrowmat)
 # Add labels, make a data.frame
 arrowdf <- data.frame(labels = labels, arrowmat)
 # Define the arrow aesthetic mapping
@@ -198,6 +222,7 @@ p1
 
 
 arrowmat = vegan::scores(cca2, display = "bp")
+labels <- rownames(arrowmat)
 # Add labels, make a data.frame
 arrowdf <- data.frame(labels = labels, arrowmat)
 # Define the arrow aesthetic mapping
@@ -212,7 +237,7 @@ p2 = p_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "black"
 p2
 
 # use CCA_ord function (see files) to make graphs
-final_free_plot <- CCA_ord(top_cca1, free_CCA, "CCA Top 10 Taxa (Genus)", final_free_plot)
+final_free_plot <- CCA_ord(top_cca1, free_CCA, "CCA Top 10 Taxa (Order)", final_free_plot)
 final_part_plot <- CCA_ord(top_cca2, part_CCA, "CCA Top 10 Taxa (Genus)", final_part_plot)
 
 # split plot for both communities
@@ -220,9 +245,9 @@ combined <- ggarrange(
   p1, p2, labels = c("F", "P"),
   common.legend = TRUE, legend = "right"
 )
-annotate_figure(combined, top = text_grob("CCA of Different Communties by Location and Environmental Factors", 
+annotate_figure(combined, top = text_grob("CCA of Different Communties by Iron Concentation and Order", 
                                              color = "black", face = "bold", size = 16, family = "Helvetica"))
-ggsave("graphics/POSTER_split_CCA.pdf", width = 11, height = 8, dpi = 150)
+ggsave("ordination_scripts/graphics/CCA_iron_scale_order.pdf", width = 11, height = 8, dpi = 150)
 
 #canonical correspondence analysis
 
@@ -238,3 +263,34 @@ arrow_map1 = aes(xend = CCA1, yend = CCA2, x = 0, y = 0, shape = NULL, color = N
 arrowdf_free <- data.frame(labels = rownames(arrowmat1), arrowmat1)
 
 arrowdf_part <- data.frame(labels = rownames(arrowmat2), arrowmat2)
+
+
+arrowmat = vegan::scores(top_cca1, display = "species")
+# Add labels, make a data.frame
+labels <- rownames(arrowmat)
+arrowdf <- data.frame(labels = labels, arrowmat)
+# Define the arrow aesthetic mapping
+arrow_map = aes(xend = 1.6 * CCA1, yend = 1.6 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
+                label = labels)
+label_map = aes(x = 1.8 * CCA1, y = 1.8 * CCA2, shape = NULL, color = NULL, 
+                label = labels)
+# Make a new graphic
+arrowhead = arrow(length = unit(0.02, "npc"))
+p1 = f_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "black", 
+                            arrow = arrowhead) + geom_text_repel(label_map, size = 3, data = arrowdf, max.overlaps =  30)
+p1
+
+arrowmat = vegan::scores(top_cca2, display = "species")
+labels <- rownames(arrowmat)
+# Add labels, make a data.frame
+arrowdf <- data.frame(labels = labels, arrowmat)
+# Define the arrow aesthetic mapping
+arrow_map = aes(xend = 1.6 * CCA1, yend = 1.6 * CCA2, x = 0, y = 0, shape = NULL, color = NULL, 
+                label = labels)
+label_map = aes(x = 1.8 * CCA1, y = 1.8 * CCA2, shape = NULL, color = NULL, 
+                label = labels)
+# Make a new graphic
+arrowhead = arrow(length = unit(0.02, "npc"))
+p2 = p_CCA + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "black", 
+                          arrow = arrowhead) + geom_text_repel(label_map, size = 3, data = arrowdf, max.overlaps =  30)
+p2

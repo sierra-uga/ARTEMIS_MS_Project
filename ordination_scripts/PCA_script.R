@@ -4,10 +4,16 @@ library("tidyr")
 library("phyloseq")
 
 # read in metadata
+
 org_metadata <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names="sample_name") 
 
+org_metadata <- org_metadata_filter
+distinct <- org_metadata %>% distinct(Depth, Station) # 
+fil_metadata <- org_metadata[row.names(org_metadata) %in% row.names(distinct),] # REMOVING DUPLICATES IN THE PCA
+
 ## data culling 
-org_metadata <- filter(org_metadata, Sample.Control == "True.Sample") # use tidyr to select "real samples" (non-blanks)
+org_metadata <- filter(fil_metadata, Sample.Control == "True.Sample") # use tidyr to select "real samples" (non-blanks)
+org_metadata <- filter(org_metadata, Station != "STN056b") 
 # metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
 metadata <- org_metadata[ -c( 1, 26:29)] # remove filter-related stuff
 #metadata <- metadata[-(which(metadata$Station %in% c("STN198", "STN056b"))),] 
@@ -20,7 +26,7 @@ metadata <- select(metadata, 1:16, 21, 18) # select numeric + siderophore column
 
 metadata_iron <- filter(metadata, Iron != "NA")
 
-metadata <- metadata %>% mutate_at(1:11, as.numeric) # convert character columns (except sampleID) to numeric for analysis 
+# convert character columns (except sampleID) to numeric for analysis 
 
 # remove unneeded columns (Oxygen, FIECO, Par, Siderophore)
 metadata <- select(metadata,-c(Oxygen, FlECO.AFL, CTD_Depth, Par, Chl_a))
@@ -34,6 +40,7 @@ metadata <- metadata %>% rename(c(Nitrate = Lab_NO3,
                                   Phosphate = Lab_PO4))
 # remove NA for iron analysis
 metadata <- na.omit(metadata)
+
 
 ## PCA analysis from stratigrafia.org
 # Run the PCA
@@ -51,13 +58,27 @@ AASW <- metadata$watertype == "AASW"
 Other <- metadata$watertype == "Other"
 
 # set vectors for Location
+unique(metadata$Location)
+open <- metadata$Location == "Open_polynya"
+dotson <- metadata$Location == "Dotson"
+east <- metadata$Location == "Eastern_CC"
+cont <- metadata$Location == "Cont_Shelf"
+west <- metadata$Location == "Western_CC"
+getz <- metadata$Location == "Getz"
 
 # set vectors for More depth threshold
+unique(org_metadata$More_Depth_Threshold)
+bottom <- metadata$More_Depth_Threshold == "Bottom"
+mid_bottom <- metadata$More_Depth_Threshold == "Mid-Bottom"
+mid <- metadata$More_Depth_Threshold == "Mid"
+mid_surface <- metadata$More_Depth_Threshold == "Mid-Surface"
+surface <- metadata$More_Depth_Threshold == "Surface"
 
 metadata <- select(metadata, 1:11) # select only numerical columns
+metadata_iron <- filter(metadata, Iron != "NA")
 
 # create vectors from orginial metadata file for watertype
-metadataPca <- prcomp(metadata, scale.=TRUE)
+metadataPca <- prcomp(metadata_iron, scale.=TRUE)
 
 # plot sample scores
 dev.new(height=7, width=7)
@@ -105,10 +126,43 @@ text(-3, -2, "AASW-WW", col="aquamarine3")
 text(-5, 3, "AASW", col="darkgreen")
 dev.off()
 
+
+#Location plot for PCA!
+pdf(file = "ordination_scripts/graphics/PCA_location_below100m.pdf", width = 6, height = 7) 
+plot(scores[, 1], scores[, 2], xlab="PC 1", ylab="PC 2", type="n", asp=1, las=1)
+points(scores[open, 1], scores[open, 2], pch=21, cex=1, col="#3A3A3A", bg="#09A20D")
+points(scores[dotson, 1], scores[dotson, 2], pch=21, cex=1, col="#3A3A3A", bg="#5AD0FC")
+points(scores[east, 1], scores[east, 2], pch=21, cex=1, col="#3A3A3A", bg="darkred")
+points(scores[cont, 1], scores[cont, 2], pch=21, cex=1, col="#3A3A3A", bg="#A3DCA5")
+points(scores[west, 1], scores[west, 2], pch=21, cex=1, col="#3A3A3A", bg="red")
+points(scores[getz, 1], scores[getz, 2], pch=21, cex=1, col="#3A3A3A", bg="#006B93")
+arrows(0, 0, loadings[, 1]* scaling, loadings[, 2]* scaling, length=0.1, angle=20, col="black")
+text(loadings[, 1]*scaling*textNudge, loadings[, 2]*scaling*1.3, rownames(loadings), col="black", cex=0.8)
+# add names 
+dev.off()
+text(4, 3, "CDW", col="red2")
+text(3.4, -2, "WW-CDW", col="blueviolet")
+text(-2, 3, "WW", col="dodgerblue")
+text(-3, -2, "AASW-WW", col="aquamarine3")
+text(-5, 3, "AASW", col="darkgreen")
+
+
+pdf(file = "ordination_scripts/graphics/PCA_depth_threshold_below_100m.pdf", width = 6, height = 7) 
+plot(scores[, 1], scores[, 2], xlab="PC 1", ylab="PC 2", type="n", asp=1, las=1)
+points(scores[bottom, 1], scores[bottom, 2], pch=16, cex=0.7, col="darkred")
+points(scores[mid_bottom, 1], scores[mid_bottom, 2], pch=16, cex=0.7, col="red")
+points(scores[mid, 1], scores[mid, 2], pch=16, cex=0.7, col="dodgerblue")
+points(scores[mid_surface, 1], scores[mid_surface, 2], pch=16, cex=0.7, col="aquamarine3")
+points(scores[surface, 1], scores[surface, 2], pch=16, cex=0.7, col="darkgreen")
+arrows(0, 0, loadings[, 1]* scaling, loadings[, 2]*scaling, length=0.1, angle=20, col="red4")
+text(loadings[, 1]*scaling*textNudge, loadings[, 2]*scaling*textNudge, rownames(loadings), col="red4", cex=0.7)
+# add names 
+dev.off()
 ### Same thing but for > 100m
 # select only below 100m
-org_metadata_filter <- filter(metadata, Depth > 100)
-org_metadata_100 <- filter(org_metadata, Depth > 100)
+org_metadata <- org_metadata %>% mutate_at("Depth", as.numeric) 
+org_metadata_filter <- filter(org_metadata, Depth >= 100)
+org_metadata_100 <- filter(org_metadata, CTD_Depth >= 100)
 ## remove Par/Chl_a (b/c they are all 0)
 org_metadata_filter <- select(org_metadata_filter,-Chlorophyll)
 
