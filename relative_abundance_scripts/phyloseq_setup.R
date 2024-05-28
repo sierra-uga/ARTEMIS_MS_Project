@@ -47,6 +47,8 @@ metatable <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\
 #metatable <- filter(metatable, Sample.Control == "True.Sample")# filter by transect
 metatable$is.neg <- metatable$Sample.Control == "Control.Sample"
 metatable$Final_Qubit <- as.numeric(metatable$Final_Qubit) 
+metatable <- metatable %>% filter(., Iron != "NA") # for iron
+
 df <- metatable %>%
   group_by(Station, More_Depth_Threshold) %>%
   mutate(unique_code = paste0(Station, More_Depth_Threshold))# creates a column with a unique code for watertype + station
@@ -75,6 +77,9 @@ df <- df %>%
   mutate(Replicate_Number = sapply(sample_name, extract_replicate))
 
 rownames(df) <- df$sample_name
+df$Filter_pores <- ifelse(df$Filter_pores >= 0.2 & df$Filter_pores <= 2.0, "free-living", 
+                                    ifelse(df$Filter_pores == 3.0, "particle-associated", df$Filter_pores))
+
 META <- sample_data(df)
 
 # importing taxonomy
@@ -112,6 +117,7 @@ TREE[["tip.label"]] <- names
 
 # merge all imported objects into phyloseq
 ps <- merge_phyloseq(ASV, TAX, META, TREE)
+taxa_names(ps) <- paste0("Seq", seq(ntaxa(ps)))
 ps <- subset_samples(ps, sample.illumina != "078_1040_PRE") # removed bc qubit value is 0 
 
 # Combined method: here we increase the threshold to 0.5
@@ -126,7 +132,8 @@ head(which(ps_contamdf_comb05$contaminant))
 ps_noncontam_prev05 <- prune_taxa(!ps_contamdf_comb05$contaminant, ps)
 ps_noncontam_prev05 #  4559 taxa and 279 samples (originally was 4692 taxa)
 
-####
+
+###
 filtered_df <- as.data.frame(dist_bray_mtx)
 threshold <- 0.2
 # Use dplyr's mutate and ifelse to replace values
