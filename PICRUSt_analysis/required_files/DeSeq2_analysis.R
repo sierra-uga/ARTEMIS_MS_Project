@@ -7,8 +7,44 @@ library(ggprism)
 library(patchwork)
 require(grid)
 library(LinDA)
+library(DESeq2)
 #install.packages("IgAScores")
 library(IgAScores) # gives relative abundance of count table
+
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+
+ASV.hel = as.data.frame(
+  apply(ASV, 2, function(x) sqrt(x / sum(x)))) # hellringer transformation
+
+ps_sub <- ps_iron
+
+sample_data(ASV.hel) <- ps_sub
+
+deseq <- phyloseq_to_deseq2(ps_sub, ~Iron)
+
+diagdds = DESeq(deseq)  #, fitType='local')
+res = results(diagdds)
+res = res[order(res$padj, na.last = NA), ]
+alpha = 0.01
+keepOTUs = rownames(res[res$padj > alpha, ])[1:50]
+kosticTrimvs = prune_taxa(keepOTUs, ps_sub)
+kosticTrim0 = prune_taxa(keepOTUs, ps_sub)
+plot_heatmap(kosticTrimvs, taxa.order = "Phylum", taxa.label = "Order", sample.label = "Iron", 
+             sample.order = "Iron")
+
+diagdds <- DESeq(diagdds, test="Wald", fitType="parametric")
+
+
+
+deseq <- phyloseq_to_DESeq(ps_sub)
+
+tse_genus <- tax_glom(ps_sub, taxrank = "Order")
+
+
+ds2 <- DESeqDataSet(tse_genus, ~Location)
 
 
 # Annotate pathway results without KO to KEGG conversion

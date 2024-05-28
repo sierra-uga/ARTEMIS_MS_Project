@@ -18,19 +18,40 @@
 
 ######################################## ggpicrust2 #################################################
 
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+pkgs <- c("phyloseq", "ALDEx2", "SummarizedExperiment", "Biobase", "devtools", 
+          "ComplexHeatmap", "BiocGenerics", "BiocManager", "metagenomeSeq", 
+          "Maaslin2", "edgeR", "lefser", "limma", "KEGGREST", "DESeq2")
+
+for (pkg in pkgs) {
+  if (!requireNamespace(pkg, quietly = TRUE))
+    BiocManager::install(pkg)
+}
+
 library(readr)
 library(ggpicrust2)
 library(tibble)
 library(tidyverse)
 library(ggpubr)
 library(ggprism)
+
+library(KEGGREST)
 library(patchwork)
 require(grid)
 #install.packages("IgAScores")
 library(IgAScores) # gives relative abundance of count table
+install.packages("ALDEx2")
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
 
-abundance_file <- "PICRUSt_analysis/required_files/pred_metagenome_unstrat.tsv" # read in abundance file (KO)
-outflow_metadata <- read_delim(
+BiocManager::install("ALDEx2")
+library(ALDEx2)
+
+
+abundance_file <- "PICRUSt_analysis/required_files/pred_metagenome_unstrat_descrip.tsv" # read in abundance file (KO)
+metadata <- read_delim(
   "required_files/artemis-eDNA-metadata-final.tsv",  # read in outflow_metadata file
   delim = "\t",
   escape_double = FALSE,
@@ -42,7 +63,7 @@ outflow_metadata <- read_delim(
 #list2[!(list1 %in% list2)] # output: [1] "STN115.35.fil.dura.r1"
 
 outflow_metadata <- outflow_metadata %>% filter(., Sample.Control == "True.Sample") %>% filter(., sample_name != "STN115.35.fil.dura.r1") %>% 
-  filter(., sample_name != "STN089.200.fil.dura.r2") %>% filter(., Transect_Name == "transect2") %>% filter(., Station != "STN22") #%>% distinct(Filter_pores, .keep_all = TRUE) 
+  filter(., sample_name != "STN089.200.fil.dura.r2") #%>% filter(., Transect_Name == "transect2") %>% filter(., Station != "STN22") #%>% distinct(Filter_pores, .keep_all = TRUE) 
 # remove sample that isn't in kegg abundance for some reason
 
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE) # read in KO dataset
@@ -155,7 +176,74 @@ ggsave("meltwater_total_iron_relative_abundance_plot.pdf", width=5, height=8)
 #########################.      #########################
 
 # Annotate pathway results without KO to KEGG conversion
-daa_annotated_sub_method_results_df <- pathway_annotation(pathway = "KO", daa_results_df = daa_sub_method_results_df, ko_to_kegg = TRUE)
+
+metadata <- read_delim(
+  "required_files/artemis-eDNA-metadata-final.tsv",  # read in outflow_metadata file
+  delim = "\t",
+  escape_double = FALSE,
+  trim_ws = TRUE
+)
+
+# Load KEGG pathway abundance
+# data(kegg_abundance)
+kegg_abundance <- ko2kegg_abundance(abundance_file) 
+kegg_abundance$"#NAME" <- row.names(kegg_abundance)
+
+
+outflow_metadata <- outflow_metadata %>% filter(., Sample.Control == "True.Sample") %>% filter(., sample_name != "STN115.35.fil.dura.r1") %>% 
+  filter(., sample_name != "STN089.200.fil.dura.r2") #%>% filter(., Transect_Name == "transect2") %>% filter(., Station != "STN22") #%>% distinct(Filter_pores, .keep_all = TRUE) 
+# remove sample that isn't in kegg abundance for some reason
+
+abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE) # read in KO dataset
+ColumnstoKeep <- c("#NAME", metadata$sample_name) # set vector of list of names to keep + KO Name column
+KO_abundance_data <- subset(kegg_abundance, select = ColumnstoKeep) # subset (select columns) based on ColumnstoKeep
+kegg_abundance$"#NAME" <- NULL
+
+
+results_file_input <- ggpicrust2(data = abundance_data,
+                                 metadata = metadata,
+                                 group = "Location",
+                                 pathway = "KO",
+                                 daa_method = "LinDA",
+                                 ko_to_kegg = TRUE,
+                                 order = "pathway_class",
+                                 p_values_bar = TRUE,
+                                 x_lab = "pathway_name")
+
+# Perform pathway differential abundance analysis (DAA) using ALDEx2 method
+# Please change group to "your_group_column" if you are not using example dataset
+metadata$Depth_Threshold <- as.character(metadata$Depth_Threshold)
+metadata$Iron <- as.numeric(metadata$Iron)
+rownames(kegg_abundance) <- NULL
+daa_results_df <- pathway_daa(abundance = kegg_abundance %>% column_to_rownames("#NAME"), metadata = metadata, group = "Location", daa_method = "LinDA", select = NULL, p.adjust = "BH", reference = "Eastern_CC")
+
+daa_results_df <- pathway_daa(abundance = kegg_abundance, metadata = metadata, group = "Location", daa_method = "ALDEx2", select = NULL, reference = NULL) 
+
+data("metadata")
+
+# Filter results for ALDEx2_Welch's t test method
+# Please check the unique(daa_results_df$method) and choose one
+daa_sub_method_results_df <- daa_results_df[daa_results_df$method == "LinDA", ]
+
+# Annotate pathway results using KO to KEGG conversion
+daa_annotated_sub_method_results_df <- pathway_annotation(pathway = "KO", daa_results_df = feature_with_p_0.05, ko_to_kegg = TRUE)
+
+
+feature_with_p_0.05
+
+feature_with_p_0.05 <- daa_results_df %>% 
+  filter(p_adjust < 0.01)
+data("metacyc_abundance")
+kegg_abundance <- as_tibble(kegg_abundance)
+
+# Create the heatmap
+pathway_heatmap(abundance = kegg_abundance %>% filter("#NAME" %in% feature_with_p_0.05$feature) %>% column_to_rownames("#NAME"), metadata = metadata, group = "Location")
+
+
+
+
+
+
 
 ##### BOXPLOTS
 station_type_abundance_mean <- aggregate(. ~ Type, data = KO_iron_abundance_type, FUN = mean) # organizes type by mean

@@ -1,0 +1,103 @@
+cluster	asv	Phylum	Class
+C1	A714019	Verrucomicrobiota	Verrucomicrobiae
+C1	CL500-3	Planctomycetota	Phycisphaerae
+C1	Halobacteriovorax	Bdellovibrionota	Bdellovibrionia
+C1	hydrothermal vent metagenome 2	Proteobacteria	Alphaproteobacteria
+C1	LS-NOB	Nitrospinota	Nitrospinia
+C1	Marinobacter	Proteobacteria	Gammaproteobacteria
+C1	MB11C04 marine group	Verrucomicrobiota	Verrucomicrobiae
+C1	Nitrospina	Nitrospinota	Nitrospinia
+C1	OM75 clade	Proteobacteria	Alphaproteobacteria
+C1	P3OB-42	Myxococcota	Myxococcia
+C1	Pseudomonas	Proteobacteria	Gammaproteobacteria
+C1	Psychrobacter	Proteobacteria	Gammaproteobacteria
+C1	Rhodopirellula	Planctomycetota	Planctomycetes
+C1	Sphingomonas	Proteobacteria	Alphaproteobacteria
+C1	uncultured 4	Proteobacteria	Gammaproteobacteria
+C1	uncultured 6	Proteobacteria	Alphaproteobacteria
+C1	uncultured 10	Planctomycetota	Planctomycetes
+C1	uncultured 16	Proteobacteria	Alphaproteobacteria
+C1	uncultured bacterium ARCTIC09_	Bacteroidota	Bacteroidia
+C1	uncultured bacterium HF0500_40D21	Planctomycetota	Planctomycetes
+C1	uncultured bacterium KM3-47-A6	Proteobacteria	Alphaproteobacteria
+C1	uncultured Parvibaculum sp.	Proteobacteria	Alphaproteobacteria
+C1	uncultured sediment bacterium	Bdellovibrionota	Oligoflexia
+C1	Woeseia	Proteobacteria	Gammaproteobacteria
+C2	Candidatus Actinomarina	Actinobacteriota	Acidimicrobiia
+C2	Clade Ib	Proteobacteria	Alphaproteobacteria
+C2	Halomonas	Proteobacteria	Gammaproteobacteria
+C2	JL-ETNP-F27	Planctomycetota	Phycisphaerae
+C2	Marinoscillum	Bacteroidota	Bacteroidia
+C2	NS4 marine group	Bacteroidota	Bacteroidia
+C2	NS5 marine group	Bacteroidota	Bacteroidia
+C2	Pseudohongiella	Proteobacteria	Gammaproteobacteria
+C2	SUP05 cluster	Proteobacteria	Gammaproteobacteria
+C2	Sva0996 marine group	Actinobacteriota	Acidimicrobiia
+C2	uncultured 8	Bdellovibrionota	Bdellovibrionia
+C2	uncultured 13	Proteobacteria	Gammaproteobacteria
+C2	uncultured bacterium AD106-G5	Verrucomicrobiota	Lentisphaeria
+C2	uncultured bacterium AD248-D7-1A	Acidobacteriota	Vicinamibacteria
+C2	uncultured marine bacterium 440	Proteobacteria	Alphaproteobacteria
+C2	unidentified marine bacterioplankton 2	Proteobacteria	Alphaproteobacteria
+C3	Chryseobacterium	Bacteroidota	Bacteroidia
+C3	Salinirepens	Bacteroidota	Bacteroidia
+C3	uncultured 7	Planctomycetota	Planctomycetes
+C3	uncultured deep-sea archaeon	Bacteroidota	Bacteroidia
+C4	Colwellia	Proteobacteria	Gammaproteobacteria
+C4	hydrothermal vent metagenome 1	Bacteroidota	Bacteroidia
+C4	uncultured marine microorganism 1	Acidobacteriota	Vicinamibacteria
+C5	Bacteroides	Bacteroidota	Bacteroidia
+C5	Roseibacillus	Verrucomicrobiota	Verrucomicrobiae
+C5	uncultured 17	Proteobacteria	Alphaproteobacteria
+C5	uncultured Verrucomicrobiaceae bacterium	Verrucomicrobiota	Verrucomicrobiae
+C6	Aliikangiella	Proteobacteria	Gammaproteobacteria
+C6	Allorhizobium-Neorhizobium-Pararhizobium-Rhizobium	Proteobacteria	Alphaproteobacteria
+C6	Bernardetia	Bacteroidota	Bacteroidia
+C6	Burkholderia-Caballeronia-Paraburkholderia	Proteobacteria	Gammaproteobacteria
+C6	Candidatus Megaira	Proteobacteria	Alphaproteobacteria
+C6	Curtobacterium	Actinobacteriota	Actinobacteria
+C6	Dasania	Proteobacteria	Gammaproteobacteria
+C6	Methylobacterium-Methylorubrum	Proteobacteria	Alphaproteobacteria
+C6	MSBL3	Verrucomicrobiota	Kiritimatiellae
+C6	Owenweeksia	Bacteroidota	Bacteroidia
+C6	Phycisphaera	Planctomycetota	Phycisphaerae
+C6	Prosthecobacter	Verrucomicrobiota	Verrucomicrobiae
+C6	Schleiferia	Bacteroidota	Bacteroidia
+C6	SM1A02	Planctomycetota	Phycisphaerae
+C6	Treponema	Spirochaetota	Spirochaetia
+C6	UCG-005	Firmicutes	Clostridia
+C6	uncultured 9	Bacteroidota	Bacteroidia
+C6	uncultured 28	Myxococcota	Polyangia
+C6	uncultured Bacteroidetes/Chlorobi group bacterium	Bacteroidota	Bacteroidia
+C6	uncultured Flavobacterium sp.	Bacteroidota	Bacteroidia
+C6	uncultured Rhizobiales bacterium	Proteobacteria	Alphaproteobacteria
+C7	Dokdonia	Bacteroidota	Bacteroidia
+C7	Fabibacter	Bacteroidota	Bacteroidia
+C7	Flavicella	Bacteroidota	Bacteroidia
+C7	Maribacter	Bacteroidota	Bacteroidia
+C7	Oceanicoccus	Proteobacteria	Gammaproteobacteria
+C7	Rubritalea	Verrucomicrobiota	Verrucomicrobiae
+C7	uncultured 15	Proteobacteria	Gammaproteobacteria
+C7	uncultured 22	Bacteroidota	Bacteroidia
+C7	uncultured 26	Proteobacteria	Alphaproteobacteria
+C8	Crocinitomix	Bacteroidota	Bacteroidia
+C8	Lentisphaera	Verrucomicrobiota	Lentisphaeria
+C8	Polaribacter	Bacteroidota	Bacteroidia
+C8	Ulvibacter	Bacteroidota	Bacteroidia
+C8	uncultured 1	Proteobacteria	Gammaproteobacteria
+C8	unidentified marine bacterioplankton 1	Bacteroidota	Bacteroidia
+C9	Kordia	Bacteroidota	Bacteroidia
+C9	Paraglaciecola	Proteobacteria	Gammaproteobacteria
+C10	Arenicella	Proteobacteria	Gammaproteobacteria
+C10	Glaciecola	Proteobacteria	Gammaproteobacteria
+C10	Granulosicoccus	Proteobacteria	Gammaproteobacteria
+C10	Lentimonas	Verrucomicrobiota	Verrucomicrobiae
+C10	Lewinella	Bacteroidota	Bacteroidia
+C10	Methylotenera	Proteobacteria	Gammaproteobacteria
+C10	NS10 marine group	Bacteroidota	Bacteroidia
+C10	Profundimonas	Proteobacteria	Gammaproteobacteria
+C10	SAR92 clade	Proteobacteria	Gammaproteobacteria
+C10	Sulfitobacter	Proteobacteria	Alphaproteobacteria
+C10	uncultured 2	Bacteroidota	Bacteroidia
+C10	uncultured 12	Fibrobacterota	Fibrobacteria
+C10	Vicingus	Bacteroidota	Bacteroidia

@@ -2,13 +2,23 @@
 library("dplyr")
 library("tidyr")
 library("phyloseq")
+install.packages("qiime2R")
 library("qiime2R")
 library("ggplot2")
 library("vegan")
 library("fantaxtic")
+install.packages("devtools")
 library("ggpubr")
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
+
+install.packages("BioConductor")
+
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("decontam")
+BiocManager::install("TreeSummarizedExperiment")
 
 #BiocManager::install("decontam")
 #remotes::install_github("mikemc/speedyseq")
@@ -21,6 +31,9 @@ if(!requireNamespace("BiocManager")){
   install.packages("BiocManager")
 }
 BiocManager::install("phyloseq")
+
+if (!requireNamespace("devtools", quietly = TRUE)){install.packages("devtools")}
+devtools::install_github("jbisanz/qiime2R")
 ## making relative abundance plots with distance as factor
 
 ##################
