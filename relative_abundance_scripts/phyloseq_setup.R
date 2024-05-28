@@ -21,7 +21,7 @@ BiocManager::install("decontam")
 BiocManager::install("TreeSummarizedExperiment")
 
 #BiocManager::install("decontam")
-#remotes::install_github("mikemc/speedyseq")
+remotes::install_github("mikemc/speedyseq")
 library("speedyseq")
 library("decontam")
 install.packages("oce")
@@ -39,7 +39,7 @@ devtools::install_github("jbisanz/qiime2R")
 ##################
 # phyloseq setup #
 ##################
-
+setwd("~/Documents/Research/Ordination analysis R scripts/ARTEMIS_github")
 # feature table
 ASV <- qza_to_phyloseq(features="required_files/table.qza")
 # read in metadata
