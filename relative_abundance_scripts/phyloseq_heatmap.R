@@ -81,7 +81,7 @@ htmp <- pseq %>%
     ),
     sample_side = "top", name = "Robust\nCLR",
     sample_anno = sampleAnnotation(
-      "Filter_pores" = anno_sample("Filter_pores"),
+      "Location" = anno_sample("Location"),
       "Depth_Threshold" = anno_sample("Depth_Threshold"),
       col = list("Depth_Threshold" = c(
         "Bottom_water" = "black", "Intermediate" = "orange", "Surface" = "lightgrey"

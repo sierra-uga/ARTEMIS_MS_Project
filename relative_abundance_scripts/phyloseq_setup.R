@@ -47,7 +47,9 @@ metatable <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\
 #metatable <- filter(metatable, Sample.Control == "True.Sample")# filter by transect
 metatable$is.neg <- metatable$Sample.Control == "Control.Sample"
 metatable$Final_Qubit <- as.numeric(metatable$Final_Qubit) 
-metatable <- metatable %>% filter(., Iron != "NA") # for iron
+#metatable <- metatable %>% filter(., Iron != "NA") # for iron
+metatable$Filter_pores <- ifelse(metatable$Filter_pores <= 0.2, "free-living", 
+                                 ifelse(metatable$Filter_pores >= 2.0, "particle-associated", metatable$Filter_pores))
 
 df <- metatable %>%
   group_by(Station, More_Depth_Threshold) %>%
