@@ -136,7 +136,9 @@ ps_noncontam_prev05 #  4559 taxa and 279 samples (originally was 4692 taxa)
 
 
 ###
-filtered_df <- as.data.frame(dist_bray_mtx)
+filtered_df <- as.data.frame(ps_noncontam_prev05@tax_table)
+
+write.csv(filtered_df,'taxonomy.csv')
 threshold <- 0.2
 # Use dplyr's mutate and ifelse to replace values
 df_filtered <- filtered_df %>%

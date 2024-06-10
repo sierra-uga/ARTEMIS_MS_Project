@@ -27,9 +27,15 @@ pseq <- ps_sub %>%
   phyloseq_validate()
 
 pseq <- pseq %>% tax_fix(unknowns = c("hydrothermal vent metagenome", "hydrothermal vent metagenome Class", "marine metagenome", "marine metagenome Class", "uncultured", "uncultured deep-sea bacterium", "uncultured planctomycete"))
+pseq <- subset_samples(pseq, sample_name != "STN115.35.fil.dura.r2")
 
-ps@tax_table
-ord_explore(pseq) # gif generated with microViz version 0.7.4 (plays at 1.75x speed)
+ps_free <- subset_samples(pseq, Filter_pores == "free-living")
+
+ps_part <- subset_samples(pseq, Filter_pores == "particle-associated")
+ps_part <- subset_samples(ps_part, sample_name != "STN198.20.pre.poly.3.S")
+
+
+ord_explore(ps_part) # gif generated with microViz version 0.7.4 (plays at 1.75x speed)
 
 
 pseq %>%
