@@ -44,6 +44,8 @@ setwd("~/Documents/Research/Ordination analysis R scripts/ARTEMIS_github")
 ASV <- qza_to_phyloseq(features="required_files/table.qza")
 # read in metadata
 metatable <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE) 
+metatable <- metatable %>%
+  mutate(Iron_Level = ifelse(Iron >= 0.5, "High_iron", "Low_iron"))
 #metatable <- filter(metatable, Sample.Control == "True.Sample")# filter by transect
 metatable$is.neg <- metatable$Sample.Control == "Control.Sample"
 metatable$Final_Qubit <- as.numeric(metatable$Final_Qubit) 
