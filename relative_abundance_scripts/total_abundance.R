@@ -15,23 +15,36 @@ ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
     Kingdom == "Bacteria" &
       Family  != "Mitochondria" &
-      Class   != "Chloroplast" &
+      Family   != "Chloroplast" &
       Order   != "Chloroplast" &
       Family  != "Mitochondria" 
   )
 
-ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample")
+ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% tax_fix() %>% phyloseq_validate()
+
+samples <- c("Mid", "Mid-Bottom", "Bottom")
+ps_sub <- subset_samples(ps_sub, watertype %in% samples)
+locations <- c("STN198", "STN002", "STN004", "STN012", "STN115", "STN12.3", "STN014")
+ps_sub <- subset_samples(ps_sub, Station %in% locations)
+
+ps_sub <- tax_glom(ps_sub, "Family", NArm = TRUE)
+
+ps_sub <-label_duplicate_taxa(ps_sub,
+                                tax_level = "Family")
+
+
+taxa_names(ps_sub_genus) <- tax_table(ps_sub_genus)[,"Genus"]
 
 temp <- sample_data(ps_sub)
-temp$More_Depth_Threshold[temp$More_Depth_Threshold == "Mid-Bottom"] <- "T-min"
-temp$More_Depth_Threshold[temp$More_Depth_Threshold == "Mid-Surface"] <- "Mixed Layer"
+temp$watertype[temp$watertype == "Mid-Bottom"] <- "T-min"
+temp$watertype[temp$watertype == "Mid-Surface"] <- "Mixed Layer"
 sample_data(ps_sub) <- temp
 
 # free-living phyloseq
-ps_free <- ps_sub %>% subset_samples(Filter_pores == "0.2") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(watertype != "Other") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 # particle-associated phyloseq
-ps_part <- ps_sub %>% subset_samples(Filter_pores >= "2") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(watertype != "Other") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 #created a unique code based on Depth_Threshold, so took the MEAN of each depth threshold from each STATION.
 # potentially frowned upon
@@ -49,28 +62,29 @@ ps1 <- merge_samples2(ps_part, "unique_depth",
 
 # Create a data frame for freeliving, agglomerate by Order, transform to rel.abundance
 data_free <- ps_free %>%
-  tax_glom(taxrank = "Order") %>% # agglomerate at Order level, can change to different taxonomic level!
-  transform_sample_counts(function(x) {x/sum(x)}) # Transform to rel. abundance (normalize data
+  tax_glom(taxrank = "Family") %>% # agglomerate at Order level, can change to different taxonomic level!
+  prune_taxa(taxa_sums(.) > 0, .) %>%
+  transform_sample_counts(function(x) {x/sum(x)})  # Transform to rel. abundance (normalize data
 
 data_top_free <- data_free %>%
   psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
-  filter(Abundance > 0.02) %>% # Filter out low abundance taxa
-  arrange(Order)
+  filter(Abundance > 0.035) %>% # Filter out low abundance taxa
+  arrange(Family)
 
-data_top_free <- aggregate(Abundance ~ Station * Order * More_Depth_Threshold, data = data_top_free, FUN = mean)
+data_top_free <- aggregate(Abundance ~ Station * Family * watertype, data = data_top_free, FUN = mean)
 
 
 # particle-associated
 data_part <- ps_part %>%
-  tax_glom(taxrank = "Order") %>% # agglomerate at Order level
+  tax_glom(taxrank = "Family") %>% # agglomerate at Order level
   transform_sample_counts(function(x) {x/sum(x)} )  # Transform to rel. abundance (normalize data)
 
 data_top_part <- data_part %>%
   psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
-  filter(Abundance > 0.02) %>%
-  arrange(Order)# Filter out low abundance taxa
+  filter(Abundance > 0.035) %>%
+  arrange(Family)# Filter out low abundance taxa
 
-data_top_part <- aggregate(Abundance ~ Station * Order * More_Depth_Threshold, data = data_top_part, FUN = mean)
+data_top_part <- aggregate(Abundance ~ Station * Family * watertype, data = data_top_part, FUN = mean)
 
 level_order_prev <- c("STN198", "STN002", "STN004", "STN181", "STN012", "STN115", "STN12.3", "STN20", "STN014", "STN089",
                  "STN132", "STN106", "STN078", "STN056a", "STN056b", "STN22", "STN068", "STN146", "STN174",
@@ -118,23 +132,24 @@ hex_colors <- c(
   "Sphingobacteriales" = "#008000"    # organic - green
 )
 
+level_order <- c("STN198", "STN002", "STN004", "STN012", "STN115", "STN12.3", "STN014")
 
-myColors <- c(brewer.pal(9, "Paired"),'#e66101','darkgreen','#fdb863','#5e3c99', '#543005','#8c510a','#bf812d','#dfc27d','#f6e8c3','darkred','#c7eae5','#80cdc1','#35978f','#01665e','#003c30', "#A43D27", "#497687", "#5E4987", "darkgoldenrod", "lightblue2", "darkblue", "dodgerblue", "seagreen", "purple", "black")
+myColors <- c(brewer.pal(9, "Paired"),'#e66101','darkgreen','#fdb863','#5e3c99', '#543005','#8c510a','#bf812d','#dfc27d','#f6e8c3','darkred','#c7eae5','#80cdc1','#35978f','#01665e','#4169E1', "#A43D27", "#497687", "#5E4987", "darkgoldenrod", "lightblue2", "darkblue", "#a37fff", "seagreen", "purple", "black")
 # this must equal the levels of the Order
-data_top_free$Order <- as.factor(data_top_free$Order) # setting the Order columns to factor
-data_top_part$Order <- as.factor(data_top_part$Order) # setting the Order columns to factor
-names(myColors) <- levels(c(data_top_free$Order, data_top_part$Order)) # setting the names of the colors to coordinate with the Order columns of each dataframe
+data_top_free$Family <- as.factor(data_top_free$Family) # setting the Order columns to factor
+data_top_part$Family <- as.factor(data_top_part$Family) # setting the Order columns to factor
+names(myColors) <- levels(c(data_top_free$Family, data_top_part$Family)) # setting the names of the colors to coordinate with the Order columns of each dataframe
 
 ###################### 
 #  stacked barplots  #
 ######################
 #    FREE-LIVING     # 
 ######################
-
-barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(More_Depth_Threshold, levels=c("Surface", "Mixed Layer", "Mid", "T-min", "Bottom"))~.) + # facet grid seperates by different levels, horizontally
+#"Surface", "Mixed Layer", 
+barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~.) + # facet grid seperates by different levels, horizontally
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
   scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
-  scale_fill_manual(values = hex_colors, drop = FALSE) + # set the colors with custom colors (myColors)
+  scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
   scale_x_discrete(
     breaks = plot_breaks, # setting breaks
     labels = plot_labels, # settting levels
@@ -153,7 +168,7 @@ barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_orde
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
   ggtitle("Free-living (<0.2 µm)")
-ggsave("graphics/free_living_barplot_3.pdf", width = 8, height = 6, dpi = 150)
+ggsave("graphics/free_living_barplot_family_all_stations.pdf", width = 8, height = 6, dpi = 150)
 
 ###################### 
 #  stacked barplots  #
@@ -162,10 +177,10 @@ ggsave("graphics/free_living_barplot_3.pdf", width = 8, height = 6, dpi = 150)
 ######################
 
 # the following plot is basically the same as above, look at annotation for free-living barplot if confused about what each line does!
-barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Order, group = Order)) + facet_grid(~factor(More_Depth_Threshold, levels=c("Surface", "Mixed Layer", "Mid", "T-min", "Bottom"))~., scales = "free_x", space = "free_x") +
+barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~., scales = "free_x", space = "free_x") +
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() +
   scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_manual(values = hex_colors, drop = FALSE) +
+  scale_fill_manual(values = myColors, drop = FALSE) +
   scale_x_discrete(
     breaks = plot_breaks,
     labels = plot_labels,
@@ -185,7 +200,7 @@ barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_orde
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
   ggtitle("Particle-associated (>3 µm)")
 
-ggsave("graphics/part_associated_barplot_3.pdf", width = 8, height = 6, dpi = 150)
+ggsave("graphics/part_associated_barplot_bottom_all_stations.pdf", width = 8, height = 6, dpi = 150)
 
 ###################### 
 #  stacked barplots  #
@@ -195,11 +210,11 @@ ggsave("graphics/part_associated_barplot_3.pdf", width = 8, height = 6, dpi = 15
 
 total <- rbind(data_top_part, data_top_free)
 # make combined FAKE plot to grab legend from and to put in the combine plot :^)
-legend_plot <- ggplot(total, aes(x = Station, y = Abundance, fill = Order)) +
+legend_plot <- ggplot(total, aes(x = Station, y = Abundance, fill = Family)) +
   geom_bar(stat = "identity", position="fill", width=2) + theme_classic() +
   # geom_col(position = "dodge") + # changes to multiple bars
   scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_manual(values = hex_colors) +
+  scale_fill_manual(values = myColors) +
   guides(fill = guide_legend(override.aes = list(color = "black", size = 1))) # adds black outline around legend
 
 # get legend from the fake combined plot
@@ -214,7 +229,44 @@ ps_combined <- ggarrange(
 # something like: plot.margin=unit(c(1,1,-0.5,1), "cm")), where the margins follow the following structure:
 # unit(c(top, right, bottom, left), units).
 
-annotate_figure(ps_combined, top = text_grob("Total Relative Abundance for All ARTEMIS Stations", 
+annotate_figure(ps_combined, top = text_grob("Total Relative Abundance for ALL ARTEMIS Stations by Water Mass", 
                                              color = "black", hjust=.7, face = "bold", size = 18, family = "Helvetica"))
 
-ggsave("graphics/POSTER_combined_barplot_mid_thresholds_diff_order.pdf", width = 13, height = 7, dpi = 150)
+ggsave("final_graphics/rel_abund_watermass.pdf", width = 13, height = 7, dpi = 150)
+
+
+## MORE TESTS + POST HOC ##
+data_part2 <- ps_part %>% subset_samples(., Iron_Level != "NA")
+data_part2 <- data_part2 %>% subset_samples(., Location != "Cont_Shelf")
+data_part2 <- data_part2 %>% subset_samples(., Location != "Open_polnya")
+
+free_bray <- phyloseq::distance(data_free, method = "bray") # setting distance
+sampledf <- data.frame(sample_data(data_free))# make a data frame from the sample_data
+
+#select from main data frame
+adonis_frame <- dplyr::select(sampledf, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Pos_in_polynya)
+adonis_frame$watertype <- as.factor(adonis_frame$watertype)
+adonis_frame$Station <- as.factor(adonis_frame$Station)
+adonis_frame$Location <- as.factor(adonis_frame$Location)
+adonis_frame$Iron_Level <- as.factor(adonis_frame$Iron_Level)
+
+# Adonis test
+adonis <- adonis2(free_bray ~ Location, data = adonis_frame)
+
+# Post hoc for location in polynya
+beta_location <- betadisper(free_bray, adonis_frame$watertype)
+permutest(beta_location)
+plot(beta_location)
+boxplot(beta_location)
+mod.HSD <- TukeyHSD(beta_location)
+mod.HSD
+plot(mod.HSD, las=1)
+
+# Post hoc for depth
+beta_depth <- betadisper(free_bray, adonis_frame$watertype)
+permutest(beta_depth)
+plot(beta_depth)
+boxplot(beta_depth)
+mod.HSD <- TukeyHSD(beta_depth)
+mod.HSD
+plot(mod.HSD, las=1)

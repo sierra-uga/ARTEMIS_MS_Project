@@ -44,8 +44,8 @@ setwd("~/Documents/Research/Ordination analysis R scripts/ARTEMIS_github")
 ASV <- qza_to_phyloseq(features="required_files/table.qza")
 # read in metadata
 metatable <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE) 
-metatable <- metatable %>%
-  mutate(Iron_Level = ifelse(Iron >= 0.5, "High_iron", "Low_iron"))
+#metatable <- metatable %>%
+#  mutate(Iron_Level = ifelse(Iron >= 0.5, "High", "Low"))
 #metatable <- filter(metatable, Sample.Control == "True.Sample")# filter by transect
 metatable$is.neg <- metatable$Sample.Control == "Control.Sample"
 metatable$Final_Qubit <- as.numeric(metatable$Final_Qubit) 
@@ -56,11 +56,6 @@ metatable$Filter_pores <- ifelse(metatable$Filter_pores <= 0.2, "free-living",
 df <- metatable %>%
   group_by(Station, More_Depth_Threshold) %>%
   mutate(unique_code = paste0(Station, More_Depth_Threshold))# creates a column with a unique code for watertype + station
-df <- df %>%
-  group_by(Station, Depth_Threshold) %>%
-mutate(unique_depth = paste0(Station, Depth_Threshold))
-
-df <- df %>% mutate_at(c(21:26, 31:40), as.numeric) 
 df <- as.data.frame(df) 
 
 # Define a function to extract the replicate number

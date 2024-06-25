@@ -1,0 +1,59 @@
+"","taxon","rn","s.High","s.Low","index","stat","p.value","p.value.bh","Kingdom","Phylum","Class","Order","Family","Genus","Species"
+"1","Seq101","Seq101",1,0,1,0.368958903025832,2e-04,0.000861538461538462,"Bacteria","Nitrospinota","Nitrospinia","Nitrospinales","Nitrospinaceae",NA,NA
+"2","Seq117","Seq117",1,0,1,0.36152779201416,1e-04,0.000494117647058824,"Bacteria","Bacteroidota","Bacteroidia","Sphingobacteriales","Lentimicrobiaceae",NA,NA
+"3","Seq123","Seq123",1,0,1,0.348150200246937,2e-04,0.000861538461538462,"Bacteria","Proteobacteria","Alphaproteobacteria","SAR11 clade","Clade II",NA,NA
+"4","Seq132","Seq132",1,0,1,0.519698232730088,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","Steroidobacterales","Woeseiaceae",NA,NA
+"5","Seq144","Seq144",1,0,1,0.436944171476421,1e-04,0.000494117647058824,"Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Cyclobacteriaceae",NA,NA
+"6","Seq148","Seq148",1,0,1,0.424842734842916,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Alphaproteobacteria","Rhodospirillales","AEGEAN-169 marine group",NA,NA
+"7","Seq155","Seq155",1,0,1,0.464443658113215,1e-04,0.000494117647058824,"Bacteria","Planctomycetota","Planctomycetes","Planctomycetales","uncultured",NA,NA
+"8","Seq156","Seq156",1,0,1,0.430336059224324,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Alphaproteobacteria","Defluviicoccales","uncultured",NA,NA
+"9","Seq159","Seq159",1,0,1,0.421809911872965,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","OM182 clade","hydrothermal vent metagenome",NA,NA
+"10","Seq166","Seq166",1,0,1,0.420160731123252,1e-04,0.000494117647058824,"Bacteria","Verrucomicrobiota","Verrucomicrobiae","Arctic97B-4 marine group","uncultured organism",NA,NA
+"11","Seq169","Seq169",1,0,1,0.336627157049195,4e-04,0.0016,"Bacteria","Proteobacteria","Gammaproteobacteria","HOC36","uncultured bacterium HF0770_27E13",NA,NA
+"12","Seq171","Seq171",0,1,2,0.232993460731909,0.0135,0.0405,"Bacteria","Verrucomicrobiota","Lentisphaeria","Lentisphaerales","Lentisphaeraceae",NA,NA
+"13","Seq175","Seq175",1,0,1,0.341537853597857,3e-04,0.00126,"Bacteria","Verrucomicrobiota","Verrucomicrobiae","Verrucomicrobiales","Rubritaleaceae",NA,NA
+"14","Seq185","Seq185",1,0,1,0.417534856708343,1e-04,0.000494117647058824,"Bacteria","Actinobacteriota","Acidimicrobiia","Microtrichales","Microtrichaceae",NA,NA
+"15","Seq189","Seq189",0,1,2,0.37485654390712,1e-04,0.000494117647058824,"Bacteria","Bacteroidota","Bacteroidia","Sphingobacteriales","NS11-12 marine group",NA,NA
+"16","Seq19","Seq19",1,0,1,0.55341736476928,1e-04,0.000494117647058824,"Bacteria","Actinobacteriota","Acidimicrobiia","Microtrichales","Ilumatobacteraceae",NA,NA
+"17","Seq197","Seq197",1,0,1,0.273740240546234,0.0033,0.01155,"Bacteria","Dadabacteria","Dadabacteriia","Dadabacteriales","metagenome",NA,NA
+"18","Seq199","Seq199",1,0,1,0.389438727188014,1e-04,0.000494117647058824,"Bacteria","Chloroflexi","Dehalococcoidia","SAR202 clade","hydrothermal vent metagenome",NA,NA
+"19","Seq2264","Seq2264",1,0,1,0.247356965641243,0.0102,0.0311563636363636,"Bacteria","Nitrospirota","Nitrospiria","Nitrospirales","Nitrospiraceae",NA,NA
+"20","Seq228","Seq228",0,1,2,0.17845626277735,0.0084,0.0269433962264151,"Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Halieaceae",NA,NA
+"21","Seq234","Seq234",0,1,2,0.342661143547446,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","OM182 clade","marine gamma proteobacterium HTCC2178",NA,NA
+"22","Seq255","Seq255",1,0,1,0.416757784305923,1e-04,0.000494117647058824,"Bacteria","Verrucomicrobiota","Verrucomicrobiae","Opitutales","Puniceicoccaceae",NA,NA
+"23","Seq260","Seq260",1,0,1,0.558565248914143,1e-04,0.000494117647058824,"Bacteria","Chloroflexi","Dehalococcoidia","SAR202 clade","uncultured Chloroflexi bacterium HF4000_28F02",NA,NA
+"24","Seq267","Seq267",1,0,1,0.260309966341762,0.0074,0.0243764705882353,"Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Halomonadaceae",NA,NA
+"25","Seq3","Seq3",0,1,2,0.552576348184976,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Nitrincolaceae",NA,NA
+"26","Seq33","Seq33",0,1,2,0.440421656806818,1e-04,0.000494117647058824,"Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Crocinitomicaceae",NA,NA
+"27","Seq334","Seq334",0,1,2,0.228670194102086,4e-04,0.0016,"Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Kangiellaceae",NA,NA
+"28","Seq34","Seq34",1,0,1,0.551185410970787,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","SAR86 clade","hydrothermal vent metagenome",NA,NA
+"29","Seq350","Seq350",1,0,1,0.231342805428556,0.0163,0.0472137931034483,"Bacteria","Verrucomicrobiota","Verrucomicrobiae","Arctic97B-4 marine group","hydrothermal vent metagenome",NA,NA
+"30","Seq355","Seq355",1,0,1,0.417258643060422,1e-04,0.000494117647058824,"Bacteria","Verrucomicrobiota","Verrucomicrobiae","Arctic97B-4 marine group","uncultured verrucomicrobium HF0500_16O23",NA,NA
+"31","Seq369","Seq369",1,0,1,0.375353380488406,1e-04,0.000494117647058824,"Bacteria","Bdellovibrionota","Bdellovibrionia","Bacteriovoracales","Bacteriovoracaceae",NA,NA
+"32","Seq386","Seq386",1,0,1,0.397215506832604,1e-04,0.000494117647058824,"Bacteria","Chloroflexi","Dehalococcoidia","SAR202 clade","uncultured marine microorganism",NA,NA
+"33","Seq389","Seq389",1,0,1,0.356185428879892,2e-04,0.000861538461538462,"Bacteria","Proteobacteria","Gammaproteobacteria","Thiotrichales","Thiotrichaceae",NA,NA
+"34","Seq39","Seq39",1,0,1,0.406763135336129,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Pseudohongiellaceae",NA,NA
+"35","Seq4","Seq4",1,0,1,0.457013770323148,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","Thiomicrospirales","Thioglobaceae",NA,NA
+"36","Seq425","Seq425",0,1,2,0.400837602125626,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","uncultured marine bacterium",NA,NA
+"37","Seq43","Seq43",0,1,2,0.276501409888223,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Alteromonadaceae",NA,NA
+"38","Seq444","Seq444",1,0,1,0.385951276141009,1e-04,0.000494117647058824,"Bacteria","Acidobacteriota","Vicinamibacteria","Vicinamibacterales","uncultured",NA,NA
+"39","Seq5","Seq5",0,1,2,0.485984712540038,1e-04,0.000494117647058824,"Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Flavobacteriaceae",NA,NA
+"40","Seq511","Seq511",1,0,1,0.286701226283979,0.0029,0.0108266666666667,"Bacteria","Myxococcota","Myxococcia","Myxococcales","Myxococcaceae",NA,NA
+"41","Seq52","Seq52",1,0,1,0.384286423328144,2e-04,0.000861538461538462,"Bacteria","Proteobacteria","Gammaproteobacteria","OM182 clade","seawater metagenome",NA,NA
+"42","Seq563","Seq563",1,0,1,0.440389296262123,1e-04,0.000494117647058824,"Bacteria","Chloroflexi","Dehalococcoidia","SAR202 clade","uncultured bacterium HF0500_03M05",NA,NA
+"43","Seq57","Seq57",0,1,2,0.281294615936755,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Alphaproteobacteria","Rhodobacterales","Rhodobacteraceae",NA,NA
+"44","Seq6","Seq6",0,1,2,0.269122659611691,0.0031,0.0110808510638298,"Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Porticoccaceae",NA,NA
+"45","Seq61","Seq61",0,1,2,0.440107207406098,1e-04,0.000494117647058824,"Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Cryomorphaceae",NA,NA
+"46","Seq616","Seq616",1,0,1,0.381132364434765,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Alphaproteobacteria","Kiloniellales","Kiloniellaceae",NA,NA
+"47","Seq653","Seq653",1,0,1,0.330437673366697,1e-04,0.000494117647058824,"Bacteria","Bdellovibrionota","Oligoflexia","Oligoflexales","uncultured",NA,NA
+"48","Seq661","Seq661",1,0,1,0.257748385375152,0.0073,0.0243764705882353,"Bacteria","Actinobacteriota","Acidimicrobiia","Actinomarinales","Actinomarinaceae",NA,NA
+"49","Seq693","Seq693",1,0,1,0.279978163522543,0.0036,0.0123428571428571,"Bacteria","Chloroflexi","Dehalococcoidia","SAR202 clade","metagenome",NA,NA
+"50","Seq765","Seq765",1,0,1,0.24312600976162,0.0085,0.0269433962264151,"Bacteria","Proteobacteria","Alphaproteobacteria","Rickettsiales","S25-593",NA,NA
+"51","Seq768","Seq768",1,0,1,0.273216210994763,0.0017,0.00649090909090909,"Bacteria","Verrucomicrobiota","Verrucomicrobiae","Pedosphaerales","Pedosphaeraceae",NA,NA
+"52","Seq786","Seq786",1,0,1,0.285972465539442,0.003,0.0109565217391304,"Bacteria","Proteobacteria","Alphaproteobacteria","AT-s3-44","uncultured bacterium KM3-69-D9",NA,NA
+"53","Seq93","Seq93",1,0,1,0.478932386616711,1e-04,0.000494117647058824,"Bacteria","Proteobacteria","Gammaproteobacteria","SAR86 clade","uncultured Oceanospirillales bacterium",NA,NA
+"54","Seq94","Seq94",1,0,1,0.358602514093757,2e-04,0.000861538461538462,"Bacteria","Planctomycetota","Phycisphaerae","Phycisphaerales","Phycisphaeraceae",NA,NA
+"55","Seq944","Seq944",1,0,1,0.261666321481459,0.0094,0.0292444444444444,"Bacteria","Verrucomicrobiota","Verrucomicrobiae","Arctic97B-4 marine group","uncultured verrucomicrobium HF0070_15G23",NA,NA
+"56","Seq95","Seq95",1,0,1,0.437455863365513,1e-04,0.000494117647058824,"Bacteria","Planctomycetota","Planctomycetes","Pirellulales","Pirellulaceae",NA,NA
+"57","Seq951","Seq951",0,1,2,0.200417783480576,0.0146,0.0430315789473684,"Bacteria","Myxococcota","Polyangia","Blfdi19","uncultured marine bacterium",NA,NA
+"58","Seq962","Seq962",1,0,1,0.279908344666683,0.0017,0.00649090909090909,"Bacteria","Acidobacteriota","Vicinamibacteria","Vicinamibacterales","Vicinamibacteraceae",NA,NA

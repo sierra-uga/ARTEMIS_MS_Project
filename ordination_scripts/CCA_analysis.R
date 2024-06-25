@@ -97,7 +97,7 @@ ps_free <- ps_sub_genus %>% subset_samples(Filter_pores == "free-living") #%>% p
 ps_free <- combined_ps %>% subset_samples(Filter_pores == "0.2") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 # particle-associated phyloseq
-ps_part <- ps_sub_genus %>% subset_samples(Filter_pores >= "particle-associated") #%>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- ps_sub_genus %>% subset_samples(Filter_pores == "particle-associated") #%>% prune_taxa(taxa_sums(.) > 0, .) 
 ps_part <- combined_ps %>% subset_samples(Filter_pores >= "2") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_free <- subset_samples(ps_free, DOC != "NA")
@@ -117,6 +117,7 @@ ps_free <- subset_samples(ps_free, Station != "STN002")
 ps_free <- subset_samples(ps_free, Station != "STN004")
 ps_part <- subset_samples(ps_part, Station != "STN002")
 ps_part <- subset_samples(ps_part, Station != "STN004")
+
 
 
 # top taxa from all taxa
@@ -147,8 +148,8 @@ p
 
 # Ordinate 2
 cca <- ordinate(ps_sub_depth_no_polynya, method = "CCA", formula = ~ Latitude + Longitude + Salinity + Temperature + Sb_Oxygen)
-cca1 <- ordinate(ps_free, method = "CCA", formula = ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2)
-cca2 <- ordinate(ps_part, method = "CCA", formula = ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2)
+cca1 <- ordinate(ps_free, method = "CCA", formula = ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
+cca2 <- ordinate(ps_part, method = "CCA", formula = ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
 # Ordinate 3
 top_cca <- ordinate(top_all$ps_obj, "CCA", formula= ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + Iron)
 top_cca1 <- ordinate(top_free$ps_obj, "CCA", formula= ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + Iron + Lab_NO3 + Lab_NH4 + Lab_NO2)
@@ -205,7 +206,6 @@ free_CCA <- plot_ordination(ps_free, cca1,
 f_CCA <- free_CCA +  geom_point(pch=16, size=2) + remove_grid +# color_point +#geom_label(size= 2, aes(label = Genus)) +  # X for other locations
  theme(text = element_text(family = "Helvetica"))
 f_CCA
-
 
 # Particle-associated CCA
 part_CCA <- plot_ordination(ps_part, cca2,

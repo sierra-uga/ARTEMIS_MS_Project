@@ -1,0 +1,30 @@
+"","taxon","rn","s.High","s.Low","index","stat","p.value","p.value.bh","Kingdom","Phylum","Class","Order","Family","Genus","Species"
+"1","Seq1","Seq1",1,0,1,0.525063955682684,1e-04,0.0016,"Bacteria","Proteobacteria","Gammaproteobacteria","Pseudomonadales","Pseudomonadaceae",NA,NA
+"2","Seq117","Seq117",1,0,1,0.557019064620775,1e-04,0.0016,"Bacteria","Bacteroidota","Bacteroidia","Sphingobacteriales","Lentimicrobiaceae",NA,NA
+"3","Seq125","Seq125",1,0,1,0.389684860916854,7e-04,0.0056,"Bacteria","Proteobacteria","Gammaproteobacteria","Pseudomonadales","Moraxellaceae",NA,NA
+"4","Seq155","Seq155",1,0,1,0.460304816588901,6e-04,0.00516923076923077,"Bacteria","Planctomycetota","Planctomycetes","Planctomycetales","uncultured",NA,NA
+"5","Seq171","Seq171",0,1,2,0.357713527263003,0.0034,0.0230787878787879,"Bacteria","Verrucomicrobiota","Lentisphaeria","Lentisphaerales","Lentisphaeraceae",NA,NA
+"6","Seq180","Seq180",1,0,1,0.363169980968942,0.0036,0.0237176470588235,"Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Marinobacteraceae",NA,NA
+"7","Seq189","Seq189",0,1,2,0.384669330329873,1e-04,0.0016,"Bacteria","Bacteroidota","Bacteroidia","Sphingobacteriales","NS11-12 marine group",NA,NA
+"8","Seq19","Seq19",1,0,1,0.559254389614176,1e-04,0.0016,"Bacteria","Actinobacteriota","Acidimicrobiia","Microtrichales","Ilumatobacteraceae",NA,NA
+"9","Seq205","Seq205",1,0,1,0.30149377118218,2e-04,0.00224,"Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Moritellaceae",NA,NA
+"10","Seq235","Seq235",1,0,1,0.380218586351707,1e-04,0.0016,"Bacteria","Planctomycetota","Planctomycetes","Planctomycetales","Gimesiaceae",NA,NA
+"11","Seq249","Seq249",1,0,1,0.564972783673747,1e-04,0.0016,"Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Weeksellaceae",NA,NA
+"12","Seq255","Seq255",1,0,1,0.376111076119988,0.0028,0.0196,"Bacteria","Verrucomicrobiota","Verrucomicrobiae","Opitutales","Puniceicoccaceae",NA,NA
+"13","Seq3","Seq3",0,1,2,0.429046726555824,3e-04,0.0032,"Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Nitrincolaceae",NA,NA
+"14","Seq305","Seq305",1,0,1,0.243987975886566,0.0081,0.0421953488372093,"Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Alcanivoracaceae1",NA,NA
+"15","Seq323","Seq323",1,0,1,0.519691607505132,2e-04,0.00224,"Bacteria","Myxococcota","Polyangia","Nannocystales","Nannocystaceae",NA,NA
+"16","Seq34","Seq34",1,0,1,0.331126358229267,0.0097,0.0493818181818182,"Bacteria","Proteobacteria","Gammaproteobacteria","SAR86 clade","hydrothermal vent metagenome",NA,NA
+"17","Seq371","Seq371",1,0,1,0.579502524962234,1e-04,0.0016,"Bacteria","Myxococcota","Polyangia","Polyangiales","Polyangiaceae",NA,NA
+"18","Seq40","Seq40",1,0,1,0.326698114765686,5e-04,0.00448,"Bacteria","Proteobacteria","Gammaproteobacteria","Vibrionales","Vibrionaceae",NA,NA
+"19","Seq479","Seq479",1,0,1,0.308499015321889,0.0052,0.0304410256410256,"Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Psychromonadaceae",NA,NA
+"20","Seq482","Seq482",1,0,1,0.571157777716774,1e-04,0.0016,"Bacteria","Desulfobacterota","Desulfuromonadia","Bradymonadales","uncultured marine bacterium",NA,NA
+"21","Seq6","Seq6",0,1,2,0.45846478434247,2e-04,0.00224,"Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Porticoccaceae",NA,NA
+"22","Seq611","Seq611",1,0,1,0.474647371071962,2e-04,0.00224,"Bacteria","Desulfobacterota","Desulfuromonadia","PB19","uncultured marine microorganism",NA,NA
+"23","Seq653","Seq653",1,0,1,0.37692472564229,9e-04,0.00672,"Bacteria","Bdellovibrionota","Oligoflexia","Oligoflexales","uncultured",NA,NA
+"24","Seq661","Seq661",1,0,1,0.355228227998394,0.0038,0.02432,"Bacteria","Actinobacteriota","Acidimicrobiia","Actinomarinales","Actinomarinaceae",NA,NA
+"25","Seq818","Seq818",1,0,1,0.333510739298159,0.0075,0.04,"Bacteria","Myxococcota","Polyangia","VHS-B3-70","uncultured marine bacterium",NA,NA
+"26","Seq826","Seq826",1,0,1,0.433121150650734,1e-04,0.0016,"Bacteria","Desulfobacterota","Desulfuromonadia","PB19","uncultured deep-sea bacterium",NA,NA
+"27","Seq94","Seq94",1,0,1,0.549210823335621,1e-04,0.0016,"Bacteria","Planctomycetota","Phycisphaerae","Phycisphaerales","Phycisphaeraceae",NA,NA
+"28","Seq95","Seq95",1,0,1,0.498652800294176,1e-04,0.0016,"Bacteria","Planctomycetota","Planctomycetes","Pirellulales","Pirellulaceae",NA,NA
+"29","Seq988","Seq988",1,0,1,0.422435487386286,9e-04,0.00672,"Bacteria","Actinobacteriota","Actinobacteria","uncultured","uncultured organism",NA,NA

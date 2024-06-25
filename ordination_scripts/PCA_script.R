@@ -4,7 +4,6 @@ library("tidyr")
 library("phyloseq")
 
 # read in metadata
-
 org_metadata <- read.delim("required_files/temp_metadata.csv", sep=",", header=TRUE, row.names="sample_name") 
 
 #org_metadata <- org_metadata_filter
@@ -13,7 +12,6 @@ fil_metadata <- org_metadata[row.names(org_metadata) %in% row.names(distinct),] 
 
 ## data culling 
 org_metadata <- filter(fil_metadata, Sample.Control == "True.Sample") # use tidyr to select "real samples" (non-blanks)
-org_metadata <- filter(org_metadata, Station != "STN056b") 
 org_metadata <- filter(org_metadata, Station != "STN056b") 
 # metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
 metadata <- org_metadata[ -c( 1, 26:29)] # remove filter-related stuff
@@ -80,7 +78,6 @@ outflow <- metadata$Pos_in_polynya == "Outflow"
 # high/low iron
 high_iron <- metadata$Iron_Level == "High"
 low_iron <- metadata$Iron_Level == "Low"
-
 
 # set vectors for More depth threshold
 unique(org_metadata$More_Depth_Threshold)
