@@ -23,9 +23,9 @@ abundance_file <- "PICRUSt_analysis/required_files/pred_metagenome_unstrat_descr
 #list2[!(list1 %in% list2)] # output: [1] "STN115.35.fil.dura.r1"
 metatable <- read_delim("required_files/artemis-eDNA-metadata-final.tsv", delim="\t") 
 
-metadata <- metatable %>% filter(., Sample.Control == "True.Sample") %>% filter(., sample_name != "STN089.200.fil.dura.r2") %>%
-  filter(., sample_name %in% wanted_samples) %>% filter(., sample_name != "STN078.1040.pre.poly.3.LG")#%>% group_by(Station) #%>% filter(., sample_name != "STN115.35.fil.dura.r1") #%>% distinct(Filter_pores, .keep_all = TRUE) 
+metadata <- metatable %>% filter(., Sample.Control == "True.Sample") %>% filter(., sample_name != "STN089.200.fil.dura.r2") %>% filter(., sample_name != "STN078.1040.pre.poly.3.LG")#%>% group_by(Station) #%>% filter(., sample_name != "STN115.35.fil.dura.r1") #%>% distinct(Filter_pores, .keep_all = TRUE) 
 # remove sample that isn't in kegg abundance for some reason
+#filter(., sample_name %in% wanted_samples)
 
 abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, col_types=c("c", "n"), trim_ws = TRUE) 
 ColumnstoKeep <- c("function", metadata$sample_name) # set vector of list of names to keep + KO Name column
@@ -76,7 +76,7 @@ TAX <- subset_taxa(TAX, rownames(OTUy) %in% TAX)
 
 pi_ps <- merge_phyloseq(OTUy, META)
 
-pseq <- ps_sub %>%
+pseq <- pi_ps %>%
   phyloseq_validate() %>% subset_samples(., Iron_Level != "NA")
 
 library(microbiomeMarker)

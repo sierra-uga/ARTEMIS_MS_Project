@@ -1,5 +1,6 @@
 install.packages("ggtext")
 library(ggtext)
+library(ggrepel)
 ## phloyseq setup (from phyloseq_setup.R)
 # filtering
 ps_sub <- ps_noncontam_prev05 %>% # filtering unwanted chloroplast/mitochondria
@@ -51,20 +52,19 @@ ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated")
 # free-living
 ## upper 200m
 ps_free_above <- ps_free %>% subset_samples(CTD_Depth <= 200)
-cca_free_above <- ordinate(ps_free_above, method = "CCA", formula = ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
+cca_free_above <- ordinate(ps_free_above, method = "CCA", formula = ~ CTD_Depth + Latitude + Longitude + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
 
 ## bellow 200m
 ps_free_below <- ps_free %>% subset_samples(CTD_Depth >= 200)
-cca_free_below <- ordinate(ps_free_below, method = "CCA", formula = ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
-
+cca_free_below <- ordinate(ps_free_below, method = "CCA", formula = ~ CTD_Depth + Latitude + Longitude +  Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
 # particle-associated
 ## upper 200m
 ps_part_above <- ps_part %>% subset_samples(CTD_Depth <= 200)
-cca_part_above <- ordinate(ps_part_above, method = "CCA", formula = ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
+cca_part_above <- ordinate(ps_part_above, method = "CCA", formula = ~ CTD_Depth + Latitude + Longitude +  Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
 
 ## bellow 200m
 ps_part_below <- ps_part %>% subset_samples(CTD_Depth >= 200)
-cca_part_below <- ordinate(ps_part_below, method = "CCA", formula = ~ CTD_Depth + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
+cca_part_below <- ordinate(ps_part_below, method = "CCA", formula = ~ CTD_Depth + Latitude + Longitude +  Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron)
 
 remove_grid <- theme(legend.position = "bottom") + theme_bw() + # removes grid
   theme(panel.grid.major = element_blank(),
@@ -103,7 +103,7 @@ f_CCA <- free_above_CCA + geom_point(aes(shape = watertype, fill = Location), si
 f_CCA
 
 arrowmat = vegan::scores(cca_free_above, display = "bp")
-labels <- c("Depth", "Salinity", "Temperature", "Oxygen", "DOC", "Nitrate", "Ammonia", "Nitrite", "Iron") #"Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", 
+labels <- c("Latitude", "Longitude", "Depth", "Salinity", "Temperature", "Oxygen", "DOC", "Nitrate", "Ammonia", "Nitrite", "Iron") #"Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", 
 #labels <- rownames(arrowmat)
 # Add labels, make a data.frame
 arrowdf <- data.frame(labels = labels, arrowmat)
@@ -130,7 +130,7 @@ f_CCA2 <- free_below_CCA + geom_point(aes(shape = watertype, fill = Location), s
 f_CCA2
 
 arrowmat = vegan::scores(cca_free_below, display = "bp")
-labels <- c("Depth", "Salinity", "Temperature", "Oxygen", "DOC", "Nitrate", "Ammonia", "Nitrite", "Iron") #"Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", 
+labels <- c("Latitude", "Longitude", "Depth", "Salinity", "Temperature", "Oxygen", "DOC", "Nitrate", "Ammonia", "Nitrite", "Iron") #"Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", 
 #labels <- rownames(arrowmat)
 # Add labels, make a data.frame
 arrowdf <- data.frame(labels = labels, arrowmat)
@@ -158,7 +158,7 @@ p_CCA <- part_above_CCA + geom_point(aes(shape = watertype, fill = Location), si
 p_CCA
 
 arrowmat = vegan::scores(cca_part_above, display = "bp")
-labels <- c("Depth", "Salinity", "Temperature", "Oxygen", "DOC", "Nitrate", "Ammonia", "Nitrite", "Iron") #"Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", 
+labels <- c("Latitude", "Longitude", "Depth", "Salinity", "Temperature", "Oxygen", "DOC", "Nitrate", "Ammonia", "Nitrite", "Iron") #"Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", 
 #labels <- rownames(arrowmat)
 # Add labels, make a data.frame
 arrowdf <- data.frame(labels = labels, arrowmat)
@@ -186,7 +186,7 @@ p_CCA2 <- part_below_CCA + geom_point(aes(shape = watertype, fill = Location), s
 p_CCA2
 
 arrowmat = vegan::scores(cca_part_below, display = "bp")
-labels <- c("Depth", "Salinity", "Temperature", "Oxygen", "DOC", "Nitrate", "Ammonia", "Nitrite", "Iron") #"Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", 
+labels <- c("Latitude", "Longitude", "Depth", "Salinity", "Temperature", "Oxygen", "DOC", "Nitrate", "Ammonia", "Nitrite", "Iron") #"Dotson", "Eastern CC", "Getz", "Open Polynya", "Western CC", 
 #labels <- rownames(arrowmat)
 # Add labels, make a data.frame
 arrowdf <- data.frame(labels = labels, arrowmat)
@@ -220,7 +220,7 @@ legend_combined <- get_legend(fake_plot)
 
 ## combine plots
 
-
+library(ggpubr)
 ggarrange(f1,p1,f2,p2, ncol=2, nrow=2, common.legend=TRUE, legend="right", legend.grob=legend_combined, labels = c("A", "C", "B", "D"))
 
-ggsave("final_graphics/CCA_DOC_iron.pdf", width = 10, height = 8, dpi = 150)
+ggsave("final_graphics/CCA_iron_DOC_iron_upper200_with_latitude.pdf", width = 10, height = 8, dpi = 1200)

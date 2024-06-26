@@ -27,7 +27,7 @@ ps_sub <- subset_samples(ps_sub, watertype %in% samples)
 locations <- c("STN198", "STN002", "STN004", "STN012", "STN115", "STN12.3", "STN014")
 ps_sub <- subset_samples(ps_sub, Station %in% locations)
 
-ps_sub <- tax_glom(ps_sub, "Family", NArm = TRUE)
+ps_sub <- tax_glom(ps_sub, "Genus", NArm = TRUE)
 
 ps_sub <-label_duplicate_taxa(ps_sub,
                                 tax_level = "Family")

@@ -11,52 +11,63 @@ library(LinDA)
 library(IgAScores) # gives relative abundance of count table
 library(ggplot2)
 ##### PICRUSt setup #####
-abundance_file <- "PICRUSt_analysis/required_files/pred_metagenome_unstrat.tsv" # read in abundance file (KO)
-metadata <- read_delim(
-  "required_files/artemis-eDNA-metadata-final.tsv",  # read in metadata file
-  delim = "\t",
-  escape_double = FALSE,
-  trim_ws = TRUE
-)
-# test to make sure they sample names are the same
-#list1 <- metadata$sample_name
-#list2 <- colnames(abundance_data)
-#list2[!(list1 %in% list2)] # output: [1] "STN115.35.fil.dura.r1"
+metatable <- read_delim("required_files/artemis-eDNA-metadata-final.tsv", delim="\t") 
 
-metadata <- metadata %>% filter(., Sample.Control == "True.Sample") %>% filter(., sample_name != "STN115.35.fil.dura.r1") %>% 
-  filter(., sample_name != "STN089.200.fil.dura.r2") %>% group_by(Station) #%>% distinct(Filter_pores, .keep_all = TRUE) 
+metadata <- metatable %>% filter(., Sample.Control == "True.Sample") %>% filter(., sample_name != "STN089.200.fil.dura.r2") %>% filter(., sample_name != "STN078.1040.pre.poly.3.LG")#%>% group_by(Station) #%>% filter(., sample_name != "STN115.35.fil.dura.r1") #%>% distinct(Filter_pores, .keep_all = TRUE) 
 # remove sample that isn't in kegg abundance for some reason
+#filter(., sample_name %in% wanted_samples)
 
-abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE) # read in KO dataset
-ColumnstoKeep <- c("#NAME", metadata$sample_name) # set vector of list of names to keep + KO Name column
+abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, col_types=c("c", "n"), trim_ws = TRUE) 
+ColumnstoKeep <- c("function", metadata$sample_name) # set vector of list of names to keep + KO Name column
 KO_abundance_data <- subset(abundance_data, select = ColumnstoKeep) # subset (select columns) based on ColumnstoKeep
 
-#### Creating dataframe for all stations #######
-# subset KO_abundance by KO_number in reference table
-iron_KO <- read.csv("PICRUSt_analysis/required_files/KO_numbers_Sun_et_al.csv") # read in KO_number reference
-iron_KO <- iron_KO %>% filter(., Metabolism == "Iron uptake and metabolism") # filter by iron metabolism only
+#for iron
+
+iron_KO <- read.csv("required_files/KO_Numbers_all_metabolism.csv") # read in KO_number reference
+#iron_KO <- iron_KO %>% filter(., Metabolism == "Iron uptake and metabolism") # filter by iron metabolism only
 
 KO_iron_numbers <- iron_KO$KO_Num # set vector for numbers
-KO_iron_abundance_data <- KO_abundance_data[KO_abundance_data$`#NAME` %in% KO_iron_numbers, ] #filter by KO_number using KO_iron_number ref
+KO_iron_abundance_data <- KO_abundance_data[KO_abundance_data$`function` %in% KO_iron_numbers, ] #filter by KO_number using KO_iron_number ref
 
-KO_joined <- data.frame(iron_KO$Type, iron_KO$KO_Num)
-colnames(KO_joined) <- c("Type", "#NAME")
+KO_joined <- data.frame(iron_KO$Name, iron_KO$KO_Num)
+colnames(KO_joined) <- c("Name", "function")
 
-KO_iron_abundance_type <- left_join(KO_iron_abundance_data, KO_joined) %>% column_to_rownames("#NAME")
+KO_iron_abundance_type <- left_join(KO_iron_abundance_data, KO_joined) %>% as.data.frame()
+KO_iron_abundance_type <- KO_iron_abundance_type[!duplicated(KO_iron_abundance_type$`function`), ]
+row.names(KO_iron_abundance_type) <- KO_iron_abundance_type$"function"
 
-######### doing relative abundance ########
-KO_iron_abundance_type$Type <- NULL #remove for sum analysis
-column_sums <- colSums(KO_iron_abundance_type) # take sum of each column
-updated_abundance <- as.data.frame(column_sums) # create dataframe with sums
-updated_abundance$sample_name <- rownames(updated_abundance)
-updated_abundance$Type <- tt$Type #create a column with rows (sample_names)
-dataframe_to_combine <- metadata %>% select(sample_name, Depth_Threshold, Station, Filter_pores) # make temp dataframe for combining
-all_stations <- left_join(updated_abundance, dataframe_to_combine) # join two dataframes by sample_name
-all_stations$Filter_pores <- ifelse(all_stations$Filter_pores >= 0.2 & all_stations$Filter_pores <= 2.0, "free-living", 
-                                        ifelse(all_stations$Filter_pores == 3.0, "particle-associated", all_stations$Filter_pores))
+# create a phyloseq object for PICRUST data
+metadata$Filter_pores <- ifelse(metadata$Filter_pores >= 0.2 & metadata$Filter_pores <= 2.0, "free-living", 
+                                ifelse(metadata$Filter_pores == 3.0, "particle-associated", metadata$Filter_pores))
+metadata <- as.data.frame(metadata)
+rownames(metadata) <- metadata$sample_name
+META <- sample_data(metadata)
 
-df1 <- test
-df2 <- dataframe_to_combine
+
+#for iron
+#KO_iron_abundance_type$Name <- NULL
+#KO_iron_abundance_type$`function` <- NULL
+#otumaty = as(KO_iron_abundance_type, "matrix")
+#rownames(otumaty) <- abundance_data$"#NAME"
+#OTUy = otu_table(otumaty, taxa_are_rows=TRUE)
+
+#for normal
+KO_abundance_data <- as.data.frame(KO_abundance_data)
+KO_abundance_data <- KO_abundance_data %>% distinct(`function`, .keep_all = TRUE)
+rownames(KO_abundance_data) <- KO_abundance_data$`function`
+KO_abundance_data$`function` <- NULL
+otumaty = as(KO_abundance_data, "matrix")
+#rownames(otumaty) <- abundance_data$"#NAME"
+OTUy = otu_table(otumaty, taxa_are_rows=TRUE)
+TAX <- tax_table(iron_KO)
+rownames(TAX) <- rownames(iron_KO)
+
+TAX <- subset_taxa(TAX, rownames(OTUy) %in% TAX)
+
+pi_ps <- merge_phyloseq(OTUy, META)
+
+pseq <- pi_ps %>%
+  phyloseq_validate()
 
 
 ### set up for plots ###
@@ -64,13 +75,32 @@ level_order <- c("STN089", "STN132", "STN106", "STN20", "STN198", "STN002", "STN
 depth_order <- c("Surface", "Intermediate", "Bottom_water")
 
 #### plots #####
-#### free - living ####
-free_abundance <- all_stations %>% filter(Filter_pores == 0.2) # filter by freeicle-associated
-free_abundance_agg <- aggregate(column_sums ~ Depth_Threshold * Station, data = free_abundance, FUN = mean) # take mean per TYPE, for each station
-total_count <- sum(free_abundance_agg$column_sums)
+ps_free <- pseq %>% subset_samples(Filter_pores == "free-living") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
-# Calculate relative abundance
-free_abundance_agg$relative_abundance <- free_abundance_agg$column_sums / total_count
+# particle-associated phyloseq
+ps_part <- pseq %>% subset_samples(Filter_pores == "particle-associated") %>% prune_taxa(taxa_sums(.) > 0, .) 
+
+
+data_free <- ps_free %>% # agglomerate at Order level, can change to different taxonomic level!
+  prune_taxa(taxa_sums(.) > 0, .) %>%
+  transform_sample_counts(function(x) {x/sum(x)})  # Transform to rel. abundance (normalize data
+
+data_top_free <- data_free %>%
+  psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
+  filter(Abundance > 0.05) %>% # Filter out low abundance taxa
+  arrange(unique)
+
+data_top_free <- aggregate(Abundance ~ Station * unique, data = data_top_free, FUN = mean)
+
+# particle-associated
+data_part <- ps_part %>%
+  prune_taxa(taxa_sums(.) > 0, .) %>%# agglomerate at Order level
+  transform_sample_counts(function(x) {x/sum(x)} )  # Transform to rel. abundance (normalize data)
+
+data_top_part <- data_part %>%
+  psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
+  filter(Abundance > 0.05) %>% # Filter out low abundance taxa
+  arrange(unique)
 
 # create linegraph
 line_free <- ggplot(free_abundance_agg, aes(x = factor(Station, level = level_order), y = relative_abundance, color = factor(Depth_Threshold, level = depth_order), group = factor(Depth_Threshold, level = depth_order))) +

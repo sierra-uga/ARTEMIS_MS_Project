@@ -1,0 +1,9 @@
+"","taxon","rn","s.Dotson","s.Eastern_CC","s.Getz","s.Open_polynya","s.Western_CC","index","stat","p.value","p.value.bh","Kingdom","Phylum","Class","Order","Family","Genus","Species"
+"1","Seq1","Seq1",1,1,1,0,0,16,0.618824814647466,1e-04,0.01175,"Bacteria","Proteobacteria","Gammaproteobacteria","Pseudomonadales","Pseudomonadaceae","Pseudomonadaceae Family",NA
+"2","Seq1526","Seq1526",0,0,1,0,0,3,0.536881842726333,3e-04,0.0235,"Bacteria","Proteobacteria","Gammaproteobacteria","Methylococcales","Methylomonadaceae","Methylomonadaceae Family",NA
+"3","Seq235","Seq235",0,1,0,0,0,2,0.551723915693252,8e-04,0.03525,"Bacteria","Planctomycetota","Planctomycetes","Planctomycetales","Gimesiaceae","Gimesiaceae Family",NA
+"4","Seq3","Seq3",0,0,0,0,1,5,0.708040215580628,1e-04,0.01175,"Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Nitrincolaceae","Nitrincolaceae Family",NA
+"5","Seq482","Seq482",0,0,1,0,0,3,0.556615929868596,7e-04,0.03525,"Bacteria","Desulfobacterota","Desulfuromonadia","Bradymonadales","uncultured marine bacterium","uncultured marine bacterium Family 2",NA
+"6","Seq509","Seq509",0,0,1,1,0,13,0.561022948169658,9e-04,0.03525,"Bacteria","Proteobacteria","Gammaproteobacteria","Arenicellales","Arenicellaceae","Arenicellaceae Family",NA
+"7","Seq653","Seq653",0,0,1,0,0,3,0.524247883445277,0.0015,0.0440625,"Bacteria","Bdellovibrionota","Oligoflexia","Oligoflexales","uncultured","uncultured Family 4",NA
+"8","Seq95","Seq95",1,1,1,0,0,16,0.513778793134738,0.0012,0.0402857142857143,"Bacteria","Planctomycetota","Planctomycetes","Pirellulales","Pirellulaceae","Pirellulaceae Family",NA

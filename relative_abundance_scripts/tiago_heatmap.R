@@ -146,6 +146,8 @@ draw(hm_ec_sel, padding = unit(c(1, 30, 1, 1), "mm"))
 hm_ec_sel
 
 
+
+
 ##TAXA
 
 row_names <- rownames(sigtab)

@@ -1,0 +1,15 @@
+"","taxon","rn","s.Inflow","s.Outflow","index","stat","p.value","p.value.bh","Kingdom","Phylum","Class","Order","Family","Genus","Species"
+"1","Seq205","Seq205",1,0,1,0.855343040742748,7e-04,0.0233333333333333,"Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Moritellaceae","Moritella",NA
+"2","Seq217","Seq217",1,0,1,0.941759704475963,7e-04,0.0233333333333333,"Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Crocinitomicaceae","Crocinitomicaceae Family",NA
+"3","Seq272","Seq272",1,0,1,0.833565007795337,7e-04,0.0233333333333333,"Bacteria","Planctomycetota","Phycisphaerae","Phycisphaerales","Phycisphaeraceae","CL500-3",NA
+"4","Seq283","Seq283",1,0,1,0.656175224407131,0.0012,0.03,"Bacteria","Bdellovibrionota","Bdellovibrionia","Bacteriovoracales","Bacteriovoracaceae","uncultured 9",NA
+"5","Seq290","Seq290",1,0,1,0.730989449575051,0.0026,0.04,"Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","NS7 marine group","uncultured organism 1",NA
+"6","Seq298","Seq298",1,0,1,0.886501402761063,7e-04,0.0233333333333333,"Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Cyclobacteriaceae","uncultured 10",NA
+"7","Seq40","Seq40",1,0,1,0.60305391206275,0.0019,0.038,"Bacteria","Proteobacteria","Gammaproteobacteria","Vibrionales","Vibrionaceae","Vibrionaceae Family",NA
+"8","Seq611","Seq611",1,0,1,0.779257370252292,0.0016,0.0355555555555556,"Bacteria","Desulfobacterota","Desulfuromonadia","PB19","uncultured marine microorganism","uncultured marine microorganism Family 2",NA
+"9","Seq703","Seq703",1,0,1,0.72478344541448,0.0028,0.04,"Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Weeksellaceae","Weeksellaceae Family",NA
+"10","Seq71","Seq71",1,0,1,0.884800392214052,7e-04,0.0233333333333333,"Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Cryomorphaceae","Vicingus",NA
+"11","Seq826","Seq826",1,0,1,0.804760636118386,0.0023,0.04,"Bacteria","Desulfobacterota","Desulfuromonadia","PB19","uncultured deep-sea bacterium","uncultured deep-sea bacterium Family 1",NA
+"12","Seq91","Seq91",1,0,1,0.788390808215524,0.0011,0.03,"Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Colwelliaceae","Colwellia",NA
+"13","Seq94","Seq94",1,0,1,0.68875833029132,0.0026,0.04,"Bacteria","Planctomycetota","Phycisphaerae","Phycisphaerales","Phycisphaeraceae","JL-ETNP-F27",NA
+"14","Seq98","Seq98",1,0,1,0.825124242268089,7e-04,0.0233333333333333,"Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Colwelliaceae","Colwelliaceae Family",NA
