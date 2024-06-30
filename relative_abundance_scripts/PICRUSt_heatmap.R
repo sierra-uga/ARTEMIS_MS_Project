@@ -55,11 +55,11 @@ META <- sample_data(metadata)
 
 
 #for iron
-#KO_iron_abundance_type$Name <- NULL
-#KO_iron_abundance_type$`function` <- NULL
-#otumaty = as(KO_iron_abundance_type, "matrix")
-#rownames(otumaty) <- abundance_data$"#NAME"
-#OTUy = otu_table(otumaty, taxa_are_rows=TRUE)
+KO_iron_abundance_type$Name <- NULL
+KO_iron_abundance_type$`function` <- NULL
+otumaty = as(KO_iron_abundance_type, "matrix")
+rownames(otumaty) <- abundance_data$`function`
+OTUy = otu_table(otumaty, taxa_are_rows=TRUE)
 
 #for normal
 KO_abundance_data <- as.data.frame(KO_abundance_data)
@@ -81,12 +81,7 @@ pseq <- pi_ps %>%
 
 library(microbiomeMarker)
 
-hello <- run_aldex(ps_free, group = "Pos_in_polynya")
 
-physeqGenus = tax_glom(pseq, "Order")
-
-pseq <- physeqGenus 
-pseq@otu_table <- pseq@otu_table + 1 
 
 ps_free <- subset_samples(pseq, Filter_pores == "free-living")
 ps_part <- subset_samples(pseq, Filter_pores == "particle-associated")

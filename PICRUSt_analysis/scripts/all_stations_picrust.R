@@ -4,6 +4,7 @@ library(tibble)
 library(tidyverse)
 library(ggpubr)
 library(ggprism)
+library(RColorBrewer)
 library(patchwork)
 require(grid)
 library(LinDA)
@@ -29,12 +30,12 @@ iron_KO <- read.csv("required_files/KO_Numbers_all_metabolism.csv") # read in KO
 KO_iron_numbers <- iron_KO$KO_Num # set vector for numbers
 KO_iron_abundance_data <- KO_abundance_data[KO_abundance_data$`function` %in% KO_iron_numbers, ] #filter by KO_number using KO_iron_number ref
 
-KO_joined <- data.frame(iron_KO$Name, iron_KO$KO_Num)
+KO_joined <- data.frame(iron_KO$Pathway.Description.KEGG, iron_KO$KO_Num)
 colnames(KO_joined) <- c("Name", "function")
 
 KO_iron_abundance_type <- left_join(KO_iron_abundance_data, KO_joined) %>% as.data.frame()
-KO_iron_abundance_type <- KO_iron_abundance_type[!duplicated(KO_iron_abundance_type$`function`), ]
-row.names(KO_iron_abundance_type) <- KO_iron_abundance_type$"function"
+KO_iron_abundance_type <- KO_iron_abundance_type[!duplicated(KO_iron_abundance_type$Name), ]
+row.names(KO_iron_abundance_type) <- KO_iron_abundance_type$"Name"
 
 # create a phyloseq object for PICRUST data
 metadata$Filter_pores <- ifelse(metadata$Filter_pores >= 0.2 & metadata$Filter_pores <= 2.0, "free-living", 
@@ -43,13 +44,11 @@ metadata <- as.data.frame(metadata)
 rownames(metadata) <- metadata$sample_name
 META <- sample_data(metadata)
 
-
-#for iron
-#KO_iron_abundance_type$Name <- NULL
-#KO_iron_abundance_type$`function` <- NULL
-#otumaty = as(KO_iron_abundance_type, "matrix")
-#rownames(otumaty) <- abundance_data$"#NAME"
-#OTUy = otu_table(otumaty, taxa_are_rows=TRUE)
+KO_iron_abundance_type$Name <- NULL
+KO_iron_abundance_type$`function` <- NULL
+otumaty = as(KO_iron_abundance_type, "matrix")
+rownames(otumaty) <- KO_iron_abundance_type$"#NAME"
+OTUy = otu_table(otumaty, taxa_are_rows=TRUE)
 
 #for normal
 KO_abundance_data <- as.data.frame(KO_abundance_data)
@@ -75,10 +74,10 @@ level_order <- c("STN089", "STN132", "STN106", "STN20", "STN198", "STN002", "STN
 depth_order <- c("Surface", "Intermediate", "Bottom_water")
 
 #### plots #####
-ps_free <- pseq %>% subset_samples(Filter_pores == "free-living") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_free <- pseq %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(watertype != "Other") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 # particle-associated phyloseq
-ps_part <- pseq %>% subset_samples(Filter_pores == "particle-associated") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- pseq %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(watertype != "Other") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 
 data_free <- ps_free %>% # agglomerate at Order level, can change to different taxonomic level!
@@ -87,10 +86,10 @@ data_free <- ps_free %>% # agglomerate at Order level, can change to different t
 
 data_top_free <- data_free %>%
   psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
-  filter(Abundance > 0.05) %>% # Filter out low abundance taxa
+  filter(Abundance > 0.02) %>% # Filter out low abundance taxa
   arrange(unique)
 
-data_top_free <- aggregate(Abundance ~ Station * unique, data = data_top_free, FUN = mean)
+data_top_free <- aggregate(Abundance ~ Station * watertype * unique, data = data_top_free, FUN = mean)
 
 # particle-associated
 data_part <- ps_part %>%
@@ -99,8 +98,17 @@ data_part <- ps_part %>%
 
 data_top_part <- data_part %>%
   psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
-  filter(Abundance > 0.05) %>% # Filter out low abundance taxa
+  filter(Abundance > 0.02) %>% # Filter out low abundance taxa
   arrange(unique)
+
+data_top_part <- aggregate(Abundance ~ Station * watertype * unique, data = data_top_part, FUN = mean)
+
+myColors <- c(brewer.pal(9, "Paired"),"darkred", "yellow", "green","#4169E1",'darkgreen',"#f5eca2",'#5e3c99','#a83295','#8c510a','#bf812d','#dfc27d','#f6e8c3','darkred','#c7eae5','#80cdc1','#35978f','#01665e','#4169E1', "#A43D27", "#497687", "#5E4987", "darkgoldenrod", "lightblue2", "darkblue", "#a37fff", "seagreen", "purple", "black")
+# this must equal the levels of the Order
+data_top_free$Family <- as.factor(data_top_free$unique) # setting the Order columns to factor
+data_top_part$Family <- as.factor(data_top_part$unique) # setting the Order columns to factor
+names(myColors) <- levels(c(data_top_free$unique, data_top_part$unique)) # setting the names of the colors to coordinate with the Order columns of each dataframe
+
 
 # create linegraph
 line_free <- ggplot(free_abundance_agg, aes(x = factor(Station, level = level_order), y = relative_abundance, color = factor(Depth_Threshold, level = depth_order), group = factor(Depth_Threshold, level = depth_order))) +
@@ -193,36 +201,116 @@ ggplot(part_abundance_agg, aes(x = factor(Station, level = level_order), y = rel
 
 
 # BY WATERMASS
-
-watermass_data <- metadata %>% select(sample_name, watertype, Station, Filter_pores) # make temp dataframe for combining
-all_stations_mass <- left_join(updated_abundance, watermass_data) # join two dataframes by sample_name
-all_stations_mass$Filter_pores <- ifelse(all_stations$Filter_pores >= 0.2 & all_stations$Filter_pores <= 2.0, "free-living", 
-                                    ifelse(all_stations$Filter_pores == 3.0, "particle-associated", all_stations$Filter_pores))
-all_stations_mass <- aggregate(column_sums ~ watertype * Station * Filter_pores, data = all_stations_mass, FUN = mean) # take mean per TYPE, for each station
-total_count <- sum(all_stations_mass$column_sums)
-
-# Calculate relative abundance
-all_stations_mass$relative_abundance <- all_stations_mass$column_sums / total_count
-ggplot(all_stations_mass, aes(x = factor(Station, level = level_order), y = relative_abundance, fill = Filter_pores)) + 
-  facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~.) +
-  geom_bar(stat = "identity", position = "fill", color = "black", linewidth = 0.3, width=0.9) +
-  scale_y_continuous(expand = c(0, 0)) +
-  labs(x = "", y = "Relative Abundance (%)", title = "") +
-  scale_fill_manual(values = c("free-living" = "dodgerblue2", "particle-associated" = "#A43D27"),
-                    labels = c("free-living", "particle-associated"), 
-                    name = "Community") +
-  theme_classic() +
-  theme(axis.title.x = element_blank(),
-        axis.text.x = element_text(size=9, angle=90),
+barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = unique, group = unique)) + facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~.) + # facet grid seperates by different levels, horizontally
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
+  scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
+  scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
+  scale_x_discrete(
+    breaks = plot_breaks, # setting breaks
+    labels = plot_labels, # settting levels
+    drop = FALSE
+  ) +
+  theme(text = element_text(family = "Helvetica"), 
+        plot.title = element_text(hjust = 0.6),
+        axis.title.x = element_blank(),
+        axis.text=element_text(size=7),
+        axis.text.x = element_text(size=9, angle=90, vjust=0.5),
         axis.title.y = element_blank(),
-        axis.text.y = element_text(size=9 , color="white"),
-        panel.spacing.x = unit(0, "points"), # Reducing space between facets#
-        panel.border = element_blank()) + # Optionally remove panel borders
+        legend.position = "none"
+        # Reducing space between facets
+  ) + # Optionally remove panel borders
   geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
-  #theme(plot.title = element_text(hjust = 0.5, size=17)) +
-  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
-  ggtitle("")# Rotate x-axis labels for better readability
+  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
+  #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
+  ggtitle("Free-living")
 
+barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = unique, group = unique)) + facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~.) + # facet grid seperates by different levels, horizontally
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
+  scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
+  scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
+  scale_x_discrete(
+    breaks = plot_breaks, # setting breaks
+    labels = plot_labels, # settting levels
+    drop = FALSE
+  ) +
+  theme(text = element_text(family = "Helvetica"), 
+        plot.title = element_text(hjust = 0.6),
+        axis.title.x = element_blank(),
+        axis.text=element_text(size=7),
+        axis.text.x = element_text(size=9, angle=90, vjust=0.5),
+        axis.title.y = element_blank(),
+        legend.position = "none"
+        # Reducing space between facets
+  ) + # Optionally remove panel borders
+  geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
+  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
+  #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
+  ggtitle("Particle-associated")
+
+
+total <- rbind(data_top_part, data_top_free)
+# make combined FAKE plot to grab legend from and to put in the combine plot :^)
+legend_plot <- ggplot(total, aes(x = Station, y = Abundance, fill = unique)) +
+  geom_bar(stat = "identity", position="fill", width=2) + theme_classic() +
+  # geom_col(position = "dodge") + # changes to multiple bars
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_manual(values = myColors) +
+  guides(fill = guide_legend(override.aes = list(color = "black", size = 1))) # adds black outline around legend
+
+# get legend from the fake combined plot
+legend_combined <- get_legend(legend_plot)
+
+# combines the two graphs together
+ps_combined <- ggarrange(
+  barplot_free, barplot_part, labels = NULL,
+  common.legend = TRUE, legend = "right"
+)
+
+annotate_figure(ps_combined, top = text_grob("Total Relative Abundance of PICRUSt2 Gene Pathways by Water Mass", 
+                                             color = "black", hjust=.7, face = "bold", size = 18, family = "Helvetica"))
+
+ggsave("final_graphics/rel_abund_picrust_watermass.pdf", width = 16, height = 7, dpi = 150)
+
+
+bray_free <- phyloseq::distance(ps_free, method = "bray") # setting distance
+sampledf_free <- data.frame(sample_data(ps_free))# make a data frame from the sample_data
+
+#select from main data frame
+adonis_frame_free <- dplyr::select(sampledf_free, Station, Salinity:CTD_Depth, Lab_NO3:DOC, watertype:Iron_Level)
+adonis_frame_free$watertype <- as.factor(adonis_frame_free$watertype)
+
+# Adonis test
+adonis_free <- adonis2(bray_free ~ watertype, data = adonis_frame_free)
+
+# Post hoc for watertype in polynya
+beta_watertype_free <- betadisper(bray_free, adonis_frame_free$watertype)
+
+
+permutest(beta_watertype_free)
+boxplot(beta_watertype_free)
+mod.HSD_free <- TukeyHSD(beta_watertype_free)
+plot(mod.HSD_free, las=1)
+plot(beta_watertype_free)
+
+bray_part <- phyloseq::distance(ps_part, method = "bray") # setting distance
+sampledf_part <- data.frame(sample_data(ps_part))# make a data frame from the sample_data
+
+#select from main data frame
+adonis_frame_part <- dplyr::select(sampledf_part, Station, Salinity:CTD_Depth, Lab_NO3:DOC, watertype:Iron_Level)
+adonis_frame_part$watertype <- as.factor(adonis_frame_part$watertype)
+
+# Adonis test
+adonis_part <- adonis2(bray_part ~ watertype, data = adonis_frame_part)
+
+# Post hoc for watertype in polynya
+beta_watertype_part <- betadisper(bray_part, adonis_frame_part$watertype)
+
+
+permutest(beta_location_part)
+boxplot(beta_location_part)
+mod.HSD_part <- TukeyHSD(beta_location_part)
+plot(mod.HSD_part, las=1)
+plot(beta_location_part)
 
 ### all stations -- barplot ##
 test <- aggregate(. ~ Type, data = KO_iron_abundance_type, FUN = mean)

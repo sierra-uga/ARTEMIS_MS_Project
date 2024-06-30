@@ -20,7 +20,7 @@ ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% # filterin
 # fixing 0's for CCA
 taxa_names <- otu_table(ps_sub)
 taxa_names <- taxa_names[rowSums(taxa_names) !=0,
-           c(which(colSums(taxa_names) !=0))] # REMOVES 0s for CCA
+                         c(which(colSums(taxa_names) !=0))] # REMOVES 0s for CCA
 taxa_names <- na.omit(taxa_names) # remove NAs just in case
 otu_table(ps_sub) <- taxa_names # re-inserts the OTU table for the phyloseq object
 
@@ -75,17 +75,17 @@ remove_grid <- theme(legend.position = "bottom") + theme_bw() + # removes grid
         axis.line = element_line(colour = "black"))
 
 # color for ggplot points
-color_breaks <- c("Dotson", "Eastern_CC", "Western_CC", "Getz", "Open_polynya", "West_OP")
+color_breaks <- c("Dotson", "Eastern_CC", "Western_CC", "Getz", "Open_polynya")
 color_point <- scale_fill_manual(values = c("#5AD0FC", "darkred", "red", "#006B93", "#09A20D", "purple"),
-                                  name = "Location in Polynya",
-                                  breaks = color_breaks,
-                                  labels = color_breaks)
-
-color_breaks <- c("Dotson", "Eastern_CC", "Western_CC", "Getz", "Open_polynya", "West_OP")
-color_point2 <- scale_color_manual(values = c("#5AD0FC", "darkred", "red", "#006B93", "#09A20D", "purple"),
                                  name = "Location in Polynya",
                                  breaks = color_breaks,
                                  labels = color_breaks)
+
+color_breaks <- c("Dotson", "Eastern_CC", "Western_CC", "Getz", "Open_polynya", "West_OP")
+color_point2 <- scale_color_manual(values = c("#5AD0FC", "darkred", "red", "#006B93", "#09A20D", "purple"),
+                                   name = "Location in Polynya",
+                                   breaks = color_breaks,
+                                   labels = color_breaks)
 
 shapes <- scale_shape_manual(values = c(8 , 13, 23, 22, 21),
                              name = "Water Mass",
@@ -96,7 +96,7 @@ shapes <- scale_shape_manual(values = c(8 , 13, 23, 22, 21),
 # free-living
 ## upper 200m
 free_above_CCA <- plot_ordination(ps_free_above, cca_free_above,
-                            type = "sites", color="Location")
+                                  type = "sites", color="Location")
 f_CCA <- free_above_CCA + geom_point(aes(fill = Location), size = 3, alpha = 0.7) + ggtitle("Free-living") +remove_grid + color_point + color_point2 +#geom_label(size= 2, aes(label = Genus)) +  # X for other locations
   theme(text = element_text(family = "Helvetica"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5)) +
   annotate("richtext", x = -Inf, y = Inf, label = "CDW Samples Only",
@@ -123,7 +123,7 @@ f1
 
 ## lower 200m
 free_below_CCA <- plot_ordination(ps_free_below, cca_free_below,
-                            type = "sites", color="Location")
+                                  type = "sites", color="Location")
 f_CCA2 <- free_below_CCA + geom_point(aes(fill = Location), size=3, alpha=0.7) + remove_grid + color_point + color_point2+#geom_label(size= 2, aes(label = Genus)) +  # X for other locations
   theme(text = element_text(family = "Helvetica")) +
   annotate("richtext", x = Inf, y = -Inf, label = "Below 200m",
@@ -145,7 +145,7 @@ label_map = aes(x = 2 * CCA1, y = 2 * CCA2, shape = NULL, color = NULL,
 # Make a new graphic
 arrowhead = arrow(length = unit(0.02, "npc"))
 f2 = f_CCA2 + geom_segment(arrow_map, size = 0.6, data = arrowdf, color = "#b54d04", 
-                          arrow = arrowhead) + geom_text_repel(label_map, size = 3.5, data = arrowdf, max.overlaps =  30, color = "black")
+                           arrow = arrowhead) + geom_text_repel(label_map, size = 3.5, data = arrowdf, max.overlaps =  30, color = "black")
 f2
 
 
@@ -223,6 +223,6 @@ legend_combined <- get_legend(fake_plot)
 ## combine plots
 
 library(ggpubr)
-ggarrange(f1,p1,f2,p2, ncol=2, nrow=2, common.legend=TRUE, legend="right", labels = c("A", "B", "C", "D"))
+ggarrange(f1,p1,f2,p2, ncol=2, nrow=2, common.legend=TRUE, legend="right", labels = c("A", "B"))
 
 ggsave("final_graphics/CCA_CDW_only_DOC.pdf", width = 10, height = 6, dpi = 1200)

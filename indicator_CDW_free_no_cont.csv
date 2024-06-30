@@ -1,0 +1,41 @@
+FREE-LIVING,,,,,,,,,,
+ASV #,index,Getz,West OP,OP,Dotson,East CC,p.value.bh,Order,Family,Genus
+Seq260,1,0,0,0,1,0,0.014,SAR202 clade,uncultured Chloroflexi bacterium HF4000_28F02,uncultured Chloroflexi bacterium HF4000_28F02 Family
+Seq134,2,0,0,0,0,1,0.031,Thiomicrospirales,Thioglobaceae,Thioglobaceae Family
+Seq1405,3,1,0,0,0,0,0.045,Anaerolineales,Anaerolineaceae,uncultured 24
+Seq1671,3,1,0,0,0,0,0.045,Coxiellales,Coxiellaceae,Coxiella
+Seq210,3,1,0,0,0,0,0.037,Burkholderiales,Nitrosomonadaceae,Nitrosomonas
+Seq228,3,1,0,0,0,0,0.046,Cellvibrionales,Halieaceae,Halieaceae Family
+Seq326,3,1,0,0,0,0,0.045,Pseudomonadales,Pseudomonadaceae,Pseudomonadaceae Family
+Seq447,3,1,0,0,0,0,0.024,Opitutales,Puniceicoccaceae,Pelagicoccus
+Seq661,3,1,0,0,0,0,0.024,Actinomarinales,Actinomarinaceae,Candidatus Actinomarina
+Seq17,5,0,1,0,0,0,0.014,Flavobacteriales,Flavobacteriaceae,uncultured 2
+Seq171,5,0,1,0,0,0,0.031,Lentisphaerales,Lentisphaeraceae,Lentisphaera
+Seq188,5,0,1,0,0,0,0.045,Oceanospirillales,Nitrincolaceae,Profundimonas
+Seq215,5,0,1,0,0,0,0.033,Alteromonadales,Pseudoalteromonadaceae,Pseudoalteromonadaceae Family
+Seq3,5,0,1,0,0,0,0.029,Oceanospirillales,Nitrincolaceae,uncultured 1
+Seq359,5,0,1,0,0,0,0.037,Fibrobacterales,Fibrobacteraceae,uncultured 13
+Seq43,5,0,1,0,0,0,0.031,Alteromonadales,Alteromonadaceae,Paraglaciecola
+Seq5,5,0,1,0,0,0,0.024,Flavobacteriales,Flavobacteriaceae,Polaribacter
+Seq6,5,0,1,0,0,0,0.033,Cellvibrionales,Porticoccaceae,SAR92 clade
+Seq775,5,0,1,0,0,0,0.045,Campylobacterales,Arcobacteraceae,uncultured 18
+Seq81,5,0,1,0,0,0,0.045,Chitinophagales,Saprospiraceae,Saprospiraceae Family
+Seq834,5,0,1,0,0,0,0.045,Campylobacterales,Arcobacteraceae,Halarcobacter
+Seq117,6,0,0,0,1,1,0.029,Sphingobacteriales,Lentimicrobiaceae,uncultured deep-sea archaeon
+Seq155,6,0,0,0,1,1,0.014,Planctomycetales,uncultured,uncultured bacterium HF0500_40D21
+Seq195,6,0,0,0,1,1,0.029,Rhodospirillales,Magnetospiraceae,uncultured 7
+Seq58,6,0,0,0,1,1,0.011,Verrucomicrobiales,Rubritaleaceae,Roseibacillus
+Seq563,7,1,0,0,1,0,0.013,SAR202 clade,uncultured bacterium HF0500_03M05,uncultured bacterium HF0500_03M05 Family
+Seq157,10,1,0,0,0,1,0.014,SAR11 clade,Clade II,uncultured marine bacterium 440
+Seq161,10,1,0,0,0,1,0.011,Nitrospinales,Nitrospinaceae,LS-NOB
+Seq265,10,1,0,0,0,1,0.024,Rhodospirillales,AEGEAN-169 marine group,unidentified marine bacterioplankton 2
+Seq110,16,1,0,0,1,1,0.031,Flavobacteriales,Flavobacteriaceae,NS4 marine group
+Seq132,16,1,0,0,1,1,0.011,Steroidobacterales,Woeseiaceae,Woeseia
+Seq199,16,1,0,0,1,1,0.013,SAR202 clade,hydrothermal vent metagenome,hydrothermal vent metagenome Family 3
+Seq220,16,1,0,0,1,1,0.011,Phycisphaerales,Phycisphaeraceae,Phycisphaeraceae Family
+Seq38,16,1,0,0,1,1,0.013,SAR11 clade,Clade I,Clade I Family
+Seq95,16,1,0,0,1,1,0.031,Pirellulales,Pirellulaceae,Rhodopirellula
+Seq97,16,1,0,0,1,1,0.024,Burkholderiales,Methylophilaceae,OM43 clade
+,,,,,,,,,,
+* no sig indicator taxa for particle-associated,,,,,,,,,,
+* no western CC has pure CDW,,,,,,,,,,

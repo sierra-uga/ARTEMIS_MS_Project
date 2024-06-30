@@ -24,7 +24,7 @@ taxa_names <- na.omit(taxa_names) # remove NAs just in case
 otu_table(ps_sub) <- taxa_names # re-inserts the OTU table for the phyloseq object
 
 ## FREE-LIVING ##
-ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(Pos_in_polynya %in% c("Outflow", "Inflow")) %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(Location %in% c("Outflow", "Inflow")) %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_free <- ps_free %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -56,7 +56,7 @@ head(metadata_free) # check
 SpOTU_Final_free <-left_join(SpOTUFlip_num_free, metadata_free, by = c("sample_name" = "sample_name")) # join based on sample IDs, assuming they're the same for both OTU table and metadata
 
 SPotus_free = SpOTU_Final_free[,1:200] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
-SPwat_free = SpOTU_Final_free$Pos_in_polynya #the metadata column group you care about
+SPwat_free = SpOTU_Final_free$Location #the metadata column group you care about
 SPotus_free <- SPotus_free[, colSums(SPotus_free) != 0]
 
 indisp_free=multipatt(x=SPotus_free, cluster=SPwat_free, func = "r.g", print.perm = TRUE, control = how(nperm=9999))
@@ -76,7 +76,7 @@ write.csv(merged_df_free,'flow_free.csv')
 
 ### PARTICLE - ASSOCIATED
 
-ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(Pos_in_polynya %in% c("Outflow", "Inflow")) %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(Location %in% c("Outflow", "Inflow")) %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_part <- ps_part %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -107,7 +107,7 @@ head(metadata_part) # check
 SpOTU_Final_part <-left_join(SpOTUFlip_num_part, metadata_part, by = c("sample_name" = "sample_name")) # join based on sample IDs, assuming they're the same for both OTU table and metadata
 
 SPotus_part = SpOTU_Final_part[,1:200] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
-SPwat_part = SpOTU_Final_part$Pos_in_polynya #the metadata column group you care about
+SPwat_part = SpOTU_Final_part$Location #the metadata column group you care about
 SPotus_part <- SPotus_part[, colSums(SPotus_part) != 0]
 
 indisp_part=multipatt(x=SPotus_part, cluster=SPwat_part, func = "r.g", print.perm = TRUE, control = how(nperm=9999))
@@ -125,20 +125,22 @@ merged_df_part <- merge(SPind_part, taxa_part, by = "taxon")
 
 write.csv(merged_df_part,'flow_part.csv')
 
-
+ord_explore(ps_free_sub)
 ### adonis 
-bray_free <- phyloseq::distance(ps_free, method = "bray") # setting distance
-sampledf_free <- data.frame(sample_data(ps_free))# make a data frame from the sample_data
+ps_free_sub <- ps_free %>% subset_samples(Station %in% station_list)
+#ps_free_sub <- ps_free_sub %>% subset_samples(CTD_Depth >= 350)
+bray_free <- phyloseq::distance(ps_free_sub, method = "bray") # setting distance
+sampledf_free <- data.frame(sample_data(ps_free_sub))# make a data frame from the sample_data
 
 #select from main data frame
-adonis_frame_free <- dplyr::select(sampledf_free, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Pos_in_polynya)
-adonis_frame_free$Pos_in_polynya <- as.factor(adonis_frame_free$Pos_in_polynya)
+adonis_frame_free <- dplyr::select(sampledf_free, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Location)
+adonis_frame_free$Location <- as.factor(adonis_frame_free$Station)
 
 # Adonis test
-adonis_free <- adonis2(bray_free ~ Pos_in_polynya, data = adonis_frame_free)
+adonis_free <- adonis2(bray_free ~ Station, data = adonis_frame_free)
 
 # Post hoc for location in polynya
-beta_location_free <- betadisper(bray_free, adonis_frame_free$Pos_in_polynya)
+beta_location_free <- betadisper(bray_free, adonis_frame_free$Station)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)
@@ -153,18 +155,26 @@ plot(beta_location_free)
 
 #### particle-associated
 
-bray_part <- phyloseq::distance(ps_part, method = "bray") # setting distance
-sampledf_part <- data.frame(sample_data(ps_part))# make a data frame from the sample_data
+198 to 174, 198 to 2, 174 to 2, 174 to getz.
+
+station_list <- c("STN198", "STN174", "STN002", "STN004", "STN153")
+ps_part_sub <- ps_part %>% subset_samples(Station %in% station_list)
+ps_part_sub <- ps_part_sub %>% subset_samples(CTD_Depth >= 350)
+
+ord_explore(ps_part_sub)
+
+bray_part <- phyloseq::distance(ps_part_sub, method = "bray") # setting distance
+sampledf_part <- data.frame(sample_data(ps_part_sub))# make a data frame from the sample_data
 
 #select from main data frame
-adonis_frame_part <- dplyr::select(sampledf_part, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Pos_in_polynya)
-adonis_frame_part$Pos_in_polynya <- as.factor(adonis_frame_part$Pos_in_polynya)
+adonis_frame_part <- dplyr::select(sampledf_part, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Location)
+adonis_frame_part$Location <- as.factor(adonis_frame_part$Location)
 
 # Adonis test
-adonis_part <- adonis2(bray_part ~ Pos_in_polynya, data = adonis_frame_part)
+adonis_part <- adonis2(bray_part ~ Station, data = adonis_frame_part)
 
 # Post hoc for location in polynya
-beta_location_part <- betadisper(bray_part, adonis_frame_part$Pos_in_polynya)
+beta_location_part <- betadisper(bray_part, adonis_frame_part$Station)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)

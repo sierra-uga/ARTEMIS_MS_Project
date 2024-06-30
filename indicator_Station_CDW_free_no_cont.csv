@@ -1,0 +1,34 @@
+rn,index,s.STN151.2,s.STN174,s.STN181,s.STN002,s.STN004,s.STN012,s.STN115,s.STN12.3,s.STN014,s.STN22,s.STN078,s.STN20,s.STN089,p.value.bh,Order,Family,Genus
+Seq441,12,0,0,0,0,0,0,0,0,0,0,0,1,0,0.044,Pseudomonadales,Moraxellaceae,Acinetobacter
+Seq401,22,0,1,0,1,0,0,0,0,0,0,0,0,0,0.033,Flavobacteriales,Cryomorphaceae,NS10 marine group
+Seq299,84,1,0,0,0,0,0,0,0,0,0,0,1,0,0.043,SAR11 clade,Clade IV,Clade IV Family
+Seq255,300,0,0,0,0,0,0,0,0,0,1,1,0,1,0.043,Opitutales,Puniceicoccaceae,MB11C04 marine group
+Seq5,362,0,1,1,0,0,0,0,1,0,0,0,0,0,0.039,Flavobacteriales,Flavobacteriaceae,Polaribacter
+Seq98,850,0,0,1,0,0,1,1,1,0,0,0,0,0,0.020,Alteromonadales,Colwelliaceae,Colwelliaceae Family
+Seq117,889,0,0,0,0,0,0,0,0,1,1,1,0,1,0.033,Sphingobacteriales,Lentimicrobiaceae,uncultured deep-sea archaeon
+Seq156,889,0,0,0,0,0,0,0,0,1,1,1,0,1,0.043,Defluviicoccales,uncultured,uncultured bacterium KM3-47-A6
+Seq307,910,0,0,0,0,0,0,0,0,1,1,1,1,0,0.020,Thalassobaculales,Nisaeaceae,OM75 clade
+Seq161,980,1,0,0,0,0,0,0,0,0,0,1,1,1,0.039,Nitrospinales,Nitrospinaceae,LS-NOB
+Seq38,980,1,0,0,0,0,0,0,0,0,0,1,1,1,0.040,SAR11 clade,Clade I,Clade I Family
+Seq169,1467,0,0,0,1,0,0,1,0,0,1,1,0,1,0.033,HOC36,uncultured bacterium HF0770_27E13,uncultured bacterium HF0770_27E13 Family
+Seq298,2100,0,0,1,0,0,1,1,1,0,0,0,1,0,0.039,Cytophagales,Cyclobacteriaceae,uncultured 10
+Seq155,2148,0,0,0,0,0,0,0,0,1,1,1,1,1,0.033,Planctomycetales,uncultured,uncultured bacterium HF0500_40D21
+Seq58,2148,0,0,0,0,0,0,0,0,1,1,1,1,1,0.043,Verrucomicrobiales,Rubritaleaceae,Roseibacillus
+Seq132,2179,1,0,0,0,0,0,0,0,1,1,1,1,0,0.043,Steroidobacterales,Woeseiaceae,Woeseia
+Seq90,2278,0,0,0,0,0,0,0,1,0,1,1,1,1,0.043,Verrucomicrobiales,Rubritaleaceae,Luteolibacter
+Seq19,3679,0,0,0,0,0,1,0,1,1,1,1,1,0,0.020,Microtrichales,Ilumatobacteraceae,Ilumatobacteraceae Family
+Seq142,3685,1,0,0,0,0,1,0,0,1,1,1,1,0,0.032,Rhodospirillales,Magnetospiraceae,Magnetospira
+Seq197,3685,1,0,0,0,0,1,0,0,1,1,1,1,0,0.020,Dadabacteriales,metagenome,metagenome Family 1
+Seq61,3727,1,0,0,0,0,1,1,1,1,0,0,1,0,0.033,Flavobacteriales,Cryomorphaceae,uncultured 3
+Seq124,3730,0,1,0,0,0,1,1,1,1,0,0,1,0,0.032,Flavobacteriales,NS9 marine group,hydrothermal vent metagenome 1
+Seq563,3946,1,0,0,0,0,0,0,1,1,1,1,1,0,0.039,SAR202 clade,uncultured bacterium HF0500_03M05,uncultured bacterium HF0500_03M05 Family
+Seq199,5512,1,0,0,0,0,1,0,0,1,1,1,1,1,0.043,SAR202 clade,hydrothermal vent metagenome,hydrothermal vent metagenome Family 3
+Seq220,5512,1,0,0,0,0,1,0,0,1,1,1,1,1,0.043,Phycisphaerales,Phycisphaeraceae,Phycisphaeraceae Family
+Seq110,5542,1,0,0,0,0,1,0,1,1,1,1,1,0,0.020,Flavobacteriales,Flavobacteriaceae,NS4 marine group
+Seq95,5717,1,0,0,0,0,0,0,1,1,1,1,1,1,0.045,Pirellulales,Pirellulaceae,Rhodopirellula
+Seq34,6974,1,0,0,0,0,1,1,1,1,1,1,1,0,0.020,SAR86 clade,hydrothermal vent metagenome,hydrothermal vent metagenome Family 1
+Seq57,6974,1,0,0,0,0,1,1,1,1,1,1,1,0,0.025,Rhodobacterales,Rhodobacteraceae,Rhodobacteraceae Family
+Seq66,7077,1,1,0,0,0,0,1,1,1,1,1,1,0,0.046,Ectothiorhodospirales,Ectothiorhodospiraceae,uncultured 4
+Seq4,7764,1,0,0,0,0,1,1,1,1,1,1,1,1,0.020,Thiomicrospirales,Thioglobaceae,SUP05 cluster
+Seq221,7782,1,1,0,0,0,1,1,1,1,1,1,1,0,0.020,Flavobacteriales,NS9 marine group,uncultured bacterium ARCTIC09_
+Seq93,7782,1,1,0,0,0,1,1,1,1,1,1,1,0,0.033,SAR86 clade,uncultured Oceanospirillales bacterium,uncultured Oceanospirillales bacterium Family

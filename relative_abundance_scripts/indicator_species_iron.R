@@ -7,8 +7,8 @@ ps_sub <- ps_noncontam_prev05 %>%
       Family  != "Mitochondria" 
   )
 
-ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% 
-  phyloseq_validate() %>% tax_fix() %>% prune_taxa(taxa_sums(.) > 0, .)
+ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% subset_samples()
+  phyloseq_validate() %>% tax_fix() %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_sub <- tax_glom(ps_sub, "Genus", NArm = TRUE)
 
@@ -22,7 +22,10 @@ taxa_names <- na.omit(taxa_names) # remove NAs just in case
 otu_table(ps_sub) <- taxa_names # re-inserts the OTU table for the phyloseq object
 
 ## FREE-LIVING ##
-ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(Iron_Level != "NA") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% 
+  subset_samples(watertype == "CDW") %>% 
+  subset_samples(Location != "Cont_Shelf") %>% 
+  prune_taxa(taxa_sums(.) > 0, .)
 
 ps_free <- ps_free %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -53,8 +56,8 @@ head(metadata_free) # check
 ## Join based on SampleID
 SpOTU_Final_free <-left_join(SpOTUFlip_num_free, metadata_free, by = c("sample_name" = "sample_name")) # join based on sample IDs, assuming they're the same for both OTU table and metadata
 
-SPotus_free = SpOTU_Final_free[,1:297] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
-SPwat_free = SpOTU_Final_free$Iron_Level #the metadata column group you care about
+SPotus_free = SpOTU_Final_free[,1:223] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
+SPwat_free = SpOTU_Final_free$Event #the metadata column group you care about
 SPotus_free <- SPotus_free[, colSums(SPotus_free) != 0]
 
 indisp_free=multipatt(x=SPotus_free, cluster=SPwat_free, func = "r.g", print.perm = TRUE, control = how(nperm=9999))
@@ -70,11 +73,13 @@ SPind_free$taxon <- SPind_free$rn
 
 merged_df_free <- merge(SPind_free, taxa_free, by = "taxon")
 
-write.csv(merged_df_free,'iron_level_free.csv')
+write.csv(merged_df_free,'indicator_Station_CDW_free_no_cont.csv')
 
 ### PARTICLE - ASSOCIATED
 
-ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(Iron_Level != "NA") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% 
+  subset_samples(watertype == "CDW") %>%
+  subset_samples(Location != "Cont_Shelf") %>% prune_taxa(taxa_sums(.) > 0, .) %>% subset_samples(DOC != "NA")
 
 ps_part <- ps_part %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -104,8 +109,8 @@ head(metadata_part) # check
 ## Join based on SampleID
 SpOTU_Final_part <-left_join(SpOTUFlip_num_part, metadata_part, by = c("sample_name" = "sample_name")) # join based on sample IDs, assuming they're the same for both OTU table and metadata
 
-SPotus_part = SpOTU_Final_part[,1:409] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
-SPwat_part = SpOTU_Final_part$Iron_Level #the metadata column group you care about
+SPotus_part = SpOTU_Final_part[,1:253] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
+SPwat_part = SpOTU_Final_part$Event #the metadata column group you care about
 SPotus_part <- SPotus_part[, colSums(SPotus_part) != 0]
 
 indisp_part=multipatt(x=SPotus_part, cluster=SPwat_part, func = "r.g", print.perm = TRUE, control = how(nperm=9999))
@@ -121,7 +126,7 @@ SPind_part$taxon <- SPind_part$rn
 
 merged_df_part <- merge(SPind_part, taxa_part, by = "taxon")
 
-write.csv(merged_df_part,'iron_level_part.csv')
+write.csv(merged_df_part,'indicator_CDW_all_stations.csv')
 
 
 ### adonis 
@@ -129,14 +134,14 @@ bray_free <- phyloseq::distance(ps_free, method = "bray") # setting distance
 sampledf_free <- data.frame(sample_data(ps_free))# make a data frame from the sample_data
 
 #select from main data frame
-adonis_frame_free <- dplyr::select(sampledf_free, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Iron_Level)
-adonis_frame_free$Iron_Level <- as.factor(adonis_frame_free$Iron_Level)
+adonis_frame_free <- dplyr::select(sampledf_free, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Location:Iron_Level)
+adonis_frame_free$Station <- as.factor(adonis_frame_free$Station)
 
 # Adonis test
-adonis_free <- adonis2(bray_free ~ Iron_Level, data = adonis_frame_free)
+adonis_free <- adonis2(bray_free ~ Station, data = adonis_frame_free)
 
 # Post hoc for location in polynya
-beta_location_free <- betadisper(bray_free, adonis_frame_free$Iron_Level)
+beta_location_free <- betadisper(bray_free, adonis_frame_free$Station)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)
@@ -159,20 +164,20 @@ bray_part <- phyloseq::distance(ps_part, method = "bray") # setting distance
 sampledf_part <- data.frame(sample_data(ps_part))# make a data frame from the sample_data
 
 #select from main data frame
-adonis_frame_part <- dplyr::select(sampledf_part, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Iron_Level)
-adonis_frame_part$Iron_Level <- as.factor(adonis_frame_part$Iron_Level)
+adonis_frame_part <- dplyr::select(sampledf_part, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Location:Location)
+adonis_frame_part$Location <- as.factor(adonis_frame_part$Location)
 
 # Adonis test
-adonis_part <- adonis2(bray_part ~ Iron_Level, data = adonis_frame_part)
+adonis_part <- adonis2(bray_part ~ Station, data = adonis_frame_part)
 
 # Post hoc for location in polynya
-beta_location_part <- betadisper(bray_part, adonis_frame_part$Iron_Level)
+beta_location_part <- betadisper(bray_part, adonis_frame_part$Station)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)
 
 # Adjust margins
-pdf(file = "final_graphics/adonis_iron_levels.pdf", width = 12, height = 8) 
+pdf(file = "final_graphics/adonis_CDW_location.pdf", width = 12, height = 8) 
 par(mfrow=c(1, 2), mar = c(5, 6, 4, 2) + 0.1)
 plot(mod.HSD_free, las=1)
 plot(mod.HSD_part, las=1)

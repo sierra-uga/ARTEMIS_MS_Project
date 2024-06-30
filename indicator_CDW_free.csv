@@ -1,0 +1,31 @@
+ASV #,s.Cont_Shelf,s.Dotson,s.Eastern_CC,s.Getz,s.Open_polynya,s.West_OP,index,stat,p.value,p.value.bh,Kingdom,Phylum,Class,Order,Family,Genus,Species
+Seq110,0,1,1,1,0,0,32,0.801739025,1.00E-04,0.008266667,Bacteria,Bacteroidota,Bacteroidia,Flavobacteriales,Flavobacteriaceae,NS4 marine group,NA
+Seq117,0,1,1,0,0,0,12,0.787162727,0.001,0.022733333,Bacteria,Bacteroidota,Bacteroidia,Sphingobacteriales,Lentimicrobiaceae,uncultured deep-sea archaeon,NA
+Seq128,0,1,1,0,0,0,12,0.718207885,0.0039,0.042052174,Bacteria,Nitrospinota,Nitrospinia,Nitrospinales,Nitrospinaceae,Nitrospinaceae Family,NA
+Seq132,0,1,1,1,0,0,32,0.784021208,2.00E-04,0.008266667,Bacteria,Proteobacteria,Gammaproteobacteria,Steroidobacterales,Woeseiaceae,Woeseia,NA
+Seq157,0,0,1,1,0,0,16,0.77209511,0.0014,0.0248,Bacteria,Proteobacteria,Alphaproteobacteria,SAR11 clade,Clade II,uncultured marine bacterium 440,NA
+Seq161,0,0,1,1,0,0,16,0.755541328,0.0019,0.02945,Bacteria,Nitrospinota,Nitrospinia,Nitrospinales,Nitrospinaceae,LS-NOB,NA
+Seq195,0,1,1,0,0,0,12,0.765203694,0.0012,0.022892308,Bacteria,Proteobacteria,Alphaproteobacteria,Rhodospirillales,Magnetospiraceae,uncultured 7,NA
+Seq197,0,1,0,1,0,0,13,0.749345238,0.0011,0.022733333,Bacteria,Dadabacteria,Dadabacteriia,Dadabacteriales,metagenome,metagenome Family 1,NA
+Seq199,1,1,1,1,0,0,42,0.734946051,0.0026,0.03348,Bacteria,Chloroflexi,Dehalococcoidia,SAR202 clade,hydrothermal vent metagenome,hydrothermal vent metagenome Family 3,NA
+Seq210,0,0,0,1,0,0,4,0.792771798,0.003,0.035428571,Bacteria,Proteobacteria,Gammaproteobacteria,Burkholderiales,Nitrosomonadaceae,Nitrosomonas,NA
+Seq220,0,1,1,1,0,0,32,0.753316572,0.001,0.022733333,Bacteria,Planctomycetota,Phycisphaerae,Phycisphaerales,Phycisphaeraceae,Phycisphaeraceae Family,NA
+Seq260,0,1,0,0,0,0,2,0.804286951,2.00E-04,0.008266667,Bacteria,Chloroflexi,Dehalococcoidia,SAR202 clade,uncultured Chloroflexi bacterium HF4000_28F02,uncultured Chloroflexi bacterium HF4000_28F02 Family,NA
+Seq3,0,0,0,0,0,1,6,0.956230004,0.0044,0.045466667,Bacteria,Proteobacteria,Gammaproteobacteria,Oceanospirillales,Nitrincolaceae,uncultured 1,NA
+Seq359,1,0,0,0,0,1,11,0.910966908,2.00E-04,0.008266667,Bacteria,Fibrobacterota,Fibrobacteria,Fibrobacterales,Fibrobacteraceae,uncultured 13,NA
+Seq38,0,1,1,1,0,0,32,0.729845476,0.0026,0.03348,Bacteria,Proteobacteria,Alphaproteobacteria,SAR11 clade,Clade I,Clade I Family,NA
+Seq43,1,0,0,0,0,1,11,0.870253866,1.00E-04,0.008266667,Bacteria,Proteobacteria,Gammaproteobacteria,Alteromonadales,Alteromonadaceae,Paraglaciecola,NA
+Seq447,0,0,0,1,0,0,4,0.927799823,5.00E-04,0.017714286,Bacteria,Verrucomicrobiota,Verrucomicrobiae,Opitutales,Puniceicoccaceae,Pelagicoccus,NA
+Seq5,0,0,0,0,0,1,6,0.905513215,0.0027,0.03348,Bacteria,Bacteroidota,Bacteroidia,Flavobacteriales,Flavobacteriaceae,Polaribacter,NA
+Seq563,0,1,0,1,0,0,13,0.732750891,0.0035,0.039454545,Bacteria,Chloroflexi,Dehalococcoidia,SAR202 clade,uncultured bacterium HF0500_03M05,uncultured bacterium HF0500_03M05 Family,NA
+Seq6,1,0,0,0,0,1,11,0.901578081,0.0011,0.022733333,Bacteria,Proteobacteria,Gammaproteobacteria,Cellvibrionales,Porticoccaceae,SAR92 clade,NA
+Seq708,1,0,0,0,0,0,1,0.939220736,1.00E-04,0.008266667,Bacteria,Bacteroidota,Bacteroidia,Flavobacteriales,Cryomorphaceae,Owenweeksia,NA
+Seq81,1,0,0,0,0,1,11,0.893634384,0.0017,0.028106667,Bacteria,Bacteroidota,Bacteroidia,Chitinophagales,Saprospiraceae,Saprospiraceae Family,NA
+Seq95,1,1,1,1,0,0,42,0.756713582,0.0021,0.030635294,Bacteria,Planctomycetota,Planctomycetes,Pirellulales,Pirellulaceae,Rhodopirellula,NA
+Seq97,0,1,1,1,0,0,32,0.772296578,7.00E-04,0.0217,Bacteria,Proteobacteria,Gammaproteobacteria,Burkholderiales,Methylophilaceae,OM43 clade,NA
+,,,,,,,,,,,,,,,,,
+rn,s.Cont_Shelf,s.Dotson,s.Eastern_CC,s.Getz,s.Open_polynya,s.West_OP,index,stat,p.value,p.value.bh,Kingdom,Phylum,Class,Order,Family,Genus,Species
+Seq1,0,1,1,1,0,0,32,0.908962381,4.00E-04,0.0288,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,NA
+Seq205,0,0,0,0,0,1,6,0.973196675,4.00E-04,0.0288,Bacteria,Proteobacteria,Gammaproteobacteria,Alteromonadales,Moritellaceae,Moritella,NA
+Seq285,1,0,0,0,0,0,1,0.949007994,2.00E-04,0.0288,Bacteria,Bacteroidota,Bacteroidia,Flavobacteriales,NS9 marine group,uncultured Flavobacterium sp.,NA
+Seq308,0,1,1,1,0,0,32,0.874383244,2.00E-04,0.0288,Bacteria,Planctomycetota,Planctomycetes,Pirellulales,Pirellulaceae,uncultured 11,NA

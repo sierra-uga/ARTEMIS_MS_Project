@@ -1,0 +1,5 @@
+,taxon,rn,s.Cont_Shelf,s.Dotson,s.Eastern_CC,s.Getz,s.Open_polynya,s.West_OP,index,stat,p.value,p.value.bh,Kingdom,Phylum,Class,Order,Family,Genus,Species
+1,Seq1,Seq1,0,1,1,1,0,0,32,0.908962381,4.00E-04,0.0288,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,NA
+2,Seq205,Seq205,0,0,0,0,0,1,6,0.973196675,4.00E-04,0.0288,Bacteria,Proteobacteria,Gammaproteobacteria,Alteromonadales,Moritellaceae,Moritella,NA
+3,Seq285,Seq285,1,0,0,0,0,0,1,0.949007994,2.00E-04,0.0288,Bacteria,Bacteroidota,Bacteroidia,Flavobacteriales,NS9 marine group,uncultured Flavobacterium sp.,NA
+4,Seq308,Seq308,0,1,1,1,0,0,32,0.874383244,2.00E-04,0.0288,Bacteria,Planctomycetota,Planctomycetes,Pirellulales,Pirellulaceae,uncultured 11,NA

@@ -3,6 +3,9 @@ library("dplyr")
 library("tidyr")
 library("phyloseq")
 
+
+org_metadata <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names ="sample_name") 
+
 # read in metadata
 org_metadata <- read.delim("required_files/temp_metadata.csv", sep=",", header=TRUE, row.names="sample_name") 
 
@@ -13,19 +16,20 @@ fil_metadata <- org_metadata[row.names(org_metadata) %in% row.names(distinct),] 
 ## data culling 
 org_metadata <- filter(fil_metadata, Sample.Control == "True.Sample") # use tidyr to select "real samples" (non-blanks)
 org_metadata <- filter(org_metadata, Station != "STN056b") 
+metadata <- org_metadata[ -c( 1, 2:19)]
 # metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
-metadata <- org_metadata[ -c( 1, 26:29)] # remove filter-related stuff
+metadata <- metadata[ -c( 1, 6:10)] # remove filter-related stuff
 #metadata <- metadata[-(which(metadata$Station %in% c("STN198", "STN056b"))),] 
-metadata <- metadata[ -c( 1, 2:18)] # remove barcode seq/uneeded stuff
+ # remove barcode seq/uneeded stuff
 metadata <- dplyr::select(org_metadata, 1:12, 17, 19, 21, 23) # select numeric + siderophore column + watertype
 
 #metadata[is.na(metadata)] <- 0 # replace NAs with 0's for PCA
 #list_true <- replace_na(metadata$True_Flow, "Other") #replace NA with "Other" for coloring
 #metadata$True_Flow <- list_true # changing actual column in dataframe
 # convert character columns (except sampleID) to numeric for analysis 
-
+metadata$FlECO.AFL
 # remove unneeded columns (Oxygen, FIECO, Par, Siderophore)
-metadata <- dplyr::select(metadata,-c(Iron))
+metadata <- dplyr::select(metadata,-c(Iron, Chl_a, Par, FlECO.AFL, Oxygen))
 metadata <- metadata %>% mutate_at(1:12, as.numeric) 
 
 metadata <- metadata %>% rename(c(Nitrate = Lab_NO3, 
@@ -64,6 +68,7 @@ east <- metadata$Location == "Eastern_CC"
 #cont <- metadata$Location == "Cont_Shelf"
 west <- metadata$Location == "Western_CC"
 getz <- metadata$Location == "Getz"
+west_op <- metadata$Location == "West_OP"
 
 # set vectors for pos_in_polynya
 open <- metadata$Pos_in_polynya == "Open_polynya_surf"
@@ -87,7 +92,7 @@ mid <- metadata$More_Depth_Threshold == "Mid"
 mid_surface <- metadata$More_Depth_Threshold == "Mid-Surface"
 surface <- metadata$More_Depth_Threshold == "Surface"
 
-metadata <- dplyr::select(metadata, 1:11) # select only numerical columns
+metadata <- dplyr::select(metadata, 1:10) # select only numerical columns
 # create vectors from orginial metadata file for watertype
 metadataPca <- prcomp(metadata, scale.=TRUE)
 

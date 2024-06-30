@@ -253,13 +253,13 @@ str(aldex2_ec_result_name)
 aldex2_ec_result_name$Seq_Num <- rownames(aldex2_ec_result_name)
 aldex2_ec_result_name <- left_join(aldex2_ec_result_name, ec_info, by="Seq_Num")
 head(aldex2_ec_result_name)
-aldex2_ec_result_name <- aldex2_ec_result_name[, -(1:62)]
+aldex2_ec_result_name <- aldex2_ec_result_name[, -(1:67)]
 
 ec_count_total <- as.data.frame(ec_count)
 ec_count_total$Total <- rowSums(ec_count[, -1])
 #ec_count_total$KO_Num <- rownames(ec_count_total)
 head(ec_count_total)
-ec_count_total <- ec_count_total[, -(2:63)]
+ec_count_total <- ec_count_total[, -(2:68)]
 head(ec_count_total)
 
 filter <- row.names(aldex2_ec_result_czm_trans_trav_group)
@@ -322,7 +322,7 @@ row_labels_ec = z_score_aldex2_ec_result_name_count_total$Genus
 
 #rownames(z_score_aldex2_ec_result_name_count_total) <- z_score_aldex2_ec_result_name_count_total$Name
 
-ec_sample_tab <- ec_sample_tab %>% arrange(match(Pos_in_polynya, col_order))
+ec_sample_tab <- ec_sample_tab %>% arrange(match(Location, col_order))
 
 col_order <- c("Inflow", "Outflow", "Open_polynya_surf", "Western_CC", "Dotson_CC", "Eastern_CC")
 
@@ -334,7 +334,7 @@ hm_ec_sel <- Heatmap(aldex2_ec_result_czm_trans_trav_group, name = "Z-score, CLR
                      column_title = "Particle-associated Community for High/Low dFe", 
                      column_title_gp = gpar(fontface = "bold", fontsize = 14),
                      #cluster_columns = cluster_within_group(as.vector(ec_sample_tab$SampleType)),
-                     column_split = as.vector(ec_sample_tab$Iron_Level),
+                     column_split = as.vector(ec_sample_tab$Location),
                      border = TRUE,
                      top_annotation = ha_top_ec,
                      left_annotation = ha_right_ec2,

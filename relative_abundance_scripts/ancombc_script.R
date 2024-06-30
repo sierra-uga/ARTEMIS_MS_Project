@@ -40,25 +40,30 @@ physeqGenus = tax_glom(pseq, "Genus")
 ps_free <- subset_samples(pseq, Filter_pores == "free-living")
 ps_part <- subset_samples(pseq, Filter_pores == "particle-associated")
 
+
+below_free_tax <- as.data.frame(tax_table(ps_free_below))
+below_free_tax$taxon <- rownames(below_free_tax)
+
+
 print(out$res)
 
-res_height <- ancombc_pq(ps_free, fact="Iron_Level", tax_level="taxon", levels_fact = c("High", "Low"))
+res_height <- ancombc_pq(ps_free_below, fact="Location", tax_level="Genus", levels_fact = c("Open_polynya", "Dotson"))
 
 
-tse = mia::makeTreeSummarizedExperimentFromPhyloseq(ps_part)
+tse = mia::makeTreeSummarizedExperimentFromPhyloseq(ps_free_below)
 library(ANCOMBC)
 
-sample_data(ps_part)$Iron_Level <- as.factor(sample_data(ps_part)$Iron_Level)
+sample_data(ps_free_below)$Location <- as.factor(sample_data(ps_free_below)$Location)
 
 out = ancombc2(data = tse, assay_name = "counts",
-               fix_formula = "Iron_Level", group = "Iron_Level")
+               fix_formula = "Location", group = "Location")
 
 tax_level = "taxon"
 
 new <- signif_ancombc(out)
 rownames(sigtab) <- sigtab$taxon
 
-new = cbind(as(new, "data.frame"), as(tax_table(ps_part)[rownames(new), ], "matrix"))
+new = cbind(as(new, "data.frame"), as(tax_table(ps_free_below)[rownames(new), ], "matrix"))
 
 sig_taxa <- new$taxon
 
@@ -66,7 +71,7 @@ rownames(ps_free@tax_table) <- ps_free@tax_table$Genus
 
 ps_free2 <- tax_glom(ps_free, taxrank = "Genus")
 
-ps_free_final <- subset_taxa(ps_part, rownames(ps_part@tax_table) %in% sig_taxa)
+ps_free_final <- subset_taxa(ps_free_below, rownames(ps_free_below@tax_table) %in% sig_taxa)
 
 
 

@@ -30,7 +30,7 @@ taxa_names <- na.omit(taxa_names) # remove NAs just in case
 otu_table(ps_sub) <- taxa_names # re-inserts the OTU table for the phyloseq object
 
 
-ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(Location != "Cont_Shelf") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(Location %in% c("Dotson", "Open_polynya")) %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_free <- ps_free %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -128,7 +128,7 @@ write.csv(merged_df_free_below,'Location_no_cont_open_free_below.csv')
 
 #### PARTICLE-ASSOCIATED
 # particle-associated phyloseq
-ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(Location != "Cont_Shelf") %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(Location %in% c("Dotson", "Open_polynya")) %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_part <- ps_part %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -232,7 +232,7 @@ adonis_frame_free_above <- dplyr::select(sampledf_free_above, Station, Latitude:
 adonis_frame_free_above$Location <- as.factor(adonis_frame_free_above$Location)
 
 # Adonis test
-adonis_free_above <- adonis2(bray_free_above ~ Location * CTD_Depth+ Latitude + Longitude + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2 + Iron, data = adonis_frame_free_above)
+adonis_free_above <- adonis2(bray_free_above ~ Location, data = adonis_frame_free_above)
 
 # Post hoc for location in polynya
 beta_location_free_above <- betadisper(bray_free_above, adonis_frame_free_above$Location)
@@ -257,7 +257,7 @@ adonis_frame_free_below <- dplyr::select(sampledf_free_below, Station, Latitude:
 adonis_frame_free_below$Location <- as.factor(adonis_frame_free_below$Location)
 
 # Adonis test
-adonis_free_below <- adonis2(bray_free_below ~ Location * CTD_Depth + Latitude + Longitude + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2, data = adonis_frame_free_below)
+adonis_free_below <- adonis2(bray_free_below ~ Location, data = adonis_frame_free_below)
 
 # Post hoc for location in polynya
 beta_location_free_below <- betadisper(bray_free_below, adonis_frame_free_below$Location)
@@ -283,7 +283,7 @@ adonis_frame_part_above <- dplyr::select(sampledf_part_above, Station, Latitude:
 adonis_frame_part_above$Location <- as.factor(adonis_frame_part_above$Location)
 
 # Adonis test
-adonis_part_above <- adonis2(bray_part_above ~ Location * CTD_Depth+ Latitude + Longitude + Salinity + Temperature + Sb_Oxygen + DOC + Lab_NO3 + Lab_NH4 + Lab_NO2, data = adonis_frame_part_above)
+adonis_part_above <- adonis2(bray_part_above ~ Location, data = adonis_frame_part_above)
 
 # Post hoc for location in polynya
 beta_location_part_above <- betadisper(bray_part_above, adonis_frame_part_above$Location)
@@ -309,10 +309,10 @@ adonis_frame_part_below <- dplyr::select(sampledf_part_below, Station, Latitude:
 adonis_frame_part_below$Location <- as.factor(adonis_frame_part_below$Location)
 
 # Adonis test
-adonis_part_below <- adonis2(bray_part_below ~ Location * Iron_Level, data = adonis_frame_part_below)
+adonis_part_below <- adonis2(bray_part_below ~ Location, data = adonis_frame_part_below)
 
 # Post hoc for location in polynya
-beta_location_part_below <- betadisper(bray_part_below, adonis_frame_part_below$Iron_Level)
+beta_location_part_below <- betadisper(bray_part_below, adonis_frame_part_below$Location)
 
 
 # Adjust margins

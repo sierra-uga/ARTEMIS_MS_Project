@@ -1,46 +1,51 @@
 ## filtering
-org_metadata <- read.delim("required_files/temp_metadata.csv", sep=",", header=TRUE, row.names="sample_name") 
+org_metadata <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names ="sample_name") 
 #org_metadata <- org_metadata_filter
+org_metadata <- filter(org_metadata, watertype == "CDW") 
 distinct <- org_metadata %>% distinct(Depth, Station) # 
 fil_metadata <- org_metadata[row.names(org_metadata) %in% row.names(distinct),] # REMOVING DUPLICATES IN THE PCA
+
 
 ## data culling 
 org_metadata <- filter(fil_metadata, Sample.Control == "True.Sample") # use tidyr to select "real samples" (non-blanks)
 org_metadata <- filter(org_metadata, Station != "STN056b") 
-# metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
-metadata <- org_metadata[ -c( 1, 26:29)] # remove filter-related stuff
-#metadata <- metadata[-(which(metadata$Station %in% c("STN198", "STN056b"))),] 
-metadata <- metadata[ -c( 1, 2:18)] # remove barcode seq/uneeded stuff
-metadata <- dplyr::select(org_metadata, 1:12, 17, 19, 21, 23) # select numeric + siderophore column + watertype
+#org_metadata <- filter(org_metadata, Iron != "NA")
+#org_metadata <- filter(org_metadata, DOC != "NA")
+org_metadata <- filter(org_metadata, Location != "Cont_Shelf")
 
-metadata <- dplyr::select(metadata,-c(Iron)) # for non-iron analysis
+# metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
+metadata <- org_metadata[ -c( 1, 2:19)]
+# metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
+metadata <- metadata[ -c( 1, 6:10)] # remove filter-related stuff
+metadata <- dplyr::select(metadata,-c(Iron, Chl_a, Par, FlECO.AFL, Oxygen))
+#metadata <- dplyr::select(org_metadata, 1:12, 17, 19, 21, 23) # select numeric + siderophore column + watertype
+
 metadata <- metadata %>% mutate_at(1:11, as.numeric) 
 
 metadata <- metadata %>% rename(c(Nitrate = Lab_NO3, 
                                   Nitrite = Lab_NO2, 
-                                  Ammonia = Lab_NH4, 
+                                  Ammonium = Lab_NH4, 
                                   Depth = CTD_Depth, 
                                   Oxygen = Sb_Oxygen,
                                   Phosphate = Lab_PO4))
 # remove NA for iron analysis
-#metadata <- na.omit(metadata)
-#metadata <- filter(metadata, Iron != "NA")
-metadata <- filter(metadata, DOC != "NA")
-metadata <- filter(metadata, Location != "Cont_Shelf")
 
 
 water_type_shapes <- c("AASW"= 8, "AASW-WW"=13, "WW"=23, "WW-CDW"=22, "CDW"=21)
-
+metadata_above <- metadata
 # above 200m 
-metadata_above <- filter(metadata, Depth <= 200)
+#metadata_above <- filter(metadata, Depth <= 200)
 open <- metadata_above$Location == "Open_polynya"
 dotson <- metadata_above$Location == "Dotson"
 east <- metadata_above$Location == "Eastern_CC"
 #cont <- metadata$Location == "Cont_Shelf"
 west <- metadata_above$Location == "Western_CC"
 getz <- metadata_above$Location == "Getz"
+west_op <- metadata$Location == "West_OP"
 
-metadata_above <- dplyr::select(metadata_above, 1:11) # select only numerical columns
+metadata_above <- metadata_above %>% mutate_at(1:9, as.numeric) 
+
+metadata_above <- dplyr::select(metadata_above, 1:9) # select only numerical columns
 # create vectors from orginial metadata file for watertype
 metadataPca_above <- prcomp(metadata_above, scale.=TRUE)
 
@@ -66,6 +71,7 @@ sqrt(1/ncol(metadata_above))
 scaling <- 4.5
 textNudge <- 1.2
 
+metadata <- metadata_above
 pdf(file = "ordination_scripts/graphics/PCA_location_with_DOC.pdf", width = 6, height = 7) 
 plot(scores[, 1], scores[, 2], xlab="PC 1", ylab="PC 2", type="n", asp=1, las=1)
 points(scores[open, 1], scores[open, 2], pch=water_type_shapes[metadata[open, "watertype"]], cex=1, lwd=2, col="#09A20D", bg="#09A20D")
@@ -74,11 +80,26 @@ points(scores[east, 1], scores[east, 2], pch=water_type_shapes[metadata[east, "w
 #points(scores[cont, 1], scores[cont, 2], pch=21, cex=1, col="#3A3A3A", bg="#A3DCA5")
 points(scores[west, 1], scores[west, 2], pch=water_type_shapes[metadata[west, "watertype"]], cex=1, col="red", bg="red")
 points(scores[getz, 1], scores[getz, 2], pch=water_type_shapes[metadata[getz, "watertype"]], cex=1, col="#006B93", bg="#006B93")
+points(scores[west_op, 1], scores[west_op, 2], pch=water_type_shapes[metadata[west_op, "watertype"]], cex=1, col="purple", bg="purple")
 arrows(0, 0, loadings[, 1]* scaling, loadings[, 2]* scaling, length=0.1, angle=20, col="#b54d04")
 text(loadings[, 1]*scaling*textNudge, loadings[, 2]*scaling*1.3, rownames(loadings), col="black", cex=0.8)
 title("Upper 200m")
 # add names 
-#dev.off()
+dev.off()
+
+pdf(file = "final_graphics/PCA_CDW.pdf", width = 6, height = 7) 
+plot(scores[, 1], scores[, 2], xlab="PC 1", ylab="PC 2", type="n", asp=1, las=1)
+points(scores[open, 1], scores[open, 2], pch=16, cex=1, lwd=2, col="#09A20D", bg="#09A20D")
+points(scores[dotson, 1], scores[dotson, 2], pch=16, cex=1, lwd=2, col="#5AD0FC", bg="#5AD0FC")
+points(scores[east, 1], scores[east, 2], pch=16, cex=1, col="darkred", bg="darkred")
+#points(scores[cont, 1], scores[cont, 2], pch=21, cex=1, col="#3A3A3A", bg="#A3DCA5")
+points(scores[west, 1], scores[west, 2], pch=16, cex=1, col="red", bg="red")
+points(scores[getz, 1], scores[getz, 2], pch=16, cex=1, col="#006B93", bg="#006B93")
+points(scores[west_op, 1], scores[west_op, 2], pch=16, cex=1, col="purple", bg="purple")
+arrows(0, 0, loadings[, 1]* scaling, loadings[, 2]* scaling, length=0.1, angle=20, col="#b54d04")
+text(loadings[, 1]*scaling*textNudge, loadings[, 2]*scaling*1.3, rownames(loadings), col="black", cex=0.8)
+title("PCA of Only CDW Samples")
+dev.off()
 
 # below 200m
 metadata_below <- filter(metadata, Depth >= 200)
