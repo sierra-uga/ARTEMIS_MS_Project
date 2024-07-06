@@ -23,7 +23,7 @@ ps_sub <- ps_noncontam_prev05 %>%
 ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% tax_fix() %>% phyloseq_validate()
 
 samples <- c("Mid", "Mid-Bottom", "Bottom")
-ps_sub <- subset_samples(ps_sub, watertype %in% samples)
+ps_sub <- subset_samples(ps_sub, True_Flow != "NA")
 locations <- c("STN198", "STN002", "STN004", "STN012", "STN115", "STN12.3", "STN014")
 ps_sub <- subset_samples(ps_sub, Station %in% locations)
 
@@ -32,6 +32,22 @@ ps_sub <- tax_glom(ps_sub, "Genus", NArm = TRUE)
 ps_sub <-label_duplicate_taxa(ps_sub,
                                 tax_level = "Family")
 
+inflow_metadata <- as.data.frame(ps_sub@sam_data)
+
+distinct <- inflow_metadata %>% distinct(Depth, Station) # 
+fil_metadata <- inflow_metadata[row.names(inflow_metadata) %in% row.names(distinct),] # REMOVING DUPLICATES IN THE PCA
+
+org_metadata <- read.delim("required_files/artemis-eDNA-metadata-final.tsv", sep="\t", header=TRUE, row.names="sample.illumina") 
+
+## data culling 
+org_metadata <- filter(org_metadata, Sample.Control == "True.Sample") 
+org_metadata <- filter(org_metadata, True_Flow != "NA")
+org_metadata <- filter(org_metadata, watertype != "Other")# use tidyr to select "real samples" (non-blanks)
+# metadata <- org_metadata[-(which(org_metadata$Station %in% c("STN198", "STN153", "STN056b", "STN012"))),] # removes station 198 and 153 for dotson analysis
+distinct <- org_metadata %>% distinct(Depth, Station) # 
+fil_metadata <- org_metadata[row.names(org_metadata) %in% row.names(distinct),] # REMOVING DUPLICATES IN THE PCA
+
+write.csv(fil_metadata, "final_graphics/inflow_characterization.csv")
 
 taxa_names(ps_sub_genus) <- tax_table(ps_sub_genus)[,"Genus"]
 
@@ -71,7 +87,7 @@ data_top_free <- data_free %>%
   filter(Abundance > 0.035) %>% # Filter out low abundance taxa
   arrange(Family)
 
-data_top_free <- aggregate(Abundance ~ Station * Family * watertype, data = data_top_free, FUN = mean)
+data_top_free <- aggregate(Abundance ~ Station * Family * True_Flow, data = data_top_free, FUN = mean)
 
 
 # particle-associated
@@ -84,7 +100,7 @@ data_top_part <- data_part %>%
   filter(Abundance > 0.035) %>%
   arrange(Family)# Filter out low abundance taxa
 
-data_top_part <- aggregate(Abundance ~ Station * Family * watertype, data = data_top_part, FUN = mean)
+data_top_part <- aggregate(Abundance ~ Station * Family * True_Flow, data = data_top_part, FUN = mean)
 
 level_order_prev <- c("STN198", "STN002", "STN004", "STN181", "STN012", "STN115", "STN12.3", "STN20", "STN014", "STN089",
                  "STN132", "STN106", "STN078", "STN056a", "STN056b", "STN22", "STN068", "STN146", "STN174",
@@ -146,15 +162,15 @@ names(myColors) <- levels(c(data_top_free$Family, data_top_part$Family)) # setti
 #    FREE-LIVING     # 
 ######################
 #"Surface", "Mixed Layer", 
-barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~.) + # facet grid seperates by different levels, horizontally
+barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + #facet_wrap(~factor(True_Flow, levels=c("Inflow", "Outflow"))~.) + # facet grid seperates by different levels, horizontally
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
   scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
   scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
-  scale_x_discrete(
-    breaks = plot_breaks, # setting breaks
-    labels = plot_labels, # settting levels
-    drop = FALSE
-  ) +
+  #scale_x_discrete(
+  #  breaks = plot_breaks, # setting breaks
+   # labels = plot_labels, # settting levels
+  #  drop = FALSE
+  #) +
   theme(text = element_text(family = "Helvetica"), 
         plot.title = element_text(hjust = 0.6),
     axis.title.x = element_blank(),
@@ -164,10 +180,10 @@ barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_orde
         legend.position = "none"
         # Reducing space between facets
         ) + # Optionally remove panel borders
-  geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
+  geom_vline(xintercept = c(2.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
-  ggtitle("Free-living (<0.2 µm)")
+  ggtitle("Free-living")
 ggsave("graphics/free_living_barplot_family_all_stations.pdf", width = 8, height = 6, dpi = 150)
 
 ###################### 
@@ -177,28 +193,28 @@ ggsave("graphics/free_living_barplot_family_all_stations.pdf", width = 8, height
 ######################
 
 # the following plot is basically the same as above, look at annotation for free-living barplot if confused about what each line does!
-barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~., scales = "free_x", space = "free_x") +
-  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_manual(values = myColors, drop = FALSE) +
-  scale_x_discrete(
-    breaks = plot_breaks,
-    labels = plot_labels,
-    drop = FALSE
-  ) +
+barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + #facet_wrap(~factor(True_Flow, levels=c("Inflow", "Outflow"))~.) + # facet grid seperates by different levels, horizontally
+  geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
+  scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
+  scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
+  #scale_x_discrete(
+  #  breaks = plot_breaks, # setting breaks
+  # labels = plot_labels, # settting levels
+  #  drop = FALSE
+  #) +
   theme(text = element_text(family = "Helvetica"), 
         plot.title = element_text(hjust = 0.6),
         axis.title.x = element_blank(),
+        axis.text=element_text(size=7),
         axis.text.x = element_text(size=9, angle=90, vjust=0.5),
         axis.title.y = element_blank(),
-        axis.text.y = element_text(size=5.5 , color="white"),
-        legend.position = "none") +# Reducing space between facets
- # Optionally hide the strip background for a cleaner look
-# Optionally remove panel borders
-  geom_vline(xintercept = c(4.5,11.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
-  #theme(plot.title = element_text(hjust = 0.5, size=17)) +
-  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
-  ggtitle("Particle-associated (>3 µm)")
+        legend.position = "none"
+        # Reducing space between facets
+  ) + # Optionally remove panel borders
+  geom_vline(xintercept = c(2.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
+  guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
+  #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
+  ggtitle("Particle-associated")
 
 ggsave("graphics/part_associated_barplot_bottom_all_stations.pdf", width = 8, height = 6, dpi = 150)
 
@@ -229,10 +245,10 @@ ps_combined <- ggarrange(
 # something like: plot.margin=unit(c(1,1,-0.5,1), "cm")), where the margins follow the following structure:
 # unit(c(top, right, bottom, left), units).
 
-annotate_figure(ps_combined, top = text_grob("Total Relative Abundance for ALL ARTEMIS Stations by Water Mass", 
+annotate_figure(ps_combined, top = text_grob("Relative Abundance for Inflow/Outflow Stations", 
                                              color = "black", hjust=.7, face = "bold", size = 18, family = "Helvetica"))
 
-ggsave("final_graphics/rel_abund_watermass.pdf", width = 13, height = 7, dpi = 150)
+ggsave("final_graphics/rel_abund_inflow_outflow.pdf", width = 13, height = 7, dpi = 150)
 
 
 ## MORE TESTS + POST HOC ##

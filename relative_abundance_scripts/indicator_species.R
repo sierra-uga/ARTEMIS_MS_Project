@@ -36,6 +36,8 @@ ps_free <- ps_free %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
   transform_sample_counts(function(x) {x/sum(x)})  # Transform to rel. abundance (normalize data
 
+ps_free@sam_data[["CTD_Depth"]] <- as.numeric(ps_free@sam_data[["CTD_Depth"]])
+
 ## upper 200m
 ps_free_above <- ps_free %>% subset_samples(CTD_Depth <= 200)
 
@@ -229,13 +231,13 @@ sampledf_free_above <- data.frame(sample_data(ps_free_above))# make a data frame
 
 #select from main data frame
 adonis_frame_free_above <- dplyr::select(sampledf_free_above, Station, Latitude:CTD_Depth, Lab_NO3:Iron, Iron_Level:Pos_in_polynya)
-adonis_frame_free_above$Location <- as.factor(adonis_frame_free_above$Location)
+adonis_frame_free_above$watertype <- as.factor(adonis_frame_free_above$watertype)
 
 # Adonis test
-adonis_free_above <- adonis2(bray_free_above ~ Location, data = adonis_frame_free_above)
+adonis_free_above <- adonis2(bray_free_above ~ watertype, data = adonis_frame_free_above)
 
-# Post hoc for location in polynya
-beta_location_free_above <- betadisper(bray_free_above, adonis_frame_free_above$Location)
+# Post hoc for watertype in polynya
+beta_location_free_above <- betadisper(bray_free_above, adonis_frame_free_above$watertype)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)
@@ -254,13 +256,13 @@ sampledf_free_below <- data.frame(sample_data(ps_free_below))# make a data frame
 
 #select from main data frame
 adonis_frame_free_below <- dplyr::select(sampledf_free_below, Station, Latitude:CTD_Depth, Lab_NO3:Iron, Iron_Level:Pos_in_polynya)
-adonis_frame_free_below$Location <- as.factor(adonis_frame_free_below$Location)
+adonis_frame_free_below$watertype <- as.factor(adonis_frame_free_below$watertype)
 
 # Adonis test
-adonis_free_below <- adonis2(bray_free_below ~ Location, data = adonis_frame_free_below)
+adonis_free_below <- adonis2(bray_free_below ~ watertype, data = adonis_frame_free_below)
 
 # Post hoc for location in polynya
-beta_location_free_below <- betadisper(bray_free_below, adonis_frame_free_below$Location)
+beta_location_free_below <- betadisper(bray_free_below, adonis_frame_free_below$watertype)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)

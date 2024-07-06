@@ -40,7 +40,7 @@ sample_data(ps_sub)$Iron <- as.numeric(sample_data(ps_sub)$Iron)
 ps_sub <- subset_samples(ps_sub, Iron != "NA")
 ps_sub <- subset_samples(ps_sub, DOC != "NA")
 
-ps_sub <- subset_samples(ps_sub, watertype == "CDW")
+#ps_sub <- subset_samples(ps_sub, watertype == "CDW")
 
 ps_sub <- subset_samples(ps_sub, Location != "Cont_Shelf") # if want to remove cont_shelf
 #ps_sub <- subset_samples(ps_sub, Location != "Open_polynya") # if want to remove open polynya
@@ -76,16 +76,16 @@ remove_grid <- theme(legend.position = "bottom") + theme_bw() + # removes grid
 
 # color for ggplot points
 color_breaks <- c("Dotson", "Eastern_CC", "Western_CC", "Getz", "Open_polynya", "West_OP")
-color_point <- scale_fill_manual(values = c("#5AD0FC", "darkred", "red", "#006B93", "#09A20D", "purple"),
+color_point <- scale_fill_manual(values = c("#5AD0FC", "darkred", "red", "#006B93", "#09A20D", "purple", "black"),
                                   name = "Location in Polynya",
                                   breaks = color_breaks,
-                                  labels = color_breaks)
+                                  labels = c("Dotson", "East CC", "West CC", "Getz", "Open Polynya", "West OP"))
 
 color_breaks <- c("Dotson", "Eastern_CC", "Western_CC", "Getz", "Open_polynya", "West_OP")
-color_point2 <- scale_color_manual(values = c("#5AD0FC", "darkred", "red", "#006B93", "#09A20D", "purple"),
+color_point2 <- scale_color_manual(values = c("#5AD0FC", "darkred", "red", "#006B93", "#09A20D", "purple", "black"),
                                  name = "Location in Polynya",
                                  breaks = color_breaks,
-                                 labels = color_breaks)
+                                 labels = c("Dotson", "East CC", "West CC", "Getz", "Open Polynya", "West OP"))
 
 shapes <- scale_shape_manual(values = c(8 , 13, 23, 22, 21),
                              name = "Water Mass",
@@ -99,8 +99,8 @@ free_above_CCA <- plot_ordination(ps_free_above, cca_free_above,
                             type = "sites", color="Location")
 f_CCA <- free_above_CCA + geom_point(aes(fill = Location), size = 3, alpha = 0.7) + ggtitle("Free-living") +remove_grid + color_point + color_point2 +#geom_label(size= 2, aes(label = Genus)) +  # X for other locations
   theme(text = element_text(family = "Helvetica"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5)) +
-  annotate("richtext", x = -Inf, y = Inf, label = "CDW Samples Only",
-           hjust = -0.1, vjust = 1.4, size = 4, color = "black",
+  annotate("richtext", x = Inf, y = Inf, label = "Above 200m",
+           hjust = 1.1, vjust = 1.5, size = 4, color = "black",
            fontface = "bold", fill = "white") +
   theme(plot.margin = margin(10, 10, 10, 10, "pt"))
 f_CCA
@@ -126,8 +126,8 @@ free_below_CCA <- plot_ordination(ps_free_below, cca_free_below,
                             type = "sites", color="Location")
 f_CCA2 <- free_below_CCA + geom_point(aes(fill = Location), size=3, alpha=0.7) + remove_grid + color_point + color_point2+#geom_label(size= 2, aes(label = Genus)) +  # X for other locations
   theme(text = element_text(family = "Helvetica")) +
-  annotate("richtext", x = Inf, y = -Inf, label = "Below 200m",
-           hjust = 1.1, vjust = -0.1, size = 4, color = "black",
+  annotate("richtext", x = Inf, y = Inf, label = "Below 200m",
+           hjust = 1.1, vjust = 1.5, size = 4, color = "black",
            fontface = "bold", fill = "white") +
   theme(plot.margin = margin(10, 10, 10, 10, "pt"))
 f_CCA2
@@ -154,8 +154,8 @@ part_above_CCA <- plot_ordination(ps_part_above, cca_part_above,
                                   type = "sites", color="Location")
 p_CCA <- part_above_CCA + geom_point(aes(fill = Location), size = 3, alpha = 0.7) + ggtitle("Particle-associated") + remove_grid + color_point + color_point2 +#geom_label(size= 2, aes(label = Genus)) +  # X for other locations
   theme(text = element_text(family = "Helvetica"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5)) +
-  annotate("richtext", x = -Inf, y = Inf, label = "CDW Samples Only",
-           hjust = -0.1, vjust = 1.4, size = 4, color = "black",
+  annotate("richtext", x = Inf, y = Inf, label = "Above 200m",
+           hjust = 1.1, vjust = 1.5, size = 4, color = "black",
            fontface = "bold", fill = "white") +
   theme(plot.margin = margin(10, 10, 10, 10, "pt"))
 p_CCA
@@ -182,9 +182,9 @@ part_below_CCA <- plot_ordination(ps_part_below, cca_part_below,
                                   type = "sites", color="Location")
 p_CCA2 <- part_below_CCA + geom_point(aes(fill = Location), size=3, alpha=0.7) + remove_grid + color_point + color_point2+#geom_label(size= 2, aes(label = Genus)) +  # X for other locations
   theme(text = element_text(family = "Helvetica"))+
-  annotate("richtext", x = Inf, y = -Inf, label = "Below 200m",
-           hjust = 1.1, vjust = -0.1, size = 4, color = "black",
-           fontface = "bold", fill = "white", box.color = "black") +
+  annotate("richtext", x = Inf, y = Inf, label = "Below 200m",
+           hjust = 1.1, vjust = 1.5, size = 4, color = "black",
+           fontface = "bold", fill = "white") +
   theme(plot.margin = margin(10, 10, 10, 10, "pt"))
 p_CCA2
 
@@ -208,13 +208,12 @@ p2
 data <- data.frame(
   x = rnorm(12),
   y = rnorm(12),
-  Location = rep(c("Dotson", "Eastern CC", "Western CC", "Getz", "OP", "West OP"), each = 2)
+  Location = rep(c("Dotson", "Eastern_CC", "Western_CC", "Getz", "Open_polynya", "West_OP"), each = 2)
 )
 
 fake_plot <- ggplot(data, aes(x = x, y = y)) +
   geom_point(aes(color = Location), size = 4) +
   color_point2 +
-  shapes +
   theme_void() +  # Hides the axes and background
   theme(legend.position = "right")
 
@@ -223,6 +222,6 @@ legend_combined <- get_legend(fake_plot)
 ## combine plots
 
 library(ggpubr)
-ggarrange(f1,p1,f2,p2, ncol=2, nrow=2, common.legend=TRUE, legend="right", labels = c("A", "B", "C", "D"))
+ggarrange(f1, legend.grob=legend_combined, legend="right", labels = c("A", "B", "C", "D"))
 
-ggsave("final_graphics/CCA_CDW_only_DOC.pdf", width = 10, height = 6, dpi = 1200)
+ggsave("final_graphics/LOCATION_LEGEND.pdf", width = 10, height = 8, dpi = 1200)

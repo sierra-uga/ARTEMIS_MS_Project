@@ -7,7 +7,7 @@ ps_sub <- ps_noncontam_prev05 %>%
       Family  != "Mitochondria" 
   )
 
-ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% subset_samples()
+ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% subset_samples(Location != "Cont_Shelf") %>% 
   phyloseq_validate() %>% tax_fix() %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_sub <- tax_glom(ps_sub, "Genus", NArm = TRUE)
@@ -23,9 +23,7 @@ otu_table(ps_sub) <- taxa_names # re-inserts the OTU table for the phyloseq obje
 
 ## FREE-LIVING ##
 ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% 
-  subset_samples(watertype == "CDW") %>% 
-  subset_samples(Location != "Cont_Shelf") %>% 
-  prune_taxa(taxa_sums(.) > 0, .)
+  prune_taxa(taxa_sums(.) > 0, .) %>% subset_samples(DOC != "NA")  %>% subset_samples(watertype %in% c("AASW", "WW", "CDW"))
 
 ps_free <- ps_free %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -78,8 +76,7 @@ write.csv(merged_df_free,'indicator_Station_CDW_free_no_cont.csv')
 ### PARTICLE - ASSOCIATED
 
 ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% 
-  subset_samples(watertype == "CDW") %>%
-  subset_samples(Location != "Cont_Shelf") %>% prune_taxa(taxa_sums(.) > 0, .) %>% subset_samples(DOC != "NA")
+ prune_taxa(taxa_sums(.) > 0, .) %>% subset_samples(DOC != "NA") %>% subset_samples(watertype != "Other")
 
 ps_part <- ps_part %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -135,19 +132,16 @@ sampledf_free <- data.frame(sample_data(ps_free))# make a data frame from the sa
 
 #select from main data frame
 adonis_frame_free <- dplyr::select(sampledf_free, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Location:Iron_Level)
-adonis_frame_free$Station <- as.factor(adonis_frame_free$Station)
+adonis_frame_free$watertype <- as.factor(adonis_frame_free$watertype)
 
 # Adonis test
-adonis_free <- adonis2(bray_free ~ Station, data = adonis_frame_free)
+adonis_free <- adonis2(bray_free ~ watertype, data = adonis_frame_free)
 
 # Post hoc for location in polynya
-beta_location_free <- betadisper(bray_free, adonis_frame_free$Station)
+beta_location_free <- betadisper(bray_free, adonis_frame_free$watertype)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)
-
-
-ord_explore(ps_part_below)
 
 ps_free_above
 # Adjust margins
@@ -164,20 +158,20 @@ bray_part <- phyloseq::distance(ps_part, method = "bray") # setting distance
 sampledf_part <- data.frame(sample_data(ps_part))# make a data frame from the sample_data
 
 #select from main data frame
-adonis_frame_part <- dplyr::select(sampledf_part, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Location:Location)
-adonis_frame_part$Location <- as.factor(adonis_frame_part$Location)
+adonis_frame_part <- dplyr::select(sampledf_part, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Location:watertype)
+adonis_frame_part$watertype <- as.factor(adonis_frame_part$watertype)
 
 # Adonis test
-adonis_part <- adonis2(bray_part ~ Station, data = adonis_frame_part)
+adonis_part <- adonis2(bray_part ~ watertype, data = adonis_frame_part)
 
 # Post hoc for location in polynya
-beta_location_part <- betadisper(bray_part, adonis_frame_part$Station)
+beta_location_part <- betadisper(bray_part, adonis_frame_part$watertype)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)
 
 # Adjust margins
-pdf(file = "final_graphics/adonis_CDW_location.pdf", width = 12, height = 8) 
+pdf(file = "final_graphics/adonis_watermass.pdf", width = 12, height = 8) 
 par(mfrow=c(1, 2), mar = c(5, 6, 4, 2) + 0.1)
 plot(mod.HSD_free, las=1)
 plot(mod.HSD_part, las=1)
