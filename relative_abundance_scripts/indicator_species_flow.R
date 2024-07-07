@@ -177,7 +177,7 @@ adonis_part <- adonis2(bray_part ~ Station, data = adonis_frame_part)
 beta_location_part <- betadisper(bray_part, adonis_frame_part$Station)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
-layout(layout_matrix)
+layout(layout_m4atrix)
 
 # Adjust margins
 pdf(file = "final_graphics/adonis_flow.pdf", width = 12, height = 8) 

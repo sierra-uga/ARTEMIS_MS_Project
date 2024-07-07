@@ -10,10 +10,11 @@ library("ggpubr")
 library(tidyverse)
 library(RColorBrewer)
 library("speedyseq")
+library(microViz)
 
 ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
-    Kingdom == "Bacteria" &
+    #Kingdom == "Bacteria" &
       Family  != "Mitochondria" &
       Family   != "Chloroplast" &
       Order   != "Chloroplast" &
@@ -87,7 +88,7 @@ data_top_free <- data_free %>%
   filter(Abundance > 0.035) %>% # Filter out low abundance taxa
   arrange(Family)
 
-data_top_free <- aggregate(Abundance ~ Station * Family * True_Flow, data = data_top_free, FUN = mean)
+data_top_free <- aggregate(Abundance ~ Station * Family * watertype, data = data_top_free, FUN = mean)
 
 
 # particle-associated
@@ -100,7 +101,7 @@ data_top_part <- data_part %>%
   filter(Abundance > 0.035) %>%
   arrange(Family)# Filter out low abundance taxa
 
-data_top_part <- aggregate(Abundance ~ Station * Family * True_Flow, data = data_top_part, FUN = mean)
+data_top_part <- aggregate(Abundance ~ Station * Family * watertype, data = data_top_part, FUN = mean)
 
 level_order_prev <- c("STN198", "STN002", "STN004", "STN181", "STN012", "STN115", "STN12.3", "STN20", "STN014", "STN089",
                  "STN132", "STN106", "STN078", "STN056a", "STN056b", "STN22", "STN068", "STN146", "STN174",
@@ -162,7 +163,7 @@ names(myColors) <- levels(c(data_top_free$Family, data_top_part$Family)) # setti
 #    FREE-LIVING     # 
 ######################
 #"Surface", "Mixed Layer", 
-barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + #facet_wrap(~factor(True_Flow, levels=c("Inflow", "Outflow"))~.) + # facet grid seperates by different levels, horizontally
+barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~.) + # facet grid seperates by different levels, horizontally
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
   scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
   scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
@@ -180,7 +181,7 @@ barplot_free <- ggplot(data_top_free, aes(x = factor(Station, level = level_orde
         legend.position = "none"
         # Reducing space between facets
         ) + # Optionally remove panel borders
-  geom_vline(xintercept = c(2.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
+  #geom_vline(xintercept = c(2.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
   ggtitle("Free-living")
@@ -193,7 +194,7 @@ ggsave("graphics/free_living_barplot_family_all_stations.pdf", width = 8, height
 ######################
 
 # the following plot is basically the same as above, look at annotation for free-living barplot if confused about what each line does!
-barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + #facet_wrap(~factor(True_Flow, levels=c("Inflow", "Outflow"))~.) + # facet grid seperates by different levels, horizontally
+barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_order), y = Abundance, fill = Family, group = Family)) + facet_grid(~factor(watertype, levels=c("AASW", "AASW-WW", "WW", "WW-CDW", "CDW"))~.) + #facet_wrap(~factor(True_Flow, levels=c("Inflow", "Outflow"))~.) + # facet grid seperates by different levels, horizontally
   geom_bar(stat = "identity", position="fill", color= "black", linewidth=0.3, width=0.9) + theme_classic() + # adds black outline to boxes
   scale_y_continuous(expand = c(0, 0)) + # extends the barplots to the axies
   scale_fill_manual(values = myColors, drop = FALSE) + # set the colors with custom colors (myColors)
@@ -211,7 +212,7 @@ barplot_part <- ggplot(data_top_part, aes(x = factor(Station, level = level_orde
         legend.position = "none"
         # Reducing space between facets
   ) + # Optionally remove panel borders
-  geom_vline(xintercept = c(2.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
+  #geom_vline(xintercept = c(2.5), linetype = "dashed", linewidth=0.6, color = "black") +# Add vertical lines
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) + # for the legend, if you want one
   #ylab("Relative Abundance (Order > 2%) \n") + # remove # if you want y-axis title
   ggtitle("Particle-associated")
@@ -245,10 +246,10 @@ ps_combined <- ggarrange(
 # something like: plot.margin=unit(c(1,1,-0.5,1), "cm")), where the margins follow the following structure:
 # unit(c(top, right, bottom, left), units).
 
-annotate_figure(ps_combined, top = text_grob("Relative Abundance for Inflow/Outflow Stations", 
+annotate_figure(ps_combined, top = text_grob("Relative Abundance including Archaea", 
                                              color = "black", hjust=.7, face = "bold", size = 18, family = "Helvetica"))
 
-ggsave("final_graphics/rel_abund_inflow_outflow.pdf", width = 13, height = 7, dpi = 150)
+ggsave("final_graphics/rel_abund_archaea.pdf", width = 13, height = 7, dpi = 150)
 
 
 ## MORE TESTS + POST HOC ##
