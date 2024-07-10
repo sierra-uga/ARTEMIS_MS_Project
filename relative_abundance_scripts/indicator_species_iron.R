@@ -7,7 +7,7 @@ ps_sub <- ps_noncontam_prev05 %>%
       Family  != "Mitochondria" 
   )
 
-ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% subset_samples(Location != "Cont_Shelf") %>% 
+ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% subset_samples(Iron_Level != "NA") %>% 
   phyloseq_validate() %>% tax_fix() %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_sub <- tax_glom(ps_sub, "Genus", NArm = TRUE)

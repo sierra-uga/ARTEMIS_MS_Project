@@ -8,15 +8,15 @@ library(microViz)
 
 ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
-    Kingdom == "Bacteria" &
+    #Kingdom == "Bacteria" &
       Family  != "Mitochondria" &
       Family   != "Chloroplast" &
       Order   != "Chloroplast" &
       Family  != "Mitochondria" 
   )
 
-ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% 
-  phyloseq_validate() %>% tax_fix() %>% prune_taxa(taxa_sums(.) > 0, .)
+ps_sub <- subset_samples(ps_sub, Sample.Control == "True.Sample") %>% subset_samples(., sample.illumina != "089_200_FIL_R2") %>%
+  phyloseq_validate() %>% tax_fix() %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_sub <- tax_glom(ps_sub, "Genus", NArm = TRUE)
 
@@ -30,7 +30,7 @@ taxa_names <- na.omit(taxa_names) # remove NAs just in case
 otu_table(ps_sub) <- taxa_names # re-inserts the OTU table for the phyloseq object
 
 
-ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(Location %in% c("Dotson", "Open_polynya")) %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_free <- ps_free %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -66,11 +66,11 @@ head(metadata_free_above) # check
 
 ## Join based on SampleID
 SpOTU_Final_free_above <-left_join(SpOTUFlip_num_free_above, metadata_free_above, by = c("sample_name" = "sample_name")) # join based on sample IDs, assuming they're the same for both OTU table and metadata
+SPotus_free_above = SpOTU_Final_free_above[,1:325] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
 
-SPotus_free_above = SpOTU_Final_free_above[,1:144] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
+
 SPwat_free_above = SpOTU_Final_free_above$Location #the metadata column group you care about
 SPotus_free_above <- SPotus_free_above[, colSums(SPotus_free_above) != 0]
-
 indisp_free_above=multipatt(x=SPotus_free_above, cluster=SPwat_free_above, func = "r.g", print.perm = TRUE, control = how(nperm=9999))
 
 #extract table of stats
@@ -84,7 +84,7 @@ SPind_free_above$taxon <- SPind_free_above$rn
 
 merged_df_free_above <- merge(SPind_free_above, taxa_free_above, by = "taxon")
 
-write.csv(merged_df_free_above,'Location_no_cont_open_free_above.csv')
+write.csv(merged_df_free_above,'Location_with_cont_open_free_above.csv')
 
 ######### BELOW #####
 
@@ -109,7 +109,7 @@ head(metadata_free_below) # check
 ## Join based on SampleID
 SpOTU_Final_free_below <-left_join(SpOTUFlip_num_free_below, metadata_free_below, by = c("sample_name" = "sample_name")) # join based on sample IDs, assuming they're the same for both OTU table and metadata
 
-SPotus_free_below = SpOTU_Final_free_below[,1:183] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
+SPotus_free_below = SpOTU_Final_free_below[,1:325] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
 SPwat_free_below = SpOTU_Final_free_below$Location #the metadata column group you care about
 SPotus_free_below <- SPotus_free_below[, colSums(SPotus_free_below) != 0]
 
@@ -126,11 +126,11 @@ SPind_free_below$taxon <- SPind_free_below$rn
 
 merged_df_free_below <- merge(SPind_free_below, taxa_free_below, by = "taxon")
 
-write.csv(merged_df_free_below,'Location_no_cont_open_free_below.csv')
+write.csv(merged_df_free_below,'indicator_location_free_below.csv')
 
 #### PARTICLE-ASSOCIATED
 # particle-associated phyloseq
-ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(Location %in% c("Dotson", "Open_polynya")) %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% prune_taxa(taxa_sums(.) > 0, .)  #subset_samples(Location %in% c("Dotson", "Open_polynya")) %>%
 
 ps_part <- ps_part %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -162,7 +162,7 @@ head(metadata_part_above) # check
 ## Join based on SampleID
 SpOTU_Final_part_above <-left_join(SpOTUFlip_num_part_above, metadata_part_above, by = c("sample_name" = "sample_name")) # join based on sample IDs, assuming they're the same for both OTU table and metadata
 
-SPotus_part_above = SpOTU_Final_part_above[,1:405] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
+SPotus_part_above = SpOTU_Final_part_above[,1:449] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
 SPwat_part_above = SpOTU_Final_part_above$Location #the metadata column group you care about
 SPotus_part_above <- SPotus_part_above[, colSums(SPotus_part_above) != 0]
 
@@ -204,7 +204,7 @@ head(metadata_part_below) # check
 ## Join based on SampleID
 SpOTU_Final_part_below <-left_join(SpOTUFlip_num_part_below, metadata_part_below, by = c("sample_name" = "sample_name")) # join based on sample IDs, assuming they're the same for both OTU table and metadata
 
-SPotus_part_below = SpOTU_Final_part_below[,1:405] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
+SPotus_part_below = SpOTU_Final_part_below[,1:449] #select just the ASV/OTU table part of the file (you may have to scroll to the back of the OTU file to find it...)
 SPwat_part_below = SpOTU_Final_part_below$Location #the metadata column group you care about
 SPotus_part_below <- SPotus_part_below[, colSums(SPotus_part_below) != 0]
 
@@ -221,23 +221,24 @@ SPind_part_below$taxon <- SPind_part_below$rn
 
 merged_df_part_below <- merge(SPind_part_below, taxa_part_below, by = "taxon")
 
-write.csv(merged_df_part_below,'Location_no_cont_open_part_below.csv')
+write.csv(merged_df_part_below,'indicator_location_part_below.csv')
 
 ### ADONIS
 # FREE-LIVING
 ### adonis 
+library(vegan)
 bray_free_above <- phyloseq::distance(ps_free_above, method = "bray") # setting distance
 sampledf_free_above <- data.frame(sample_data(ps_free_above))# make a data frame from the sample_data
 
 #select from main data frame
 adonis_frame_free_above <- dplyr::select(sampledf_free_above, Station, Latitude:CTD_Depth, Lab_NO3:Iron, Iron_Level:Pos_in_polynya)
-adonis_frame_free_above$watertype <- as.factor(adonis_frame_free_above$watertype)
+adonis_frame_free_above$Location <- as.factor(adonis_frame_free_above$Location)
 
 # Adonis test
-adonis_free_above <- adonis2(bray_free_above ~ watertype, data = adonis_frame_free_above)
+adonis_free_above <- adonis2(bray_free_above ~ Location, data = adonis_frame_free_above)
 
-# Post hoc for watertype in polynya
-beta_location_free_above <- betadisper(bray_free_above, adonis_frame_free_above$watertype)
+# Post hoc for Location in polynya
+beta_location_free_above <- betadisper(bray_free_above, adonis_frame_free_above$Location)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)
@@ -256,13 +257,13 @@ sampledf_free_below <- data.frame(sample_data(ps_free_below))# make a data frame
 
 #select from main data frame
 adonis_frame_free_below <- dplyr::select(sampledf_free_below, Station, Latitude:CTD_Depth, Lab_NO3:Iron, Iron_Level:Pos_in_polynya)
-adonis_frame_free_below$watertype <- as.factor(adonis_frame_free_below$watertype)
+adonis_frame_free_below$Location <- as.factor(adonis_frame_free_below$Location)
 
 # Adonis test
-adonis_free_below <- adonis2(bray_free_below ~ watertype, data = adonis_frame_free_below)
+adonis_free_below <- adonis2(bray_free_below ~ Location, data = adonis_frame_free_below)
 
 # Post hoc for location in polynya
-beta_location_free_below <- betadisper(bray_free_below, adonis_frame_free_below$watertype)
+beta_location_free_below <- betadisper(bray_free_below, adonis_frame_free_below$Location)
 
 layout_matrix <- matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE)
 layout(layout_matrix)
