@@ -235,7 +235,8 @@ adonis_frame_free_above <- dplyr::select(sampledf_free_above, Station, Latitude:
 adonis_frame_free_above$Location <- as.factor(adonis_frame_free_above$Location)
 
 # Adonis test
-adonis_free_above <- adonis2(bray_free_above ~ Location, data = adonis_frame_free_above)
+adonis_free_above <- adonis2(bray_free_above ~ Location, data = adonis_frame_free_above, permutations = 999)
+pairwise.adonis(bray_free_above ,factors=adonis_frame_free_above$Location)
 
 # Post hoc for Location in polynya
 beta_location_free_above <- betadisper(bray_free_above, adonis_frame_free_above$Location)
@@ -260,7 +261,8 @@ adonis_frame_free_below <- dplyr::select(sampledf_free_below, Station, Latitude:
 adonis_frame_free_below$Location <- as.factor(adonis_frame_free_below$Location)
 
 # Adonis test
-adonis_free_below <- adonis2(bray_free_below ~ Location, data = adonis_frame_free_below)
+adonis_free_below <- adonis2(bray_free_below ~ Location, data = adonis_frame_free_below, permutations = 999)
+pairwise.adonis(bray_free_below ,factors=adonis_frame_free_below$Location)
 
 # Post hoc for location in polynya
 beta_location_free_below <- betadisper(bray_free_below, adonis_frame_free_below$Location)
@@ -286,8 +288,8 @@ adonis_frame_part_above <- dplyr::select(sampledf_part_above, Station, Latitude:
 adonis_frame_part_above$Location <- as.factor(adonis_frame_part_above$Location)
 
 # Adonis test
-adonis_part_above <- adonis2(bray_part_above ~ Location, data = adonis_frame_part_above)
-
+adonis_part_above <- adonis2(bray_part_above ~ Location, data = adonis_frame_part_above, permutations = 9999)
+pairwise.adonis(bray_part_above ,factors=adonis_frame_part_above$Location)
 # Post hoc for location in polynya
 beta_location_part_above <- betadisper(bray_part_above, adonis_frame_part_above$Location)
 
@@ -304,8 +306,10 @@ plot(beta_location_part_above)
 
 ### BELOW
 
-bray_part_below <- phyloseq::distance(ps_part_below, method = "bray") # setting distance
-sampledf_part_below <- data.frame(sample_data(ps_part_below))# make a data frame from the sample_data
+adonis_part_below <- adonis2(bray_part_below ~ Location, data = adonis_frame_part_below, permutations = 999)
+pairwise.adonis(bray_part_below ,factors=adonis_frame_part_below$Location)
+
+TukeyHSD(adonis_part_below, "city")
 
 #select from main data frame
 adonis_frame_part_below <- dplyr::select(sampledf_part_below, Station, Latitude:CTD_Depth, Lab_NO3:Iron, Iron_Level:Pos_in_polynya)

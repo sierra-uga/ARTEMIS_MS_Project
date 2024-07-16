@@ -11,6 +11,7 @@ library(tidyverse)
 library(RColorBrewer)
 library("speedyseq")
 library(microViz)
+library(devtools)
 
 ps_sub <- ps_noncontam_prev05 %>%
   subset_taxa(
@@ -257,8 +258,12 @@ data_part2 <- ps_part %>% subset_samples(., Iron_Level != "NA")
 data_part2 <- data_part2 %>% subset_samples(., Location != "Cont_Shelf")
 data_part2 <- data_part2 %>% subset_samples(., Location != "Open_polnya")
 
-free_bray <- phyloseq::distance(data_free, method = "bray") # setting distance
-sampledf <- data.frame(sample_data(data_free))# make a data frame from the sample_data
+data_free <- data_free %>% subset_samples(., watertype != "Other")
+data_part <- data_part %>% subset_samples(., watertype != "Other")
+
+
+free_bray <- phyloseq::distance(data_part, method = "bray") # setting distance
+sampledf <- data.frame(sample_data(data_part))# make a data frame from the sample_data
 
 #select from main data frame
 adonis_frame <- dplyr::select(sampledf, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Pos_in_polynya)
@@ -268,10 +273,12 @@ adonis_frame$Location <- as.factor(adonis_frame$Location)
 adonis_frame$Iron_Level <- as.factor(adonis_frame$Iron_Level)
 
 # Adonis test
-adonis <- adonis2(free_bray ~ Location, data = adonis_frame)
+adonis <- adonis2(free_bray ~ watertype, data = adonis_frame)
+pairwise.adonis(free_bray,factors=adonis_frame$watertype)
+
 
 # Post hoc for location in polynya
-beta_location <- betadisper(free_bray, adonis_frame$watertype)
+beta_location <- betadisper(free_bray, adonis_frame$Location)
 permutest(beta_location)
 plot(beta_location)
 boxplot(beta_location)
