@@ -24,7 +24,7 @@ taxa_names <- na.omit(taxa_names) # remove NAs just in case
 otu_table(ps_sub) <- taxa_names # re-inserts the OTU table for the phyloseq object
 
 ## FREE-LIVING ##
-ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(Location %in% c("Outflow", "Inflow")) %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_free <- ps_sub %>% subset_samples(Filter_pores == "free-living") %>% subset_samples(Pos_in_polynya %in% c("Outflow", "Inflow")) %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_free <- ps_free %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -76,7 +76,7 @@ write.csv(merged_df_free,'flow_free.csv')
 
 ### PARTICLE - ASSOCIATED
 
-ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(Location %in% c("Outflow", "Inflow")) %>% prune_taxa(taxa_sums(.) > 0, .) 
+ps_part <- ps_sub %>% subset_samples(Filter_pores == "particle-associated") %>% subset_samples(Pos_in_polynya %in% c("Outflow", "Inflow")) %>% prune_taxa(taxa_sums(.) > 0, .) 
 
 ps_part <- ps_part %>%
   tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!# %>%
@@ -192,3 +192,41 @@ boxplot(beta_location_part)
 mod.HSD_part <- TukeyHSD(beta_location_part)
 plot(mod.HSD_part, las=1)
 plot(beta_location_part)
+
+library(pairwiseAdonis)
+
+free_bray <- phyloseq::distance(ps_free, method = "bray") # setting distance
+sampledf <- data.frame(sample_data(ps_free))# make a data frame from the sample_data
+
+#select from main data frame
+adonis_frame <- dplyr::select(sampledf, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Pos_in_polynya)
+adonis_frame$Pos_in_polynya <- as.factor(adonis_frame$Pos_in_polynya)
+
+# Adonis test
+adonis <- adonis2(free_bray ~ Pos_in_polynya, data = adonis_frame)
+pairwise.adonis(free_bray,factors=adonis_frame$Pos_in_polynya)
+
+
+part_bray <- phyloseq::distance(ps_part, method = "bray") # setting distance
+sampledf <- data.frame(sample_data(ps_part))# make a data frame from the sample_data
+
+#select from main data frame
+adonis_frame <- dplyr::select(sampledf, Station, Salinity:CTD_Depth, Lab_NO3:DOC, Iron_Level:Pos_in_polynya)
+adonis_frame$Pos_in_polynya <- as.factor(adonis_frame$Pos_in_polynya)
+
+# Adonis test
+adonis <- adonis2(part_bray ~ Pos_in_polynya, data = adonis_frame)
+pairwise.adonis(part_bray,factors=adonis_frame$Pos_in_polynya)
+
+
+sub_bray <- phyloseq::distance(ps_sub, method = "bray") # setting distance
+sampledf <- data.frame(sample_data(ps_sub))# make a data frame from the sample_data
+
+#select from main data frame
+adonis_frame <- dplyr::select(sampledf, Station, Salinity:Filter_pores, Lab_NO3:DOC, Iron_Level:Pos_in_polynya)
+adonis_frame$Filter_pores <- as.factor(adonis_frame$Filter_pores)
+
+# Adonis test
+adonis <- adonis2(sub_bray ~ Filter_pores, data = adonis_frame)
+pairwise.adonis(sub_bray,factors=adonis_frame$Filter_pores)
+
