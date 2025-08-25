@@ -78,19 +78,37 @@ ps1 <- merge_samples2(ps_part, "unique_depth",
 #  data culling  #
 ##################
 
+test <- ps_free %>% subset_samples(., True_Flow != "NA")
+
 # Create a data frame for freeliving, agglomerate by Order, transform to rel.abundance
 data_free <- ps_free %>%
-  tax_glom(taxrank = "Family") %>% # agglomerate at Order level, can change to different taxonomic level!
+  tax_glom(taxrank = "Genus") %>% # agglomerate at Order level, can change to different taxonomic level!
   prune_taxa(taxa_sums(.) > 0, .) %>%
   transform_sample_counts(function(x) {x/sum(x)})  # Transform to rel. abundance (normalize data
 
 data_top_free <- data_free %>%
   psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
-  filter(Abundance > 0.035) %>% # Filter out low abundance taxa
-  arrange(Family)
+  filter(Abundance > 0.02) %>% # Filter out low abundance taxa
+  arrange(Genus)
 
-data_top_free <- aggregate(Abundance ~ Station * Family * watertype, data = data_top_free, FUN = mean)
+data_top_free <- aggregate(Abundance ~ Order * Family * Genus, data = data_top_free, FUN = mean)
 
+
+data_part <- ps_sub %>%
+  tax_glom(taxrank = "Species") %>% # agglomerate at Order level, can change to different taxonomic level!
+  prune_taxa(taxa_sums(.) > 0, .) %>%
+  transform_sample_counts(function(x) {x/sum(x)})  # Transform to rel. abundance (normalize data
+
+data_top_part <- data_part %>%
+  psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
+  filter(Abundance > 0.02) %>% # Filter out low abundance taxa
+  arrange(Genus)
+
+data_top_part <- aggregate(Abundance ~ Phylum * Order * Family * Genus * Species, data = data_top_part, FUN = mean)
+
+data_top_part <- data_top_part %>% arrange(Family)
+
+write.csv(data_top_part, "final_graphics/family_order_genus_samples.csv")
 
 # particle-associated
 data_part <- ps_part %>%
@@ -99,7 +117,7 @@ data_part <- ps_part %>%
 
 data_top_part <- data_part %>%
   psmelt() %>% # transform a phyloseq object into a data frame, otherwise graphs wont work
-  filter(Abundance > 0.035) %>%
+  filter(Abundance > 0.02) %>%
   arrange(Family)# Filter out low abundance taxa
 
 data_top_part <- aggregate(Abundance ~ Station * Family * watertype, data = data_top_part, FUN = mean)

@@ -1,10 +1,11 @@
-ASV #,index,Inflow,Outflow,p.value.bh,Order,Family,Genus
-Seq58,2,0,1,0.027,Verrucomicrobiales,Rubritaleaceae,Roseibacillus
-Seq71,2,0,1,0.015,Flavobacteriales,Cryomorphaceae,Vicingus
-Seq78,2,0,1,0.009,Cellvibrionales,Cellvibrionaceae,uncultured 5
-Seq91,2,0,1,0.005,Alteromonadales,Colwelliaceae,Colwellia
-Seq93,2,0,1,0.009,SAR86 clade,uncultured Oceanospirillales bacterium,uncultured Oceanospirillales bacterium Family
-Seq94,2,0,1,0.023,Phycisphaerales,Phycisphaeraceae,JL-ETNP-F27
-Seq97,2,0,1,0.044,Burkholderiales,Methylophilaceae,OM43 clade
-,,,,,,,
-"* sig taxa in only outflow, none for particle associated",,,,,,,
+ASV #,index,Size Fract.*,Flow **,p,Order,Family,Genus,Relative Abundance
+Seq58,2,FL,Outflow,0.027,Verrucomicrobiales,Rubritaleaceae,Roseibacillus,5.6E-04
+Seq71,2,FL,Outflow,0.015,Flavobacteriales,Cryomorphaceae,Vicingus,2.8E-04
+Seq78,2,FL,Outflow,0.009,Cellvibrionales,Cellvibrionaceae,uncultured 5,4.2E-06
+Seq91,2,FL,Outflow,0.005,Alteromonadales,Colwelliaceae,Colwellia,1.0E-05
+Seq93,2,FL,Outflow,0.009,SAR86 clade,uncultured Oceanospirillales bacterium,uncultured Oceanospirillales bacterium Family,4.9E-03
+Seq94,2,FL,Outflow,0.023,Phycisphaerales,Phycisphaeraceae,JL-ETNP-F27,1.1E-03
+Seq97,2,FL,Outflow,0.044,Burkholderiales,Methylophilaceae,OM43 clade,5.8E-03
+,,,,,,,,
+* No sig. taxa in outflow for particle-associated.,,,,,,,,
+** Sig. taxa in only outflow.,,,,,,,,

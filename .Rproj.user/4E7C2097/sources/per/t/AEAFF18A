@@ -1,0 +1,24 @@
+{
+    "id": "AEAFF18A",
+    "path": "~/Documents/Research/Ordination analysis R scripts/ARTEMIS_github/PICRUSt_analysis/required_files/DeSeq2_analysis.R",
+    "project_path": "PICRUSt_analysis/required_files/DeSeq2_analysis.R",
+    "type": "r_source",
+    "hash": "1671692759",
+    "contents": "",
+    "dirty": false,
+    "created": 1736451767945.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1716898707,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1716898707,
+    "read_only": false,
+    "read_only_alternatives": []
+}

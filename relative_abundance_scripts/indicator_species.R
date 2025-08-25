@@ -41,6 +41,8 @@ ps_free@sam_data[["CTD_Depth"]] <- as.numeric(ps_free@sam_data[["CTD_Depth"]])
 ## upper 200m
 ps_free_above <- ps_free %>% subset_samples(CTD_Depth <= 200)
 
+melted_ps <- psmelt(ps_free_above)
+
 ## bellow 200m
 ps_free_below <- ps_free %>% subset_samples(CTD_Depth >= 200)
 

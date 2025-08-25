@@ -1,0 +1,25 @@
+{
+    "id": "8111ED61",
+    "path": "~/Documents/Research/Ordination analysis R scripts/ARTEMIS_github/required_files/PICRUSt_export.R",
+    "project_path": "required_files/PICRUSt_export.R",
+    "type": "r_source",
+    "hash": "240175265",
+    "contents": "",
+    "dirty": false,
+    "created": 1736451855017.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "disableDependencyDiscovery": "1"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1709305340,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1709305340,
+    "read_only": false,
+    "read_only_alternatives": []
+}
